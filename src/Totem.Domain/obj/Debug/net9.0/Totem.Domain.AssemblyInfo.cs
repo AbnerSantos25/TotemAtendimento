@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Totem.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3243e63fe1519bdd4da8e37a05075f588f0bf50c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d45e53a6b7ecaf444988ef1614ec5cae7a4717ff")]
 [assembly: System.Reflection.AssemblyProductAttribute("Totem.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Totem.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

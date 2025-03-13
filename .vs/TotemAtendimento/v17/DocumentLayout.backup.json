@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Github\\C#\\TotemAtendimento\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{DAA71B39-905A-407D-93A0-E8E6D505ACDB}|src\\Totem.API\\Totem.API.csproj|c:\\github\\c#\\totematendimento\\src\\totem.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAA71B39-905A-407D-93A0-E8E6D505ACDB}|src\\Totem.API\\Totem.API.csproj|solutionrelative:src\\totem.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAA71B39-905A-407D-93A0-E8E6D505ACDB}|src\\Totem.API\\Totem.API.csproj|c:\\github\\c#\\totematendimento\\src\\totem.api\\totem.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{DAA71B39-905A-407D-93A0-E8E6D505ACDB}|src\\Totem.API\\Totem.API.csproj|solutionrelative:src\\totem.api\\totem.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{FB0087D4-5FB5-48FF-AEA2-FF86F81A9580}|src\\Totem.Infra\\Totem.Infra.csproj|c:\\github\\c#\\totematendimento\\src\\totem.infra\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FB0087D4-5FB5-48FF-AEA2-FF86F81A9580}|src\\Totem.Infra\\Totem.Infra.csproj|solutionrelative:src\\totem.infra\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -31,6 +39,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.API\\Program.cs",
+              "RelativeDocumentMoniker": "src\\Totem.API\\Program.cs",
+              "ToolTip": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.API\\Program.cs",
+              "RelativeToolTip": "src\\Totem.API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-13T22:57:35.293Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Totem.API.http",
+              "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.API\\Totem.API.http",
+              "RelativeDocumentMoniker": "src\\Totem.API\\Totem.API.http",
+              "ToolTip": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.API\\Totem.API.http",
+              "RelativeToolTip": "src\\Totem.API\\Totem.API.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-03-13T22:51:15.002Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Class1.cs",
               "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Infra\\Class1.cs",
               "RelativeDocumentMoniker": "src\\Totem.Infra\\Class1.cs",
@@ -43,7 +77,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "Class1.cs",
               "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Domain\\Class1.cs",
               "RelativeDocumentMoniker": "src\\Totem.Domain\\Class1.cs",
@@ -51,12 +85,11 @@
               "RelativeToolTip": "src\\Totem.Domain\\Class1.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-13T22:36:15.925Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-13T22:36:15.925Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Class1.cs",
               "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Application\\Class1.cs",
               "RelativeDocumentMoniker": "src\\Totem.Application\\Class1.cs",
@@ -64,8 +97,7 @@
               "RelativeToolTip": "src\\Totem.Application\\Class1.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-13T22:35:54.41Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-13T22:35:54.41Z"
             }
           ]
         }
