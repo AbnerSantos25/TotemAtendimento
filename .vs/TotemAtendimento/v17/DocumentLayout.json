@@ -3,16 +3,12 @@
   "WorkspaceRootPath": "C:\\Github\\C#\\TotemAtendimento\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FB0087D4-5FB5-48FF-AEA2-FF86F81A9580}|src\\Totem.Infra\\Totem.Infra.csproj|c:\\github\\c#\\totematendimento\\src\\totem.infra\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FB0087D4-5FB5-48FF-AEA2-FF86F81A9580}|src\\Totem.Infra\\Totem.Infra.csproj|solutionrelative:src\\totem.infra\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D166D985-B8EC-47C5-9140-723AF3FDAC5E}|src\\Totem.Domain\\Totem.Domain.csproj|c:\\github\\c#\\totematendimento\\src\\totem.domain\\aggregates\\passwordaggregate\\password.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D166D985-B8EC-47C5-9140-723AF3FDAC5E}|src\\Totem.Domain\\Totem.Domain.csproj|solutionrelative:src\\totem.domain\\aggregates\\passwordaggregate\\password.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D166D985-B8EC-47C5-9140-723AF3FDAC5E}|src\\Totem.Domain\\Totem.Domain.csproj|c:\\github\\c#\\totematendimento\\src\\totem.domain\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D166D985-B8EC-47C5-9140-723AF3FDAC5E}|src\\Totem.Domain\\Totem.Domain.csproj|solutionrelative:src\\totem.domain\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{86C561C6-EF56-4CB7-B3B3-475C132EBB3F}|src\\Totem.Application\\Totem.Application.csproj|c:\\github\\c#\\totematendimento\\src\\totem.application\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{86C561C6-EF56-4CB7-B3B3-475C132EBB3F}|src\\Totem.Application\\Totem.Application.csproj|solutionrelative:src\\totem.application\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D166D985-B8EC-47C5-9140-723AF3FDAC5E}|src\\Totem.Domain\\Totem.Domain.csproj|c:\\github\\c#\\totematendimento\\src\\totem.domain\\aggregates\\useraggregate\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D166D985-B8EC-47C5-9140-723AF3FDAC5E}|src\\Totem.Domain\\Totem.Domain.csproj|solutionrelative:src\\totem.domain\\aggregates\\useraggregate\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,40 +27,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Class1.cs",
-              "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Infra\\Class1.cs",
-              "RelativeDocumentMoniker": "src\\Totem.Infra\\Class1.cs",
-              "ToolTip": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Infra\\Class1.cs",
-              "RelativeToolTip": "src\\Totem.Infra\\Class1.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "Password.cs",
+              "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Domain\\Aggregates\\PasswordAggregate\\Password.cs",
+              "RelativeDocumentMoniker": "src\\Totem.Domain\\Aggregates\\PasswordAggregate\\Password.cs",
+              "ToolTip": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Domain\\Aggregates\\PasswordAggregate\\Password.cs",
+              "RelativeToolTip": "src\\Totem.Domain\\Aggregates\\PasswordAggregate\\Password.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-13T22:36:30.736Z",
+              "WhenOpened": "2025-03-13T23:38:22.753Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Class1.cs",
-              "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Domain\\Class1.cs",
-              "RelativeDocumentMoniker": "src\\Totem.Domain\\Class1.cs",
-              "ToolTip": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Domain\\Class1.cs",
-              "RelativeToolTip": "src\\Totem.Domain\\Class1.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAACAAAAAAAAAA==",
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Domain\\Aggregates\\UserAggregate\\User.cs",
+              "RelativeDocumentMoniker": "src\\Totem.Domain\\Aggregates\\UserAggregate\\User.cs",
+              "ToolTip": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Domain\\Aggregates\\UserAggregate\\User.cs",
+              "RelativeToolTip": "src\\Totem.Domain\\Aggregates\\UserAggregate\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-13T22:36:15.925Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Class1.cs",
-              "DocumentMoniker": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Application\\Class1.cs",
-              "RelativeDocumentMoniker": "src\\Totem.Application\\Class1.cs",
-              "ToolTip": "C:\\Github\\C#\\TotemAtendimento\\src\\Totem.Application\\Class1.cs",
-              "RelativeToolTip": "src\\Totem.Application\\Class1.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-13T22:35:54.41Z",
+              "WhenOpened": "2025-03-13T23:22:58.469Z",
               "EditorCaption": ""
             }
           ]
