@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "JcsdOsA66H/G8UGloiQVef7ILSLmlfvGVQhYnbWBwCM=",
+  "Source": "Totem.API",
+  "BasePath": "_content/Totem.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
