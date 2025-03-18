@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Totem.Common\Totem.Common.csproj" />
+    <ProjectReference Include="..\Totem.Domain\Totem.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
