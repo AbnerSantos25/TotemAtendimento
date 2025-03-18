@@ -1,4 +1,5 @@
-﻿using Totem.Domain.Aggregates.ServiceLocationAggregate;
+﻿using FluentValidation;
+using Totem.Domain.Aggregates.ServiceLocationAggregate;
 
 namespace Totem.Domain.Aggregates.PasswordAggregate
 {
@@ -9,11 +10,11 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		public bool Served { get; private set; }
 		public Guid ServiceLocationId { get; private set; }
 		public ServiceLocation ServiceLocation { get; private set; }
+
 		protected Password() { }
 
 		public Password(string code)
 		{
-			//TODO: Validations
 			Code = code;
 			CreatedAt = DateTime.Now;
 			Served = false;
