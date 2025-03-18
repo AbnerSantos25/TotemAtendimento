@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Totem.Application.Services.PasswordServices
 {
-	public interface IPasswordServices
+	public interface IPasswordService
 	{
 		Task AddPasswordAsync(string code);
 	}

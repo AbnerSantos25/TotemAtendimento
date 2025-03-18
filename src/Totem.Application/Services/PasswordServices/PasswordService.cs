@@ -5,7 +5,7 @@ using Totem.Domain.Aggregates.PasswordAggregate;
 
 namespace Totem.Application.Services.PasswordServices
 {
-	public class PasswordService : BaseService, IPasswordServices
+	public class PasswordService : BaseService, IPasswordService
 	{
 
 		public PasswordService(INotificador notificador) : base(notificador)
