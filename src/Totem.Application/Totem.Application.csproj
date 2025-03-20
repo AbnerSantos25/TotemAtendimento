@@ -7,12 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Shared\Totem.Common.API\Totem.Common.API.csproj" />
     <ProjectReference Include="..\Shared\Totem.Common\Totem.Common.csproj" />
     <ProjectReference Include="..\Totem.Domain\Totem.Domain.csproj" />
+    <ProjectReference Include="..\Totem.Infra\Totem.Infra.csproj" />
   </ItemGroup>
 
 </Project>

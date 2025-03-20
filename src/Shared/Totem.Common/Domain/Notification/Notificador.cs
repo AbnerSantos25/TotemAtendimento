@@ -1,4 +1,4 @@
-﻿namespace Totem.Common.Domain
+﻿namespace Totem.Common.Domain.Notification
 {
 	public class Notificador : INotificador
 	{

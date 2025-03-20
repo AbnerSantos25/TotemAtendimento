@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Totem.Common.Data;
-using Totem.Common.Domain;
+using Totem.Common.Domain.Notification;
+using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
 
 namespace Totem.Application.Services.PasswordServices
@@ -14,9 +14,9 @@ namespace Totem.Application.Services.PasswordServices
 
 		public async Task AddPasswordAsync(string code)
 		{
-			if (ExecutarValidacao(new PasswordValidations(), new Password(code)){
+			//if (ExecutarValidacao(new PasswordValidations(), new Password(code)){
 
-			}
+			//}
 		}
 	}
 }

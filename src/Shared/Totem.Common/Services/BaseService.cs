@@ -2,8 +2,9 @@
 using FluentValidation;
 using FluentValidation.Results;
 using Totem.Domain.Aggregates;
+using Totem.Common.Domain.Notification;
 
-namespace Totem.Common.Data
+namespace Totem.Common.Services
 {
 	public abstract class BaseService
 	{
@@ -31,8 +32,6 @@ namespace Totem.Common.Data
 
 			Notificar(validator);
 			return false;
-
-
 		}
 	}
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Totem.Common.Domain
+namespace Totem.Common.Domain.Notification
 {
 	public class Notificacao
 	{
