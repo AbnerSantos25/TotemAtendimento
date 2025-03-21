@@ -1,5 +1,3 @@
-using Microsoft.Data.SqlClient;
-using System.Data.Common;
 using System.Diagnostics;
 using Totem.Application.Configurations;
 using Totem.Common.API.Configurations;
@@ -9,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 
 // Adiciona os DbContexts ao container de injeção de dependências;
@@ -34,10 +35,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.MapOpenApi();
+    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
