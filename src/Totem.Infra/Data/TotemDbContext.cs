@@ -11,7 +11,7 @@ namespace Totem.Infra.Data
     {
         public TotemDbContext(DbContextOptions options) : base(options)
         {
-            
+
         }
 
         public DbSet<Password> Passwords { get; set; }

@@ -1,4 +1,6 @@
-﻿namespace Totem.Domain.Aggregates.ServiceLocationAggregate
+﻿using Totem.Common.Domain.Entity;
+
+namespace Totem.Domain.Aggregates.ServiceLocationAggregate
 {
 	public class ServiceLocation : Entity
 	{

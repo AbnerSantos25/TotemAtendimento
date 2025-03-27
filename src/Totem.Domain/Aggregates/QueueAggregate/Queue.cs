@@ -1,4 +1,5 @@
 ﻿using Totem.Domain.Aggregates.PasswordAggregate;
+using Totem.Common.Domain.Entity;
 
 namespace Totem.Domain.Aggregates.QueueAggregate
 {

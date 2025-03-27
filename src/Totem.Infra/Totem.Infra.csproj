@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Totem.Common.API\Totem.Common.API.csproj" />
+    <ProjectReference Include="..\Totem.Domain\Totem.Domain.csproj" />
   </ItemGroup>
 
 </Project>

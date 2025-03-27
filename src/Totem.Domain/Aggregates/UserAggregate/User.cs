@@ -1,4 +1,6 @@
-﻿namespace Totem.Domain.Aggregates.UserAggregate
+﻿using Totem.Common.Domain.Entity;
+
+namespace Totem.Domain.Aggregates.UserAggregate
 {
 	public class User : Entity
 	{
