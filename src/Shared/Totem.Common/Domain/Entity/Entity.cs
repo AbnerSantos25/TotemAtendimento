@@ -1,4 +1,4 @@
-﻿namespace Totem.Domain.Aggregates
+﻿namespace Totem.Common.Domain.Entity
 {
 	public abstract class Entity
 	{
@@ -7,6 +7,6 @@
 		protected Entity()
 		{
 			Id = Guid.NewGuid();
-		}
+        }
 	}
 }

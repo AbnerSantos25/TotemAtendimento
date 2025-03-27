@@ -1,9 +1,10 @@
-﻿using FluentValidation;
+﻿using Totem.Common.Domain;
+using Totem.Common.Domain.Entity;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 
 namespace Totem.Domain.Aggregates.PasswordAggregate
 {
-	public class Password : Entity
+	public class Password : Entity, IAggregateRoot
 	{
 		public string Code { get; private set; }
 		public DateTime CreatedAt { get; private set; }

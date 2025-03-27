@@ -1,7 +1,6 @@
-﻿using Totem.Common.Domain;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
-using Totem.Domain.Aggregates;
+using Totem.Common.Domain.Entity;
 using Totem.Common.Domain.Notification;
 
 namespace Totem.Common.Services
