@@ -61,6 +61,33 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Erro ao Salvar no Banco de dados. .
+        /// </summary>
+        public static string ErrorSavingDatabase {
+            get {
+                return ResourceManager.GetString("ErrorSavingDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha não encontrada..
+        /// </summary>
+        public static string PasswordNotFound {
+            get {
+                return ResourceManager.GetString("PasswordNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O campo senha não pode ser nulo.
+        /// </summary>
+        public static string PasswordRequestNull {
+            get {
+                return ResourceManager.GetString("PasswordRequestNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Erro ao Salvar no Banco de dados..
         /// </summary>
         public static string ErrorSavingDatabase {

@@ -4,11 +4,11 @@ using Totem.Domain.Models.PasswordModels;
 
 namespace Totem.Infra.Data.Queries.PasswordQueries
 {
-    public class PasswordQuery : IPasswordQueries
+    public class PasswordQueries : IPasswordQueries
     {
         private readonly TotemDbContext _context;
 
-        public PasswordQuery(TotemDbContext context)
+        public PasswordQueries(TotemDbContext context)
         {
             _context = context;
         }

@@ -1,27 +1,38 @@
-﻿namespace Totem.Common.Domain.Notification
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace Totem.Common.Domain.Notification
 {
-	public class Notificador : INotificador
-	{
-		private List<Notificacao> _notificacoes;
+    public class Notificador : INotificador
+    {
+        private List<Notificacao> _notificacoes;
 
-		public Notificador()
-		{
-			_notificacoes = new List<Notificacao>();
-		}
+        [JsonIgnore, NotMapped]
+        public bool IsValid => _notificacoes.Any();
+        public Notificador()
+        {
+            _notificacoes = new List<Notificacao>();
+        }
 
-		public void Handle(Notificacao notificacao)
-		{
-			_notificacoes.Add(notificacao);
-		}
+        public void AddNotifications(List<Notificacao> notificacoes)
+        {
+            _notificacoes.AddRange(notificacoes);
+        }
 
-		public List<Notificacao> ObterNotificacoes()
-		{
-			return _notificacoes;
-		}
+        public void Handle(Notificacao notificacao)
+        {
+            _notificacoes.Add(notificacao);
+        }
 
-		public bool TemNotificacao()
-		{
-			return _notificacoes.Any();
-		}
-	}
+        public List<Notificacao> ObterNotificacoes()
+        {
+            return _notificacoes;
+        }
+
+        public bool TemNotificacao()
+        {
+            return _notificacoes.Any();
+        }
+
+    }
 }
