@@ -1,5 +1,6 @@
 ﻿using Totem.Common.Domain;
 using Totem.Common.Domain.Entity;
+using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 
 namespace Totem.Domain.Aggregates.PasswordAggregate
@@ -12,12 +13,19 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		public Guid ServiceLocationId { get; private set; }
 		public ServiceLocation ServiceLocation { get; private set; }
 
-		protected Password() { }
 
-		public Password(string code)
+        //Propriedade EF Core - Relação
+        public Guid QueueId { get; private set; }  // Chave estrangeira
+        public Queue Queue { get; private set; }  // Propriedade de navegação
+
+
+        protected Password() { }
+
+		public Password(string code, Guid queueId)
 		{
 			Code = code;
-			CreatedAt = DateTime.Now;
+            QueueId = queueId;
+            CreatedAt = DateTime.Now;
 			Served = false;
 		}
 
