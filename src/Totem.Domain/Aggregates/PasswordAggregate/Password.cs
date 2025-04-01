@@ -7,11 +7,11 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 {
 	public class Password : Entity, IAggregateRoot
 	{
-		public string Code { get; private set; }
+		public int Code { get; private set; }
 		public DateTime CreatedAt { get; private set; }
 		public bool Served { get; private set; }
-		public Guid ServiceLocationId { get; private set; }
-		public ServiceLocation ServiceLocation { get; private set; }
+		public Guid? ServiceLocationId { get; private set; }
+		public ServiceLocation? ServiceLocation { get; private set; }
 
 
         //Propriedade EF Core - Relação
@@ -21,9 +21,8 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 
         protected Password() { }
 
-		public Password(string code, Guid queueId)
+		public Password(Guid queueId)
 		{
-			Code = code;
             QueueId = queueId;
             CreatedAt = DateTime.Now;
 			Served = false;

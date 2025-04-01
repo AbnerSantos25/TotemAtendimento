@@ -8,7 +8,7 @@ namespace Totem.Common.Domain.Notification
         private List<Notificacao> _notificacoes;
 
         [JsonIgnore, NotMapped]
-        public bool IsValid => _notificacoes.Any();
+        public bool IsValid => !_notificacoes.Any();
         public Notificador()
         {
             _notificacoes = new List<Notificacao>();

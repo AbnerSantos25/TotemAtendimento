@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Totem.Infra.Data;
 
@@ -11,9 +12,11 @@ using Totem.Infra.Data;
 namespace Totem.Infra.Migrations
 {
     [DbContext(typeof(TotemDbContext))]
-    partial class TotemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250331234223_updatePassword")]
+    partial class updatePassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace Totem.Infra.Migrations
                     b.Property<bool>("Served")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("ServiceLocationId")
+                    b.Property<Guid>("ServiceLocationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -119,7 +122,8 @@ namespace Totem.Infra.Migrations
                     b.HasOne("Totem.Domain.Aggregates.ServiceLocationAggregate.ServiceLocation", "ServiceLocation")
                         .WithMany()
                         .HasForeignKey("ServiceLocationId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Queue");
 
