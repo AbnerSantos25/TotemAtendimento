@@ -26,7 +26,7 @@ namespace Totem.Infra.Data.Repositories.ServiceLocationRepository
 			_context.ServiceLocations.Remove(serviceLocation);
 		}
 
-		public async Task<ServiceLocation> GetById(Guid id)
+		public async Task<ServiceLocation> GetByIdAsync(Guid id)
 		{
 			return await _context.ServiceLocations.SingleOrDefaultAsync(x => x.Id == id);
 		}

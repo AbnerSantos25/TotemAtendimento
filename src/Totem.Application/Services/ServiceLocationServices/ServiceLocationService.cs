@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Totem.Common.Domain.Notification;
+﻿using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
@@ -12,62 +11,68 @@ namespace Totem.Application.Services.ServiceLocationServices
 		private readonly IServiceLocationRepository _repository;
 		private readonly IServiceLocationQueries _queries;
 
-		public ServiceLocationService(INotificador notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, Errors errors) : base(notificador)
+		public ServiceLocationService(INotificador notificador, IServiceLocationRepository repository, IServiceLocationQueries queries) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;
 		}
 
-		public async Task<bool> AddAsync(ServiceLocationRequest request)
+		public async Task<Result> AddAsync(ServiceLocationRequest request)
 		{
 			ServiceLocationValidator validator = new();
 			var ServiceLocation = new ServiceLocation(request.Name, request.Number);
 
 			if (!validator.Validate(ServiceLocation).IsValid)
-				return false;
+				return Unsuccessful();
 
 			_repository.Add(ServiceLocation);
 
 			if (!await _repository.UnitOfWork.CommitAsync())
-				Notificar(Errors.ErrorSavingDatabase);
+				return Unsuccessful(Errors.ErrorSavingDatabase);
 
-			return true;
+			return Successful();
 		}
 
-		public async Task<bool> DeleteAsync(Guid Id)
+		public async Task<Result> DeleteAsync(Guid Id)
 		{
-			var serviceLocation = _repository.GetById(Id);
+			var serviceLocation = _repository.GetByIdAsync(Id);
 			if (serviceLocation == null)
-				return false;
+				return Unsuccessful();
 
 			_repository.Delete(serviceLocation.Result);
 
 			if (!await _repository.UnitOfWork.CommitAsync())
-				Notificar(Errors.ErrorSavingDatabase);
+				return Unsuccessful(Errors.ErrorSavingDatabase);
 
-			return true;
+			return Successful();
 		}
 
-		public async Task<bool> UpdateAsync(ServiceLocationRequest request)
+		public async Task<Result> UpdateAsync(Guid Id, ServiceLocationRequest request)
 		{
 			ServiceLocationValidator validator = new();
-			var ServiceLocation = new ServiceLocation(request.Name, request.Number);
+			var ServiceLocationValidator = new ServiceLocation(request.Name, request.Number);
 
 			if (await _repository.ExistsAsync(request.Name, request.Number))
 			{
 				Notificar(Errors.RegisterAlreadyExists);
-				return false;
+				return Unsuccessful();
 			}
 
-			if (!validator.Validate(ServiceLocation).IsValid)
-				return false;
+			if (!validator.Validate(ServiceLocationValidator).IsValid)
+				return Unsuccessful();
 
-			_repository.Update(ServiceLocation);
+			var serviceLocation = _repository.GetByIdAsync(Id).Result;
+			if (serviceLocation == null)
+				return Unsuccessful();
+
+			serviceLocation.Update(request.Name, request.Number);
+
+			_repository.Update(serviceLocation);
 
 			if (!await _repository.UnitOfWork.CommitAsync())
-				Notificar(Errors.ErrorSavingDatabase);
+				return Unsuccessful(Errors.ErrorSavingDatabase);
 
-			return true;
+			return Successful();
 		}
 
 		public async Task<ServiceLocationView> GetByIdAsync(Guid Id)
@@ -75,18 +80,11 @@ namespace Totem.Application.Services.ServiceLocationServices
 			return await _queries.GetByIdAsync(Id);
 		}
 
-		public async Task<(bool Success, List<ServiceLocationSummary> data)> GetListAsync()
+		public async Task<(Result result, List<ServiceLocationSummary> data)> GetListAsync()
 		{
-			try
-			{
-				var result = await _queries.GetAllAsync();
-				return (true, result);
-			}
-			catch (Exception ex)
-			{
-				Notificar(ex.Message);
-			}
-			return (false, null);
+			var list = await _queries.GetAllAsync();
+			return Successful(list);
 		}
+
 	}
 }

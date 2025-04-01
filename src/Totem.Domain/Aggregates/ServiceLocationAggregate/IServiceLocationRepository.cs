@@ -12,7 +12,7 @@ namespace Totem.Domain.Aggregates.ServiceLocationAggregate
 
 		void Delete(ServiceLocation serviceLocation);
 
-		Task<ServiceLocation> GetById(Guid id);
+		Task<ServiceLocation> GetByIdAsync(Guid id);
 
 		Task<bool> ExistsAsync(string Name, int? number);
 	}

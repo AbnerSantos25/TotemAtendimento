@@ -18,6 +18,12 @@ namespace Totem.Domain.Aggregates.ServiceLocationAggregate
 			Name = name;
 			Number = number;
 		}
+
+		public void Update(string name, int? number)
+		{
+			Name = name;
+			Number = number;
+		}
 	}
 
 }
