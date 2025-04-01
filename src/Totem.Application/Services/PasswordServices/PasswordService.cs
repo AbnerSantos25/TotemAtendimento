@@ -19,7 +19,7 @@ namespace Totem.Application.Services.PasswordServices
         }
         public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
         {
-            var password = new Password(request.Code, request.QueueId);
+            var password = new Password(request.Code, request.QueueId, request.Preferential);
             if (!ExecuteValidation(new PasswordValidations(), password)) 
                 return Unsuccessful<Guid>("Erro ao validar");
 

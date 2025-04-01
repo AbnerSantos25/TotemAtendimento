@@ -12,7 +12,7 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		public bool Served { get; private set; }
 		public Guid ServiceLocationId { get; private set; }
 		public ServiceLocation ServiceLocation { get; private set; }
-
+		public bool Preferential { get; private set; } // Pde78
 
         //Propriedade EF Core - Relação
         public Guid QueueId { get; private set; }  // Chave estrangeira
@@ -21,12 +21,13 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 
         protected Password() { }
 
-		public Password(string code, Guid queueId)
+		public Password(string code, Guid queueId, bool preferential) // P9088
 		{
 			Code = code;
             QueueId = queueId;
             CreatedAt = DateTime.Now;
 			Served = false;
+			Preferential = preferential; // P9088
 		}
 
 		public void AssignServiceLocation(Guid serviceLocationId)

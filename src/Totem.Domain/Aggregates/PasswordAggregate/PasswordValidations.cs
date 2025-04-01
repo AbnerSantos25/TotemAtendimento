@@ -8,6 +8,7 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		{
 			RuleFor(x => x.Code).NotEmpty().MaximumLength(10);
             RuleFor(x => x.QueueId).NotEmpty();
+            RuleFor(x => x.Preferential).NotNull();
         }
 	}
 }

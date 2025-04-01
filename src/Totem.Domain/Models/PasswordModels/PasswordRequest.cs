@@ -10,5 +10,6 @@ namespace Totem.Domain.Models.PasswordModels
         public string Code { get; set; }
         [Required]
         public Guid QueueId { get; set; }
+        public bool Preferential { get; set; } // Pb8b4
     }
 }
