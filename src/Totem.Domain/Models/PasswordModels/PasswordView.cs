@@ -6,7 +6,7 @@ namespace Totem.Domain.Models.PasswordModels
     public class PasswordView
     {
         private Guid PasswordId { get; set; }
-        public string Code { get; set; }
+        public int Code { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public bool Served { get; set; }
 		public ServiceLocationView ServiceLocation { get; set; }
