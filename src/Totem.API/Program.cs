@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Totem.Application.Configurations;
 using Totem.Common.API.Configurations;
@@ -18,6 +19,7 @@ builder.Services.AddTotemDBContext();
 // Adiciona as dependências do projeto e a coneção com o banco;
 builder.Services.RegisterDependency(builder.Configuration);
 builder.Services.TotemRegisterDependency();
+
 
 var app = builder.Build();
 

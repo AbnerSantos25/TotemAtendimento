@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Totem.Common.Domain.Notification;
+using Totem.Common.Services;
 
 namespace Totem.Common.API.Controller
 {
@@ -14,26 +15,28 @@ namespace Totem.Common.API.Controller
             _notificador = notificador;
         }
 
-        protected ActionResult CustomResponse(object result = null)
+        protected ActionResult CreateResponse<T>((Result Result, T Data) response)
         {
 
             if (OperacaoValida())
             {
-                return Ok(new
+                var teste = new
                 {
-                    success = true,
-                    data = result
-                });
+                    success = response.Result,
+                    data = response.Data
+                };
+
+                return Ok(teste);
             }
 
             var notifications = _notificador.ObterNotificacoes();
-            return BadRequest(new { success = false, errors = notifications });
+            return BadRequest(new { success = response, errors = notifications });
         }
 
         protected ActionResult CustomResponse(ModelStateDictionary modelState)
         {
             if (!modelState.IsValid) NotificarErroModelInvalida(modelState);
-            return CustomResponse();
+            return CustomResponse(modelState);
         }
 
         protected void NotificarErroModelInvalida(ModelStateDictionary modelState)

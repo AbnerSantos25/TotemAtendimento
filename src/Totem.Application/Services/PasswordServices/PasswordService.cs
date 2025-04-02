@@ -3,6 +3,8 @@ using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Models.PasswordModels;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Totem.Application.Services.PasswordServices
 {
@@ -23,6 +25,7 @@ namespace Totem.Application.Services.PasswordServices
             if (!ExecuteValidation(new PasswordValidations(), password)) 
                 return Unsuccessful<Guid>();
 
+            password.IncrementCode(await _passwordRepository.GetNextPasswordCodeAsync());
             _passwordRepository.Add(password);
 
             if (!await _passwordRepository.UnitOfWork.CommitAsync())
@@ -34,8 +37,9 @@ namespace Totem.Application.Services.PasswordServices
         public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)
         {
             var password = await _passwordRepository.GetByIdAsync(id);
-            if(password == null)
-                Unsuccessful<PasswordView>(Errors.PasswordNotFound);
+            if (password == null)
+                return Unsuccessful<PasswordView>(Errors.PasswordNotFound);
+                
 
             return Successful(password);
         }
