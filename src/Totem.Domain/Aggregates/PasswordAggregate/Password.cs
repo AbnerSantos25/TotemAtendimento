@@ -35,6 +35,8 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 
 		public void MarkAsServed() => Served = true;
 
-		
+		public void IncrementCode(int code) { 
+			Code = code;
+        }
 	}
 }

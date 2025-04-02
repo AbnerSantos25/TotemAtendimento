@@ -15,13 +15,16 @@ namespace Totem.Infra.Mappings
         {
             builder.ToTable("Password");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Code).IsRequired();
+            builder.Property(x => x.Code);
             builder.Property(x => x.CreatedAt).IsRequired();
             builder.Property(x => x.Served);
             builder.Property(x => x.ServiceLocationId);
             builder.Property(x => x.QueueId).IsRequired();
 
-            builder.HasIndex(x => x.Code);
+            builder.Property(p => p.Code)
+               .HasDefaultValueSql("NEXT VALUE FOR PasswordSequence");
+
+            builder.HasIndex(x => x.Code).IsUnique();
         }
     }
 }

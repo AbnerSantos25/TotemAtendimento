@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Totem.Common.API.Data;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
@@ -21,5 +22,6 @@ namespace Totem.Infra.Data
 
 
         protected override string GetDefaultContextSchema() => "Totem";
+
     }
 }

@@ -44,7 +44,6 @@ namespace Totem.Common.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
-
             foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(
                 e => e.GetProperties().Where(p => p.ClrType == typeof(string))))
                 property.SetColumnType("varchar(100)");
@@ -64,6 +63,7 @@ namespace Totem.Common.API.Data
         }
 
         protected abstract string GetDefaultContextSchema();
+
 
     }
 }
