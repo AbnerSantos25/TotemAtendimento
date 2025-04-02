@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Services;
@@ -15,7 +16,7 @@ namespace Totem.Common.API.Controller
             _notificador = notificador;
         }
 
-        protected ActionResult CreateResponse<T>((Result Result, T Data) response)
+        protected ActionResult CustomResponse<T>((Result Result, T Data) response)
         {
 
             if (OperacaoValida())
