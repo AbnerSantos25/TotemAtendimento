@@ -3,12 +3,10 @@ using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Models.PasswordModels;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Totem.Application.Services.PasswordServices
 {
-	public class PasswordService : BaseService, IPasswordService
+    public class PasswordService : BaseService, IPasswordService
 	{
         private readonly INotificador _notificador;
         private readonly IPasswordRepository _passwordRepository;

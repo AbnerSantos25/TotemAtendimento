@@ -21,17 +21,18 @@ namespace Totem.API.Controllers
 
             if(!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _passwordService.GetByIdPasswordAsync(id);
-            return CreateResponse((result.result, result.data));
+            return CustomResponse(await _passwordService.GetByIdPasswordAsync(id));
         }
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetPasswords()
-        //{
-        //    if (!ModelState.IsValid) return CustomResponse(ModelState);
-        //    return CustomResponse(await _passwordService.GetListPasswordAsync());
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetPasswords()
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            return CustomResponse(await _passwordService.GetListPasswordAsync());
+        }
+
 
         //[HttpPost]
         //public async Task<IActionResult> AddPassword([FromBody] PasswordRequest request)
