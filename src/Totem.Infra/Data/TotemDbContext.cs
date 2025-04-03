@@ -23,5 +23,11 @@ namespace Totem.Infra.Data
 
         protected override string GetDefaultContextSchema() => "Totem";
 
+        protected override void ApplyConfigurations(ModelBuilder modelBuilder) {
+            base.ApplyConfigurations(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(TotemDbContext).Assembly);
+        }
+
     }
 }
