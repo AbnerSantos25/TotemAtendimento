@@ -86,5 +86,14 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("PasswordRequestNull", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Registro  já existe..
+        /// </summary>
+        public static string RegisterAlreadyExists {
+            get {
+                return ResourceManager.GetString("RegisterAlreadyExists", resourceCulture);
+            }
+        }
     }
 }
