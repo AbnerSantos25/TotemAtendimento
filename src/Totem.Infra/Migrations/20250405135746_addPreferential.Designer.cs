@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Totem.Infra.Data;
 
@@ -11,9 +12,11 @@ using Totem.Infra.Data;
 namespace Totem.Infra.Migrations
 {
     [DbContext(typeof(TotemDbContext))]
-    partial class TotemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250405135746_addPreferential")]
+    partial class addPreferential
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,9 +51,6 @@ namespace Totem.Infra.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.HasIndex("QueueId");
 
@@ -126,8 +126,6 @@ namespace Totem.Infra.Migrations
                         .WithMany()
                         .HasForeignKey("ServiceLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Queue");
 
                     b.Navigation("Queue");
 

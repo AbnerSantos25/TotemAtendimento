@@ -6,61 +6,58 @@ using Totem.Domain.Models.PasswordModels;
 
 namespace Totem.Application.Services.PasswordServices
 {
-	public class PasswordService : BaseService, IPasswordService
+    public class PasswordService : BaseService, IPasswordService
 	{
-        private readonly INotificador _notificador;
         private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordQueries _passwordQueries;
         public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation) : base(notificador)
         {
-            _notificador = notificador;
             _passwordRepository = passwordRepository;
             _passwordQueries = passwordQueries;
         }
         public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
         {
-            var password = new Password(request.Code, request.QueueId);
+            var password = new Password(request.QueueId,request.Preferential);
             if (!ExecuteValidation(new PasswordValidations(), password)) 
-                return Unsuccessful<Guid>("Erro ao validar");
+                return Unsuccessful<Guid>();
 
+            password.IncrementCode(await _passwordRepository.GetNextPasswordCodeAsync());
             _passwordRepository.Add(password);
 
-            if (!await _passwordRepository.UnitOfWork.CommitAsync()) {
-                return Unsuccessful<Guid>(Errors.ErrorSavingDatabase);
-            }
+            if (!await _passwordRepository.UnitOfWork.CommitAsync())
+                return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
 
             return Successful(password.Id);
         }
 
-        public async Task<(bool result, PasswordView data)> GetByIdPasswordAsync(Guid id)
-        {
-            var password = await _passwordRepository.GetByIdAsync(id);
-            if(password == null)
-            {
-                Notificar(Errors.PasswordNotFound);
-                return (false, null);
-            }
-
-            return (true, password);
-        }
-
-        public async Task<(bool result, List<PasswordView> data)> GetListPasswordAsync()
-        {
-            var passwords = await _passwordQueries.GetListPasswordsAsync();
-            return (true, passwords);
-        }
-
-        public async Task<bool> RemovePasswordAsync(Guid id)
+        public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)
         {
             var password = await _passwordRepository.GetByIdAsync(id);
             if (password == null)
-            {
-                Notificar(Errors.PasswordNotFound);
-                return false;
-            }
+                return Unsuccessful<PasswordView>(Errors.PasswordNotFound.ToString());
+                
+
+            return Successful(password);
+        }
+
+        public async Task<(Result result, List<PasswordView> data)> GetListPasswordAsync()
+        {
+            var passwords = await _passwordQueries.GetListPasswordsAsync();
+            return Successful(passwords);
+        }
+
+        public async Task<Result> RemovePasswordAsync(Guid id)
+        {
+            var password = await _passwordRepository.GetByIdAsync(id);
+            if (password == null)
+                return Unsuccessful(Errors.PasswordNotFound.ToString());
 
             _passwordRepository.Delete(password);
-            return true;
+
+            if (!await _passwordRepository.UnitOfWork.CommitAsync())
+                return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
+
+            return Successful();
         }
     }
 }
