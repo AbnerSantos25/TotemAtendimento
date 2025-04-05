@@ -6,7 +6,6 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 	{
 		public PasswordValidations()
 		{
-			RuleFor(x => x.Code).NotEmpty().MaximumLength(10);
             RuleFor(x => x.QueueId).NotEmpty();
         }
 	}

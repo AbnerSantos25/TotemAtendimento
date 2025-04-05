@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Totem.Application.Configurations;
 using Totem.Common.API.Configurations;
+using Totem.Common.Domain.Notification;
 using Totem.Infra.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,13 +13,13 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 // Adiciona os DbContexts ao container de injeção de dependências;
 builder.Services.AddTotemDBContext();
 
 // Adiciona as dependências do projeto e a coneção com o banco;
 builder.Services.RegisterDependency(builder.Configuration);
 builder.Services.TotemRegisterDependency();
+
 
 var app = builder.Build();
 

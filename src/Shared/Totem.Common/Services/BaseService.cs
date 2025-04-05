@@ -54,7 +54,7 @@ namespace Totem.Common.Services
         protected Result Unsuccessful(List<Notificacao> notificacaos)
         {
             var result = new Result();
-            result.AddNotifications(notificacaos);
+            _notificador.AddNotifications(notificacaos);
 
             return result;
         }
@@ -71,7 +71,7 @@ namespace Totem.Common.Services
         protected Result Unsuccessful(string message)
         {
             var result = new Result();
-            result.Handle(new Notificacao(message));
+            Notificar(message);
             return result;
         }
 
@@ -79,7 +79,7 @@ namespace Totem.Common.Services
         protected Result Unsuccessful()
         {
             var result = new Result();
-            result.ObterNotificacoes();
+            _notificador.ObterNotificacoes();
 
             return result;
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Totem.Application.Services.PasswordServices;
+using Totem.Common.Domain.Notification;
 using Totem.Application.Services.ServiceLocationServices;
 using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.PasswordAggregate;
@@ -15,11 +16,11 @@ namespace Totem.Application.Configurations
 	{
 		public static void TotemRegisterDependency(this IServiceCollection services)
 		{
-			services.AddScoped<PasswordValidations>();
-
-			services.AddScoped<IPasswordService, PasswordService>();
-			services.AddScoped<IPasswordRepository, PasswordRepository>();
-			services.AddScoped<IPasswordQueries, PasswordQueries>();
+      services.AddScoped<IPasswordService, PasswordService>();
+      services.AddScoped<PasswordValidations>();
+      services.AddScoped<IPasswordRepository, PasswordRepository>();
+      services.AddScoped<IPasswordQueries, PasswordQueries>();
+      services.AddScoped<INotificador, Notificador>();
 
 			services.AddScoped<IServiceLocationRepository, ServiceLocationRepository>();
 			services.AddScoped<IServiceLocationQueries, ServiceLocationQueries>();

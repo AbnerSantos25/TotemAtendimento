@@ -40,10 +40,9 @@ namespace Totem.Common.API.Data
         }
 
 
-        protected sealed override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
 
             foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(
                 e => e.GetProperties().Where(p => p.ClrType == typeof(string))))
@@ -64,6 +63,7 @@ namespace Totem.Common.API.Data
         }
 
         protected abstract string GetDefaultContextSchema();
+
 
     }
 }

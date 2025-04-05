@@ -1,13 +1,23 @@
 ﻿using Totem.Common.Domain.Notification;
 
-namespace Totem.Common.Services
+public class Result
 {
-    public class Result : Notificador
+    public bool Success => !_notificacoes.Any();
+
+    private readonly List<Notificacao> _notificacoes = new();
+
+    public void Handle(Notificacao notificacao)
     {
-        public bool Success => this.IsValid;
-        public string? ErrorMessage { get; }
+        _notificacoes.Add(notificacao);
+    }
 
-        public Result() { }
+    public List<Notificacao> ObterNotificacoes()
+    {
+        return _notificacoes;
+    }
 
+    public bool TemNotificacao()
+    {
+        return _notificacoes.Any();
     }
 }

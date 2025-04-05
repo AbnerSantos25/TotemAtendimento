@@ -8,5 +8,7 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
         void Add(Password password);
         void Update(Password password);
         void Delete(Password password);
+        Task<int> GetNextPasswordCodeAsync();
+
     }
 }
