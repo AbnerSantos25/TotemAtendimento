@@ -10,7 +10,8 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		public int Code { get; private set; }
 		public DateTime CreatedAt { get; private set; }
 		public bool Served { get; private set; }
-		public Guid? ServiceLocationId { get; private set; }
+		public bool Preferential { get; private set; }
+        public Guid? ServiceLocationId { get; private set; }
 		public ServiceLocation? ServiceLocation { get; private set; }
 
 
@@ -21,9 +22,10 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 
         protected Password() { }
 
-		public Password(Guid queueId)
+		public Password(Guid queueId, bool preferential)
 		{
             QueueId = queueId;
+            Preferential = preferential;
             CreatedAt = DateTime.Now;
 			Served = false;
 		}

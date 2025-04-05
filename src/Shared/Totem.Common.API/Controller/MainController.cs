@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Services;
@@ -18,21 +17,41 @@ namespace Totem.Common.API.Controller
 
         protected ActionResult CustomResponse<T>((Result Result, T Data) response)
         {
-
             if (OperacaoValida())
             {
-                var teste = new
+                return Ok(new
                 {
-                    success = response.Result,
+                    success = true,
                     data = response.Data
-                };
+                });
+            }
 
-                return Ok(teste);
+            return BadRequest(new
+            {
+                success = false,
+                errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
+            });
+        }
+
+        protected ActionResult CustomResponse(Result result)
+        {
+            if (OperacaoValida())
+            {
+                return Ok(new
+                {
+                    success = true,
+                    data = result
+                });
             }
 
             var notifications = _notificador.ObterNotificacoes();
-            return BadRequest(new { success = response, errors = notifications });
+            return BadRequest(new
+            {
+                success = false,
+                errors = notifications.Select(n => n.Mensagem)
+            });
         }
+
 
         protected ActionResult CustomResponse(ModelStateDictionary modelState)
         {

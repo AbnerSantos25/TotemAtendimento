@@ -5,11 +5,9 @@ namespace Totem.Domain.Models.PasswordModels
 {
     public class PasswordRequest
     {
-        //[Required]
-        //[StringLength(50,ErrorMessageResourceName = "PasswordRequestNull", ErrorMessageResourceType = typeof(Errors))]
-        //public int Code { get; set; }
-
         [Required]
         public Guid QueueId { get; set; }
+        public bool Preferential { get; set; }
+
     }
 }

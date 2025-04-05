@@ -8,18 +8,16 @@ namespace Totem.Application.Services.PasswordServices
 {
     public class PasswordService : BaseService, IPasswordService
 	{
-        private readonly INotificador _notificador;
         private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordQueries _passwordQueries;
         public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation) : base(notificador)
         {
-            _notificador = notificador;
             _passwordRepository = passwordRepository;
             _passwordQueries = passwordQueries;
         }
         public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
         {
-            var password = new Password(request.QueueId);
+            var password = new Password(request.QueueId,request.Preferential);
             if (!ExecuteValidation(new PasswordValidations(), password)) 
                 return Unsuccessful<Guid>();
 
@@ -27,7 +25,7 @@ namespace Totem.Application.Services.PasswordServices
             _passwordRepository.Add(password);
 
             if (!await _passwordRepository.UnitOfWork.CommitAsync())
-                return Unsuccessful<Guid>(Errors.ErrorSavingDatabase);
+                return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
 
             return Successful(password.Id);
         }
@@ -36,7 +34,7 @@ namespace Totem.Application.Services.PasswordServices
         {
             var password = await _passwordRepository.GetByIdAsync(id);
             if (password == null)
-                return Unsuccessful<PasswordView>(Errors.PasswordNotFound);
+                return Unsuccessful<PasswordView>(Errors.PasswordNotFound.ToString());
                 
 
             return Successful(password);
@@ -52,12 +50,12 @@ namespace Totem.Application.Services.PasswordServices
         {
             var password = await _passwordRepository.GetByIdAsync(id);
             if (password == null)
-                return Unsuccessful(Errors.PasswordNotFound);
+                return Unsuccessful(Errors.PasswordNotFound.ToString());
 
             _passwordRepository.Delete(password);
 
             if (!await _passwordRepository.UnitOfWork.CommitAsync())
-                return Unsuccessful(Errors.ErrorSavingDatabase);
+                return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
 
             return Successful();
         }

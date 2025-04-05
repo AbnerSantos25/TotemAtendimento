@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Totem.Application.Services.PasswordServices;
+using Totem.Common.Domain.Notification;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Infra.Data.Queries.PasswordQueries;
 using Totem.Infra.Data.Repositories.PasswordRepository;
@@ -14,6 +15,8 @@ namespace Totem.Application.Configurations
             services.AddScoped<PasswordValidations>();
             services.AddScoped<IPasswordRepository, PasswordRepository>();
             services.AddScoped<IPasswordQueries, PasswordQueries>();
+            services.AddScoped<INotificador, Notificador>();
+
         }
     }
 }
