@@ -59,5 +59,14 @@ namespace Totem.Common.Localization.Resources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Não foi possível criar o Local de Atendimento.
+        /// </summary>
+        public static string UnableCreateServiceLocation {
+            get {
+                return ResourceManager.GetString("UnableCreateServiceLocation", resourceCulture);
+            }
+        }
     }
 }
