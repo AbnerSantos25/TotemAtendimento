@@ -2,7 +2,6 @@
 using Totem.Application.Services.PasswordServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
-using Totem.Common.Services;
 using Totem.Domain.Models.PasswordModels;
 
 namespace Totem.API.Controllers
@@ -34,18 +33,19 @@ namespace Totem.API.Controllers
         }
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> AddPassword([FromBody] PasswordRequest request)
-        //{
-        //    if (!ModelState.IsValid) return CustomResponse(ModelState);
-        //    return CustomResponse(await _passwordService.AddPasswordAsync(request));
-        //}
+        [HttpPost]
+        public async Task<IActionResult> AddPassword([FromBody] PasswordRequest request)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            var teste = await _passwordService.AddPasswordAsync(request);
+            return CustomResponse(teste);
+        }
 
-        //[HttpDelete]
-        //public async Task<IActionResult> RemovePassword(Guid id)
-        //{
-        //    if (!ModelState.IsValid) return CustomResponse(ModelState);
-        //    return CustomResponse(await _passwordService.RemovePasswordAsync(id));
-        //}
+        [HttpDelete]
+        public async Task<IActionResult> RemovePassword(Guid id)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            return CustomResponse(await _passwordService.RemovePasswordAsync(id));
+        }
     }
 }

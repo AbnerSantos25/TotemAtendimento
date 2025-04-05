@@ -40,7 +40,7 @@ namespace Totem.Common.API.Data
         }
 
 
-        protected sealed override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
