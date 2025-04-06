@@ -2,6 +2,7 @@
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
+using Totem.Domain.Models.PasswordModels;
 using Totem.Domain.Models.ServiceLocationModels;
 
 namespace Totem.Application.Services.ServiceLocationServices
@@ -75,12 +76,16 @@ namespace Totem.Application.Services.ServiceLocationServices
 			return Successful();
 		}
 
-		public async Task<ServiceLocationView> GetByIdAsync(Guid Id)
-		{
-			return await _queries.GetByIdAsync(Id);
-		}
+        public async Task<(Result result, ServiceLocationView data)> GetByIdAsync(Guid id)
+        {
+            var password = await _repository.GetByIdAsync(id);
+            if (password == null)
+                return Unsuccessful<ServiceLocationView>(Errors.PasswordNotFound.ToString());
 
-		public async Task<(Result result, List<ServiceLocationSummary> data)> GetListAsync()
+            return Successful(password);
+        }
+
+        public async Task<(Result result, List<ServiceLocationSummary> data)> GetListAsync()
 		{
 			var list = await _queries.GetAllAsync();
 			return Successful(list);

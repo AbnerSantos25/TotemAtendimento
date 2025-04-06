@@ -31,7 +31,7 @@ namespace Totem.API.Controllers
 				return CustomResponse(ModelState);
 
 			var response = await _serviceLocationService.GetListAsync();
-			return CustomResponse(response.data);
+			return CustomResponse(response);
 		}
 
 		[HttpPost]
