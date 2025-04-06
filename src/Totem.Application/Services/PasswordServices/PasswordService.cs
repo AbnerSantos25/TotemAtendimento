@@ -18,7 +18,7 @@ namespace Totem.Application.Services.PasswordServices
         public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
         {
             var password = new Password(request.QueueId,request.Preferential);
-            if (!ExecuteValidation(new PasswordValidations(), password)) 
+            if (!ExecuteValidation(new PasswordValidations(), password))
                 return Unsuccessful<Guid>();
 
             password.IncrementCode(await _passwordRepository.GetNextPasswordCodeAsync());
