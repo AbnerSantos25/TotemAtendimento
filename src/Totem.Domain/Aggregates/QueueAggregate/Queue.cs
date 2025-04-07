@@ -1,9 +1,10 @@
 ﻿using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Common.Domain.Entity;
+using Totem.Common.Domain;
 
 namespace Totem.Domain.Aggregates.QueueAggregate
 {
-	public class Queue : Entity
+	public class Queue : Entity, IAggregateRoot
 	{
 		public string Name { get; private set; }
 		public bool Active { get; private set; }
@@ -12,7 +13,6 @@ namespace Totem.Domain.Aggregates.QueueAggregate
 
 		public Queue(string name)
 		{
-			//TODO: Validations
 			Name = name;
 			Active = true;
 		}
@@ -21,5 +21,9 @@ namespace Totem.Domain.Aggregates.QueueAggregate
 
 		public void ChangeStatus(bool ativo) => Active = ativo;
 
+		public void Update(string name)
+		{
+			Name = name;
+		}
 	}
 }
