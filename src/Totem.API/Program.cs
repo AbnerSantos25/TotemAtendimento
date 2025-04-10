@@ -1,8 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Totem.API.Configuration;
 using Totem.Application.Configurations;
 using Totem.Common.API.Configurations;
-using Totem.Common.Domain.Notification;
 using Totem.Infra.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +13,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Adiciona os DbContexts ao container de injeção de dependências;
-builder.Services.AddTotemDBContext();
+builder.Services.AddDbContexts();
+builder.Services.AddIdentityConfiguration(builder.Configuration);
 
 // Adiciona as dependências do projeto e a coneção com o banco;
 builder.Services.RegisterDependency(builder.Configuration);
@@ -22,21 +22,6 @@ builder.Services.TotemRegisterDependency();
 
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<TotemDbContext>();
-    bool canConnect = await context.Database.CanConnectAsync();
-
-    if (canConnect)
-    {
-        Debug.WriteLine("Conexão com o banco realizada com sucesso!");
-    }
-    else
-    {
-        Debug.WriteLine("Falha ao conectar com o banco.");
-    }
-}
 
 if (app.Environment.IsDevelopment())
 {
@@ -47,6 +32,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
