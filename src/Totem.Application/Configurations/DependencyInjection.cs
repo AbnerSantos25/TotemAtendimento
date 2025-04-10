@@ -9,6 +9,10 @@ using Totem.Infra.Data.Queries.PasswordQueries;
 using Totem.Infra.Data.Queries.ServiceLocationQueries;
 using Totem.Infra.Data.Repositories.PasswordRepository;
 using Totem.Infra.Data.Repositories.ServiceLocationRepository;
+using Totem.Domain.Aggregates.QueueAggregate;
+using Totem.Infra.Data.Repositories.QueueRepository;
+using Totem.Application.Services.QueueServices;
+using Totem.Infra.Data.Queries.QueueQueries;
 
 namespace Totem.Application.Configurations
 {
@@ -16,15 +20,20 @@ namespace Totem.Application.Configurations
 	{
 		public static void TotemRegisterDependency(this IServiceCollection services)
 		{
-      services.AddScoped<IPasswordService, PasswordService>();
-      services.AddScoped<PasswordValidations>();
-      services.AddScoped<IPasswordRepository, PasswordRepository>();
-      services.AddScoped<IPasswordQueries, PasswordQueries>();
-      services.AddScoped<INotificador, Notificador>();
+			services.AddScoped<INotificador, Notificador>();
+			services.AddScoped<PasswordValidations>();
+
+			services.AddScoped<IPasswordRepository, PasswordRepository>();
+			services.AddScoped<IPasswordQueries, PasswordQueries>();
+			services.AddScoped<IPasswordService, PasswordService>();
 
 			services.AddScoped<IServiceLocationRepository, ServiceLocationRepository>();
 			services.AddScoped<IServiceLocationQueries, ServiceLocationQueries>();
 			services.AddScoped<IServiceLocationService, ServiceLocationService>();
+
+			services.AddScoped<IQueueRepository, QueueRespository>();
+			services.AddScoped<IQueueQueries, QueueQueries>();
+			services.AddScoped<IQueueServices, QueueService>();
 
 		}
 	}

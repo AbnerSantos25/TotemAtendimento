@@ -2,7 +2,6 @@
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
-using Totem.Domain.Models.PasswordModels;
 using Totem.Domain.Models.ServiceLocationModels;
 
 namespace Totem.Application.Services.ServiceLocationServices
@@ -26,6 +25,9 @@ namespace Totem.Application.Services.ServiceLocationServices
 			if (!validator.Validate(ServiceLocation).IsValid)
 				return Unsuccessful();
 
+			if (!await _repository.ExistsAsync(request.Name, request.Number))
+				return Unsuccessful(Errors.RegisterAlreadyExists);
+
 			_repository.Add(ServiceLocation);
 
 			if (!await _repository.UnitOfWork.CommitAsync())
@@ -37,8 +39,9 @@ namespace Totem.Application.Services.ServiceLocationServices
 		public async Task<Result> DeleteAsync(Guid Id)
 		{
 			var serviceLocation = _repository.GetByIdAsync(Id);
+
 			if (serviceLocation == null)
-				return Unsuccessful();
+				return Unsuccessful(Errors.NotFound);
 
 			_repository.Delete(serviceLocation.Result);
 
@@ -76,16 +79,16 @@ namespace Totem.Application.Services.ServiceLocationServices
 			return Successful();
 		}
 
-        public async Task<(Result result, ServiceLocationView data)> GetByIdAsync(Guid id)
-        {
-            var password = await _repository.GetByIdAsync(id);
-            if (password == null)
-                return Unsuccessful<ServiceLocationView>(Errors.PasswordNotFound.ToString());
+		public async Task<(Result result, ServiceLocationView data)> GetByIdAsync(Guid id)
+		{
+			var serviceLocation = await _repository.GetByIdAsync(id);
+			if (serviceLocation == null)
+				return Unsuccessful<ServiceLocationView>(Errors.NotFound);
 
-            return Successful(password);
-        }
+			return Successful(serviceLocation);
+		}
 
-        public async Task<(Result result, List<ServiceLocationSummary> data)> GetListAsync()
+		public async Task<(Result result, List<ServiceLocationSummary> data)> GetListAsync()
 		{
 			var list = await _queries.GetAllAsync();
 			return Successful(list);
