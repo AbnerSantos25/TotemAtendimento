@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +13,7 @@ using Totem.Domain.Models.IdentityModels;
 
 namespace Totem.API.Controllers
 {
+    [Route("api/totem/[controller]")]
     public class IdentityController : MainController
     {
         private readonly IIdentityService _identityService;
@@ -20,7 +22,8 @@ namespace Totem.API.Controllers
             _identityService = identityService;
         }
 
-        [HttpPost("nova-conta")]
+        [AllowAnonymous]
+        [HttpPost("new-account")]
         public async Task<ActionResult> Registrar(RegisterUserView registerUser)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -28,7 +31,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.RegisterUserAsync(registerUser));
         }
 
-        [HttpPost("entrar")]
+        [AllowAnonymous]
+        [HttpPost("login")]
         public async Task<ActionResult> Login(LoginUserView loginUser)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);

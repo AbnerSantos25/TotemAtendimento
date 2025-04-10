@@ -31,9 +31,9 @@ namespace Totem.Application.Services.IdentityServices
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
             {
-                Issuer = _jwtSettings.Emissor,
-                Audience = _jwtSettings.ValidoEm,
-                Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpiracaoHoras),
+                Issuer = _jwtSettings.Issuer,
+                Audience = _jwtSettings.ValidAt,
+                Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             });
 
