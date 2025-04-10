@@ -22,11 +22,9 @@ namespace Totem.Application.Services.QueueServices
 			if (request == null)
 				return Unsuccessful();
 
-			var queueValidator = new QueueValidator();
-
 			var queue = new Queue(request.Name);
 
-			if (!queueValidator.Validate(queue).IsValid)
+			if (!ExecuteValidation(new QueueValidator(), queue))
 				return Unsuccessful();
 
 			if (await _repository.ExistsAsync(request.Name))
@@ -96,15 +94,14 @@ namespace Totem.Application.Services.QueueServices
 			return Successful(await _queries.GetListAsync());
 		}
 
-		public async Task<Result> DisableQueue(Guid id)
+		public async Task<Result> ToggleStatusQueue(Guid id)
 		{
 			var queue = await _repository.GetByIdAsync(id);
 
 			if (queue == null)
 				return Unsuccessful(Errors.NotFound);
 
-
-			queue.ChangeStatus(false);
+			queue.ToggleStatus();
 
 			_repository.Update(queue);
 
@@ -112,23 +109,8 @@ namespace Totem.Application.Services.QueueServices
 				return Unsuccessful(Errors.ErrorSavingDatabase);
 
 			return Successful();
-		}
 
-		public async Task<Result> EnableQueue(Guid id)
-		{
-			var queue = await _repository.GetByIdAsync(id);
 
-			if (queue == null)
-				return Unsuccessful(Errors.NotFound);
-
-			queue.ChangeStatus(true);
-
-			_repository.Update(queue);
-
-			if (!await _repository.UnitOfWork.CommitAsync())
-				return Unsuccessful(Errors.ErrorSavingDatabase);
-
-			return Successful();
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace Totem.Domain.Aggregates.QueueAggregate
 
 		public void AddPassword(Password password) => _passwords.Add(password);
 
-		public void ChangeStatus(bool ativo) => Active = ativo;
+		public void ToggleStatus() => Active = !Active;
 
 		public void Update(string name)
 		{
