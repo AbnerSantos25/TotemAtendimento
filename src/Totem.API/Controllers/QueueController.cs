@@ -60,22 +60,13 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _queueServices.DeleteAsync(id));
 		}
 
-		[HttpPatch("{id}/disable")]
-		public async Task<IActionResult> DisableQueue([FromRoute] Guid id)
+		[HttpPatch("{id}/toggleQueueStatus")]
+		public async Task<IActionResult> ToggleStatusQueue([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 				return CustomResponse(ModelState);
 
-			return CustomResponse(await _queueServices.DisableQueue(id));
-		}
-
-		[HttpPatch("{id}/enable")]
-		public async Task<IActionResult> EnableQueue([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-				return CustomResponse(ModelState);
-
-			return CustomResponse(await _queueServices.EnableQueue(id));
+			return CustomResponse(await _queueServices.ToggleStatusQueue(id));
 
 		}
 	}
