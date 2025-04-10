@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Services;
 
 namespace Totem.Common.API.Controller
 {
+    [Authorize]
     [ApiController]
     public abstract class MainController : ControllerBase
     {
@@ -32,6 +34,8 @@ namespace Totem.Common.API.Controller
                 errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
             });
         }
+
+
 
         protected ActionResult CustomResponse(Result result)
         {

@@ -13,6 +13,7 @@ using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Infra.Data.Repositories.QueueRepository;
 using Totem.Application.Services.QueueServices;
 using Totem.Infra.Data.Queries.QueueQueries;
+using Totem.Application.Services.IdentityServices;
 
 namespace Totem.Application.Configurations
 {
@@ -36,5 +37,8 @@ namespace Totem.Application.Configurations
 			services.AddScoped<IQueueServices, QueueService>();
 
 		}
+			services.AddScoped<IIdentityService, IdentityService>();
+
+        }
 	}
 }
