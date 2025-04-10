@@ -42,8 +42,8 @@ namespace Totem.API.Configuration
                     IssuerSigningKey = new SymmetricSecurityKey(Key),
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = jwtSettings.ValidoEm,
-                    ValidIssuer = jwtSettings.Emissor
+                    ValidAudience = jwtSettings.ValidAt,
+                    ValidIssuer = jwtSettings.Issuer
                 };
             });
 
