@@ -30,7 +30,7 @@ namespace Totem.Infra.Data.Queries.ServiceLocationQueries
 
 		public async Task<ServiceLocationView> GetByIdAsync(Guid Id)
 		{
-			return _context.ServiceLocations.SingleOrDefault(x => x.Id == Id);
+			return await _context.ServiceLocations.SingleOrDefaultAsync(x => x.Id == Id);
 		}
 	}
 }
