@@ -9,7 +9,7 @@ namespace Totem.Infra.Data
 {
     public class TotemDbContext : SharedDbContext
     {
-        public TotemDbContext(DbContextOptions options) : base(options)
+        public TotemDbContext(DbContextOptions<TotemDbContext> options) : base(options)
         {
 
         }
