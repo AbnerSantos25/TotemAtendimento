@@ -9,6 +9,7 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 	{
 		public int Code { get; private set; }
 		public DateTime CreatedAt { get; private set; }
+		//TODO: Abner - esse Served vai ser setado apenas quando o usuario for atendido e esta indo embora.
 		public bool Served { get; private set; }
 		public bool Preferential { get; private set; }
         public Guid? ServiceLocationId { get; private set; }
