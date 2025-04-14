@@ -25,7 +25,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 			if (!validator.Validate(ServiceLocation).IsValid)
 				return Unsuccessful();
 
-			if (!await _repository.ExistsAsync(request.Name, request.Number))
+			if (await _repository.ExistsAsync(request.Name, request.Number))
 				return Unsuccessful(Errors.RegisterAlreadyExists);
 
 			_repository.Add(ServiceLocation);
