@@ -9,6 +9,7 @@ namespace Totem.Domain.Aggregates.ServiceLocationAggregate
 	{
 		public string Name { get; private set; }
 		public int? Number { get; private set; }
+		//TODO: Abner - Fila devera ter ServiceLocation?
 
 		public ServiceLocation(string name, int? number = null)
 		{

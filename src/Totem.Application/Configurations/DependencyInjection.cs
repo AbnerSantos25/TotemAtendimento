@@ -36,9 +36,7 @@ namespace Totem.Application.Configurations
 			services.AddScoped<IQueueQueries, QueueQueries>();
 			services.AddScoped<IQueueServices, QueueService>();
 
-		}
 			services.AddScoped<IIdentityService, IdentityService>();
-
-        }
+		}
 	}
 }
