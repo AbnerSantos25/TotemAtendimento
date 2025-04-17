@@ -1,3 +1,13 @@
+## 📄 Licença
+
+Este projeto está licenciado sob a **Creative Commons - Atribuição-NãoComercial-SemDerivações 4.0 Internacional (CC BY-NC-ND 4.0)**.
+
+🔗 [Leia os termos da licença aqui](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+
+© 2025 Abner da Silva Santos, Gabriel Lucas Oliveira Fernandes
+
+
+
 # TotemAtendimento
 
 Aqui iremos desenvolver um Totem para gerenciamento de filas de espera, onde buscamos sempre melhorar a qualidade e rapidez dos atendimentos de forma organizada e fluida. A principio esse sistema não será comercializado, estamos implementando a fins de estudos.
