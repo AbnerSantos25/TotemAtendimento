@@ -2,6 +2,7 @@
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
+using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Models.PasswordModels;
 
 namespace Totem.Application.Services.PasswordServices
@@ -10,10 +11,12 @@ namespace Totem.Application.Services.PasswordServices
 	{
         private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordQueries _passwordQueries;
-        public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation) : base(notificador)
+        private readonly IServiceLocationRepository _serviceLocationRepository;
+        public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation, IServiceLocationRepository serviceLocationRepository) : base(notificador)
         {
             _passwordRepository = passwordRepository;
             _passwordQueries = passwordQueries;
+            _serviceLocationRepository = serviceLocationRepository;
         }
         public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
         {
@@ -28,6 +31,28 @@ namespace Totem.Application.Services.PasswordServices
                 return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
 
             return Successful(password.Id);
+        }
+
+        public async Task<(Result result, PasswordView data)> AssignNextPasswordAsync(Guid queueId, Guid serviceLocationId)
+        {
+            var serviceLocation = await _serviceLocationRepository.GetByIdAsync(serviceLocationId);
+            if (serviceLocation == null)
+                return Unsuccessful<PasswordView>(Errors.NotFound); //Especificar no erro quem nao foi encontrado?
+
+            var nextPassword = await _passwordRepository
+                .GetNextUnassignedPasswordFromQueueAsync(queueId);
+
+            if (nextPassword == null)
+                return Successful<PasswordView>(null); // Não há senhas disponíveis na fila
+
+            nextPassword.AssignToServiceLocation(serviceLocation.Id);
+
+            _passwordRepository.Update(nextPassword);
+
+            if (!await _passwordRepository.UnitOfWork.CommitAsync())
+                return Unsuccessful<PasswordView>(Errors.ErrorSavingDatabase.ToString());
+
+            return Successful(nextPassword);
         }
 
         public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)

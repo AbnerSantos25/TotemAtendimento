@@ -9,6 +9,6 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
         void Update(Password password);
         void Delete(Password password);
         Task<int> GetNextPasswordCodeAsync();
-
+        Task<Password> GetNextUnassignedPasswordFromQueueAsync(Guid queueId);
     }
 }
