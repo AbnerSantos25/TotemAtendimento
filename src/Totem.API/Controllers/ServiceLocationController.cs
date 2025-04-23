@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Totem.Application.Events;
+using Totem.Application.Services.PasswordServices;
 using Totem.Application.Services.ServiceLocationServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -10,12 +13,28 @@ namespace Totem.API.Controllers
 	public class ServiceLocationController : MainController
 	{
 		private readonly IServiceLocationService _serviceLocationService;
-		public ServiceLocationController(INotificador notificador, IServiceLocationService serviceLocationService) : base(notificador)
-		{
-			_serviceLocationService = serviceLocationService;
-		}
+        private readonly IPasswordService _passwordService;
+		private readonly IMediator _mediator;
+        public ServiceLocationController(INotificador notificador, IServiceLocationService serviceLocationService, IPasswordService passwordService, IMediator mediator) : base(notificador)
+        {
+            _serviceLocationService = serviceLocationService;
+            _passwordService = passwordService;
+            _mediator = mediator;
+        }
 
-		[HttpGet("{id}")]
+
+        [HttpPost("{serviceLocationId}/{queueId}/ready")]
+        public async Task<IActionResult> NotifyAvailable(Guid serviceLocationId, Guid queueId)
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
+            
+			var password = await _passwordService.AssignNextPasswordAsync(queueId, serviceLocationId);
+            
+			return CustomResponse(password);
+        }
+
+        [HttpGet("{id}")]
 		public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)

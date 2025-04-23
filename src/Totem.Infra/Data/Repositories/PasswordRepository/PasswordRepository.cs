@@ -43,10 +43,16 @@ namespace Totem.Infra.Data.Repositories.PasswordRepository
 
         public async Task<int> GetNextPasswordCodeAsync()
         {
-            // Busca o valor máximo atual da coluna Code na tabela Passwords.
-            // Se não houver nenhum registro, retorna 0 e, em seguida, incrementa para 1.
             int currentMax = await _context.Passwords.MaxAsync(p => (int?)p.Code) ?? 0;
             return currentMax + 1;
+        }
+
+        public async Task<Password> GetNextUnassignedPasswordFromQueueAsync(Guid queueId)
+        {
+            return await _context.Passwords
+                .Where(p => p.QueueId == queueId && p.ServiceLocationId == null)
+                .OrderBy(p => p.CreatedAt)
+                .FirstOrDefaultAsync();
         }
     }
 }
