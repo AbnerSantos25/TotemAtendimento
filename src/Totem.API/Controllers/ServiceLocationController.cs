@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Totem.Application.Events;
 using Totem.Application.Services.PasswordServices;
 using Totem.Application.Services.ServiceLocationServices;
 using Totem.Common.API.Controller;
@@ -12,10 +14,12 @@ namespace Totem.API.Controllers
 	{
 		private readonly IServiceLocationService _serviceLocationService;
         private readonly IPasswordService _passwordService;
-        public ServiceLocationController(INotificador notificador, IServiceLocationService serviceLocationService, IPasswordService passwordService) : base(notificador)
+		private readonly IMediator _mediator;
+        public ServiceLocationController(INotificador notificador, IServiceLocationService serviceLocationService, IPasswordService passwordService, IMediator mediator) : base(notificador)
         {
             _serviceLocationService = serviceLocationService;
             _passwordService = passwordService;
+            _mediator = mediator;
         }
 
 
@@ -24,9 +28,9 @@ namespace Totem.API.Controllers
         {
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
-
-            var password = await _passwordService.AssignNextPasswordAsync(queueId, serviceLocationId);
-
+            
+			var password = await _passwordService.AssignNextPasswordAsync(queueId, serviceLocationId);
+            
 			return CustomResponse(password);
         }
 
