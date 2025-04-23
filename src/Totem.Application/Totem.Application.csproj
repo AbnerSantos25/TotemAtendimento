@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Shared\Totem.Common.API\Totem.Common.API.csproj" />
     <ProjectReference Include="..\Shared\Totem.Common\Totem.Common.csproj" />
     <ProjectReference Include="..\Totem.Domain\Totem.Domain.csproj" />

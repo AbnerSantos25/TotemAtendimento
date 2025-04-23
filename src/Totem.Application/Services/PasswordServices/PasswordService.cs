@@ -1,4 +1,6 @@
-﻿using Totem.Common.Domain.Notification;
+﻿using MediatR;
+using Totem.Application.Events;
+using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
@@ -12,11 +14,13 @@ namespace Totem.Application.Services.PasswordServices
         private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordQueries _passwordQueries;
         private readonly IServiceLocationRepository _serviceLocationRepository;
-        public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation, IServiceLocationRepository serviceLocationRepository) : base(notificador)
+        private readonly IMediator _mediator;
+        public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation, IServiceLocationRepository serviceLocationRepository, IMediator mediator) : base(notificador)
         {
             _passwordRepository = passwordRepository;
             _passwordQueries = passwordQueries;
             _serviceLocationRepository = serviceLocationRepository;
+            _mediator = mediator;
         }
         public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
         {
@@ -25,10 +29,20 @@ namespace Totem.Application.Services.PasswordServices
                 return Unsuccessful<Guid>();
 
             password.IncrementCode(await _passwordRepository.GetNextPasswordCodeAsync());
+            
             _passwordRepository.Add(password);
 
-            if (!await _passwordRepository.UnitOfWork.CommitAsync())
-                return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
+            try
+            {
+                if (!await _passwordRepository.UnitOfWork.CommitAsync())
+                    return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            await _mediator.Publish(new PasswordCreatedEvent(password.Id, password.QueueId));
 
             return Successful(password.Id);
         }
@@ -51,6 +65,8 @@ namespace Totem.Application.Services.PasswordServices
 
             if (!await _passwordRepository.UnitOfWork.CommitAsync())
                 return Unsuccessful<PasswordView>(Errors.ErrorSavingDatabase.ToString());
+            
+            await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
 
             return Successful(nextPassword);
         }
