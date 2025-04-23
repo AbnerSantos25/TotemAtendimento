@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Totem.Infra.Data;
 
@@ -11,9 +12,11 @@ using Totem.Infra.Data;
 namespace Totem.Infra.Migrations
 {
     [DbContext(typeof(TotemDbContext))]
-    partial class TotemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250423000256_AddCreatAt")]
+    partial class AddCreatAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -9,8 +9,8 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 	{
 		public int Code { get; private set; }
 		public DateTime CreatedAt { get; private set; }
-		//TODO: Abner - esse Served vai ser setado apenas quando o usuario for atendido e esta indo embora.
-		public bool Served { get; private set; }
+        public DateTime? AssignedAt { get; private set; }
+        public bool Served { get; private set; }
 		public bool Preferential { get; private set; }
         public Guid? ServiceLocationId { get; private set; }
 		public ServiceLocation? ServiceLocation { get; private set; }
@@ -36,7 +36,13 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 			ServiceLocationId = serviceLocationId;
 		}
 
-		public void MarkAsServed() => Served = true;
+        public void AssignToServiceLocation(Guid serviceLocationId)
+        {
+            this.ServiceLocationId = serviceLocationId;
+            this.AssignedAt = DateTime.UtcNow;
+        }
+
+        public void MarkAsServed() => Served = true;
 
 		public void IncrementCode(int code) { 
 			Code = code;
