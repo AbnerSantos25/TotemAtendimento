@@ -1,11 +1,14 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.SignalR;
-using Totem.Application.Events;
 using Totem.Application.Events.Notifications;
+using Totem.Common.Domain.Notification;
+using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
+using Totem.Domain.Aggregates.PasswordAggregate.Events;
+using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 
-namespace Totem.Application.Services.PasswordServices
+namespace Totem.Application.Services.PasswordMatchingServices
 {
+    //TODO: (Abner) O chatgpt sugeriu trocar o nome para PasswordMatchingServices, oque acha gabriel?
     public class PasswordMatchingService : INotificationHandler<PasswordCreatedEvent>, INotificationHandler<ServiceLocationReadyEvent>, IPasswordMatchingService
     {
         private readonly Dictionary<Guid, Queue<Guid>> _waitingPasswords = new();

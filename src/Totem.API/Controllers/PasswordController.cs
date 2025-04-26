@@ -41,6 +41,14 @@ namespace Totem.API.Controllers
             return CustomResponse(teste);
         }
 
+        [HttpPost("transfer")]
+        public async Task<IActionResult> Transfer([FromBody] TransferPasswordRequest request)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            return CustomResponse(await _passwordService.TransferPasswordAsync(request.PasswordId,request.NewQueueId));
+        }
+
         [HttpDelete]
         public async Task<IActionResult> RemovePassword(Guid id)
         {

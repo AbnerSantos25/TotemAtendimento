@@ -9,12 +9,12 @@ using Totem.Domain.Models.ServiceLocationModels;
 
 namespace Totem.API.Controllers
 {
-	[Route("api/totem/[controller]")]
-	public class ServiceLocationController : MainController
-	{
-		private readonly IServiceLocationService _serviceLocationService;
+    [Route("api/totem/[controller]")]
+    public class ServiceLocationController : MainController
+    {
+        private readonly IServiceLocationService _serviceLocationService;
         private readonly IPasswordService _passwordService;
-		private readonly IMediator _mediator;
+        private readonly IMediator _mediator;
         public ServiceLocationController(INotificador notificador, IServiceLocationService serviceLocationService, IPasswordService passwordService, IMediator mediator) : base(notificador)
         {
             _serviceLocationService = serviceLocationService;
@@ -28,10 +28,10 @@ namespace Totem.API.Controllers
         {
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
-            
-			var password = await _serviceLocationService.AssignNextPasswordAsync(queueId, serviceLocationId);
-            
-			return CustomResponse(password);
+
+            var password = await _passwordService.AssignNextPasswordAsync(queueId, serviceLocationId);
+
+            return CustomResponse(password);
         }
 
         [HttpGet("{id}")]
