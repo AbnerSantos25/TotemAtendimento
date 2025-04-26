@@ -29,7 +29,7 @@ namespace Totem.API.Controllers
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
             
-			var password = await _passwordService.AssignNextPasswordAsync(queueId, serviceLocationId);
+			var password = await _serviceLocationService.AssignNextPasswordAsync(queueId, serviceLocationId);
             
 			return CustomResponse(password);
         }
