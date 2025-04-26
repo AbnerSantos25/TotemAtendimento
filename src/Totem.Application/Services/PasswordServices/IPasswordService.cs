@@ -11,5 +11,7 @@ namespace Totem.Application.Services.PasswordServices
 		Task<Result> RemovePasswordAsync(Guid id);
 
 		Task<(Result result, PasswordView data)> AssignNextPasswordAsync(Guid queueId, Guid serviceLocationId);
+		Task<Result> TransferPasswordAsync(Guid passwordId, Guid serviceLocationId);
+
     }
 }

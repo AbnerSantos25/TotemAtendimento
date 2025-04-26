@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Totem.Application.Events
+namespace Totem.Domain.Aggregates.PasswordAggregate.Events
 {
     public record PasswordCreatedEvent(Guid PasswordId, Guid QueueId) : INotification;
 }

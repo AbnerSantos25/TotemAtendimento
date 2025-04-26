@@ -14,6 +14,7 @@ using Totem.Infra.Data.Repositories.QueueRepository;
 using Totem.Application.Services.QueueServices;
 using Totem.Infra.Data.Queries.QueueQueries;
 using Totem.Application.Services.IdentityServices;
+using Totem.Application.Services.PasswordMatchingServices;
 
 namespace Totem.Application.Configurations
 {

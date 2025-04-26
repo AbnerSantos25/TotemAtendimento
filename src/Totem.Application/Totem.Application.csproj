@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Totem.Infra\Totem.Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\ServiceLocationServices\Events\" />
+  </ItemGroup>
+
 </Project>

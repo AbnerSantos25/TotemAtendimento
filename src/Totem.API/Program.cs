@@ -5,6 +5,7 @@ using Totem.Application.Configurations;
 using Totem.Application.Events;
 using Totem.Application.Events.Notifications;
 using Totem.Common.API.Configurations;
+using Totem.Domain.Aggregates.PasswordAggregate.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddIdentityConfiguration(builder.Configuration);
 // Adiciona as dependências do projeto e a coneção com o banco;
 builder.Services.RegisterDependency(builder.Configuration);
 builder.Services.TotemRegisterDependency();
+builder.Services.AddSwaggerConfiguration(builder.Configuration);
 
 //Events
 // registra todos os INotificationHandler<> a partir do assembly onde estão seus eventos
@@ -51,8 +53,11 @@ if (app.Environment.IsDevelopment())
     app.MapHub<PasswordHub>("/passwordHub");
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI();
-
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
+        // c.RoutePrefix = string.Empty; // para servir em ‘/’
+    });
 }
 
 app.UseCors();

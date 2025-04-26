@@ -1,7 +1,10 @@
-﻿using Totem.Common.Domain.Notification;
+﻿using MediatR;
+using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
+using Totem.Domain.Aggregates.PasswordAggregate.Events;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
+using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 using Totem.Domain.Models.ServiceLocationModels;
 
 namespace Totem.Application.Services.ServiceLocationServices
@@ -10,14 +13,16 @@ namespace Totem.Application.Services.ServiceLocationServices
 	{
 		private readonly IServiceLocationRepository _repository;
 		private readonly IServiceLocationQueries _queries;
+		private readonly IMediator _mediator;
 
-		public ServiceLocationService(INotificador notificador, IServiceLocationRepository repository, IServiceLocationQueries queries) : base(notificador)
-		{
-			_repository = repository;
-			_queries = queries;
-		}
+        public ServiceLocationService(INotificador notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, IMediator mediator) : base(notificador)
+        {
+            _repository = repository;
+            _queries = queries;
+            _mediator = mediator;
+        }
 
-		public async Task<Result> AddAsync(ServiceLocationRequest request)
+        public async Task<Result> AddAsync(ServiceLocationRequest request)
 		{
 			ServiceLocationValidator validator = new();
 			var ServiceLocation = new ServiceLocation(request.Name, request.Number);
@@ -94,5 +99,16 @@ namespace Totem.Application.Services.ServiceLocationServices
 			return Successful(list);
 		}
 
-	}
+        public async Task<Result> AssignNextPasswordAsync(Guid queueId, Guid serviceLocationId)
+        {
+            var serviceLocation = await _repository.GetByIdAsync(serviceLocationId);
+            if (serviceLocation == null)
+                return Unsuccessful(Errors.NotFound);
+
+            await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
+
+            //TODO: (Abner) seria um problema aqui não retornar nada?
+            return Successful();
+        }
+    }
 }

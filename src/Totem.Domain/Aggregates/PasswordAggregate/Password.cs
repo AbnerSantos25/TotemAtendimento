@@ -31,14 +31,18 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 			Served = false;
 		}
 
-		public void AssignServiceLocation(Guid serviceLocationId)
-		{
-			ServiceLocationId = serviceLocationId;
-		}
-
         public void AssignToServiceLocation(Guid serviceLocationId)
         {
+            //VALIDAR SE PODE SER TRASNFERIDO - SE SENHA JA 'SERVED' NÃO PODE SER TRANSFERIDO.
             this.ServiceLocationId = serviceLocationId;
+            this.AssignedAt = DateTime.UtcNow;
+        }
+
+        public void AssignToQueue(Guid queueId)
+        {
+            //VALIDAR SE PODE SER TRASNFERIDO - SE SENHA JA 'SERVED' NÃO PODE SER TRANSFERIDO.
+            this.QueueId = queueId;
+            this.ServiceLocationId = null;
             this.AssignedAt = DateTime.UtcNow;
         }
 

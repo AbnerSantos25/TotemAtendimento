@@ -10,5 +10,8 @@ namespace Totem.Application.Services.ServiceLocationServices
 		Task<Result> AddAsync(ServiceLocationRequest request);
 		Task<Result> UpdateAsync(Guid Id,ServiceLocationRequest request);
 		Task<Result> DeleteAsync(Guid Id);
-	}
+
+		Task<Result> AssignNextPasswordAsync(Guid queueId, Guid serviceLocationId);
+
+    }
 }

@@ -1,10 +1,12 @@
 ﻿using MediatR;
-using Totem.Application.Events;
+using Totem.Application.Events.Notifications;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
+using Totem.Domain.Aggregates.PasswordAggregate.Events;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
+using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 using Totem.Domain.Models.PasswordModels;
 
 namespace Totem.Application.Services.PasswordServices
@@ -13,14 +15,15 @@ namespace Totem.Application.Services.PasswordServices
 	{
         private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordQueries _passwordQueries;
-        private readonly IServiceLocationRepository _serviceLocationRepository;
         private readonly IMediator _mediator;
-        public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation, IServiceLocationRepository serviceLocationRepository, IMediator mediator) : base(notificador)
+        private readonly IRealTimeNotifier _notifier;
+
+        public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation, IServiceLocationRepository serviceLocationRepository, IMediator mediator, IRealTimeNotifier notifier) : base(notificador)
         {
             _passwordRepository = passwordRepository;
             _passwordQueries = passwordQueries;
-            _serviceLocationRepository = serviceLocationRepository;
             _mediator = mediator;
+            _notifier = notifier;
         }
         public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
         {
@@ -47,19 +50,34 @@ namespace Totem.Application.Services.PasswordServices
             return Successful(password.Id);
         }
 
+
+        public async Task<Result> TransferPasswordAsync(Guid passwordId, Guid queueId)
+        {
+            var password = await _passwordRepository.GetByIdAsync(passwordId);
+            if (password == null)
+                return Unsuccessful(Errors.PasswordNotFound.ToString());
+
+            password.AssignToQueue(queueId);
+
+            _passwordRepository.Update(password);
+
+            if (!await _passwordRepository.UnitOfWork.CommitAsync())
+                return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
+
+            await _mediator.Publish(new PasswordCreatedEvent(passwordId, queueId));
+
+            return Successful();
+        }
+
         public async Task<(Result result, PasswordView data)> AssignNextPasswordAsync(Guid queueId, Guid serviceLocationId)
         {
-            var serviceLocation = await _serviceLocationRepository.GetByIdAsync(serviceLocationId);
-            if (serviceLocation == null)
-                return Unsuccessful<PasswordView>(Errors.NotFound); //Especificar no erro quem nao foi encontrado?
-
             var nextPassword = await _passwordRepository
                 .GetNextUnassignedPasswordFromQueueAsync(queueId);
 
             if (nextPassword == null)
                 return Successful<PasswordView>(null); // Não há senhas disponíveis na fila
 
-            nextPassword.AssignToServiceLocation(serviceLocation.Id);
+            nextPassword.AssignToServiceLocation(serviceLocationId);
 
             _passwordRepository.Update(nextPassword);
 
@@ -100,5 +118,7 @@ namespace Totem.Application.Services.PasswordServices
 
             return Successful();
         }
+
+
     }
 }
