@@ -13,7 +13,7 @@ namespace Totem.API.Controllers
         private readonly IIdentityService _identityService;
         public IdentityController(INotificador notificador, IIdentityService identityService) : base(notificador)
         {
-            _identityService = identityService;
+            _identityService =  identityService;
         }
 
         [AllowAnonymous]
