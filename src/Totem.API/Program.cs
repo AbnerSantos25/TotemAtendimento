@@ -23,13 +23,7 @@ builder.Services.AddIdentityConfiguration(builder.Configuration);
 builder.Services.RegisterDependency(builder.Configuration);
 builder.Services.TotemRegisterDependency();
 builder.Services.AddSwaggerConfiguration(builder.Configuration);
-
-//Events
-// registra todos os INotificationHandler<> a partir do assembly onde estão seus eventos
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssemblyContaining<PasswordCreatedEvent>());
-
-builder.Services.AddScoped<IRealTimeNotifier, SignalRNotifier>();
+builder.Services.AddEventsConfiguration();
 
 // SignalR (opcional)
 builder.Services.AddSignalR();
