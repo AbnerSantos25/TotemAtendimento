@@ -79,6 +79,24 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uma senha sem local de atendimento, não pode ser atendida..
+        /// </summary>
+        public static string PasswordCannotBeServed {
+            get {
+                return ResourceManager.GetString("PasswordCannotBeServed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uma senha atendida não pode ser transferida..
+        /// </summary>
+        public static string PasswordCannotBeTransfered {
+            get {
+                return ResourceManager.GetString("PasswordCannotBeTransfered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Senha não encontrada..
         /// </summary>
         public static string PasswordNotFound {

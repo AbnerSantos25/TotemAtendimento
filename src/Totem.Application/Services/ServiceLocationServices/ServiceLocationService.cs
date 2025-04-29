@@ -105,7 +105,15 @@ namespace Totem.Application.Services.ServiceLocationServices
             if (serviceLocation == null)
                 return Unsuccessful(Errors.NotFound);
 
-            await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
+            try
+            {
+                await _mediator.Publish(new AssignNextPasswordRequestedEvent(queueId, serviceLocationId));
+            }
+            catch (Exception ex)
+            {
+                Unsuccessful("Não foi possivel enviar o evento para regatar nova senha");
+            }
+
 
             //TODO: (Abner) seria um problema aqui não retornar nada?
             return Successful();

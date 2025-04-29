@@ -38,8 +38,8 @@ namespace Totem.Application.Services.IdentityServices
 			});
 
 			var encodedToken = tokenHandler.WriteToken(token);
-							
-			return Successful(encodedToken);
+
+			return Successful<string>(encodedToken);
 		}
 
 		public async Task<(Result Result, string Data)> LoginUserAsync(LoginUserView loginUserView)
