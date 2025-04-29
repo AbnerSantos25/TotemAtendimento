@@ -35,20 +35,24 @@ namespace Totem.Application.Services.PasswordServices
 
 			_passwordRepository.Add(password);
 
-            if (!await _passwordRepository.UnitOfWork.CommitAsync())
-                return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
-         
-            await _mediator.Publish(new PasswordCreatedEvent(password.Id, password.QueueId));
+			if (!await _passwordRepository.UnitOfWork.CommitAsync())
+				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
+
+			await _mediator.Publish(new PasswordCreatedEvent(password.Id, password.QueueId));
 
 			return Successful(password.Id);
 		}
-
 
 		public async Task<Result> TransferPasswordAsync(Guid passwordId, Guid queueId)
 		{
 			var password = await _passwordRepository.GetByIdAsync(passwordId);
 			if (password == null)
 				return Unsuccessful(Errors.PasswordNotFound.ToString());
+
+			if (!password.CanBeReassigned)
+			{
+				return Unsuccessful(Errors.PasswordCannotBeTransfered);
+			}
 
 			password.AssignToQueue(queueId);
 
@@ -68,7 +72,12 @@ namespace Totem.Application.Services.PasswordServices
 				.GetNextUnassignedPasswordFromQueueAsync(queueId);
 
 			if (nextPassword == null)
-				return Successful<PasswordView>(null); // Não há senhas disponíveis na fila
+				return Successful<PasswordView>(Messages.NoPasswordsInQueue);
+
+			if (!nextPassword.CanBeReassigned)
+			{
+				return Unsuccessful<PasswordView>(Errors.PasswordCannotBeTransfered);
+			}
 
 			nextPassword.AssignToServiceLocation(serviceLocationId);
 
@@ -79,7 +88,8 @@ namespace Totem.Application.Services.PasswordServices
 
 			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
 
-			return Successful(nextPassword);
+
+			return Successful<PasswordView>(Messages.AwaitingNextPassword);
 		}
 
 		public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)

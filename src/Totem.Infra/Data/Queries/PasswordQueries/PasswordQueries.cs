@@ -4,21 +4,21 @@ using Totem.Domain.Models.PasswordModels;
 
 namespace Totem.Infra.Data.Queries.PasswordQueries
 {
-    public class PasswordQueries : IPasswordQueries
-    {
-        private readonly TotemDbContext _context;
+	public class PasswordQueries : IPasswordQueries
+	{
+		private readonly TotemDbContext _context;
 
-        public PasswordQueries(TotemDbContext context)
-        {
-            _context = context;
-        }
+		public PasswordQueries(TotemDbContext context)
+		{
+			_context = context;
+		}
 
-        public async Task<List<PasswordView>> GetListPasswordsAsync()
-        {
-            var list = await _context.Passwords.ToListAsync();
+		public async Task<List<PasswordView>> GetListPasswordsAsync()
+		{
+			var list = await _context.Passwords.Include(x => x.ServiceLocation).ToListAsync();
 
-            return list.Select(password => (PasswordView)password).ToList();
-        }
+			return list.Select(password => (PasswordView)password).ToList();
+		}
 
-    }
+	}
 }
