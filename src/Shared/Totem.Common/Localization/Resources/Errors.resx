@@ -123,6 +123,12 @@
   <data name="NotFound" xml:space="preserve">
     <value>Não encontrado.</value>
   </data>
+  <data name="PasswordCannotBeServed" xml:space="preserve">
+    <value>Uma senha sem local de atendimento, não pode ser atendida.</value>
+  </data>
+  <data name="PasswordCannotBeTransfered" xml:space="preserve">
+    <value>Uma senha atendida não pode ser transferida.</value>
+  </data>
   <data name="PasswordNotFound" xml:space="preserve">
     <value>Senha não encontrada.</value>
   </data>
