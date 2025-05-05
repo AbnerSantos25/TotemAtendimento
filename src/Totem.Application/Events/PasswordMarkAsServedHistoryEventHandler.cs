@@ -4,7 +4,7 @@ using Totem.Domain.Aggregates.PasswordAggregate.Events;
 
 namespace Totem.Application.Events
 {
-	public class PasswordMarkedAsServedEventHandler : INotificationHandler<PasswordMarkedAsServedEvent>
+	public class PasswordMarkedAsServedEventHandler : INotificationHandler<PasswordMarkedAsServedHistoryEvent>
 	{
 		private readonly IPasswordHistoryRepository _historyRepository;
 
@@ -13,7 +13,7 @@ namespace Totem.Application.Events
 			_historyRepository = historyRepository;
 		}
 
-		public async Task Handle(PasswordMarkedAsServedEvent notification, CancellationToken cancellationToken)
+		public async Task Handle(PasswordMarkedAsServedHistoryEvent notification, CancellationToken cancellationToken)
 		{
 			try
 			{
@@ -30,14 +30,11 @@ namespace Totem.Application.Events
 				var success = await _historyRepository.UnitOfWork.CommitAsync();
 				if (!success)
 				{
-					// LOG: CommitAsync falhou
-					// Pode usar ILogger aqui
 					Console.WriteLine($"[ERROR] Falha ao salvar histórico da senha {notification.PasswordId}");
 				}
 			}
 			catch (Exception ex)
 			{
-				// LOG de erro com stack trace
 				Console.WriteLine($"[EXCEPTION] Erro ao persistir histórico: {ex.Message}");
 			}
 
