@@ -2,7 +2,7 @@
 
 public class Result
 {
-    public bool Success => !_notificacoes.Any();
+    public bool Success => !_notificacoes.Any(); //trocar para o ingles
 
     private readonly List<Notificacao> _notificacoes = new();
 

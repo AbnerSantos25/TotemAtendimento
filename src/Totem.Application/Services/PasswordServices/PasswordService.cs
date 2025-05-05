@@ -72,7 +72,7 @@ namespace Totem.Application.Services.PasswordServices
 				.GetNextUnassignedPasswordFromQueueAsync(queueId);
 
 			if (nextPassword == null)
-				return Successful<PasswordView>(Messages.NoPasswordsInQueue);
+				return Successful<PasswordView>();
 
 			if (!nextPassword.CanBeReassigned)
 			{
@@ -88,8 +88,7 @@ namespace Totem.Application.Services.PasswordServices
 
 			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
 
-
-			return Successful<PasswordView>(Messages.AwaitingNextPassword);
+			return Successful<PasswordView>(nextPassword);
 		}
 
 		public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)
