@@ -74,6 +74,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (result.Succeeded)
 			{
 				await _signInManager.SignInAsync(user, false);
+				return Successful()
 				return await GenerateJwtTokenAsync();
 			}
 
