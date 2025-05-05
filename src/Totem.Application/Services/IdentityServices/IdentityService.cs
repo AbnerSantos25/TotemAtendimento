@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Extension;
+using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Models.IdentityModels;
 
@@ -52,13 +53,10 @@ namespace Totem.Application.Services.IdentityServices
 
 			if (result.IsLockedOut)
 			{
-				//TODO: (Abner) Globalizar mensagem
-				Notificar("Usuário temporariamente bloqueado por tentativas inválidas.");
-				return Unsuccessful<string>();
+				return Unsuccessful<string>(Errors.UserTemporarilyBlocked);
 			}
 
-			Notificar("Usuário ou senha incorretos.");
-			return Unsuccessful<string>();
+			return Unsuccessful<string>(Errors.IncorrectUsernamePassword);
 		}
 
 		public async Task<(Result Result, string Data)> RegisterUserAsync(RegisterUserView registerUserView)
@@ -84,6 +82,30 @@ namespace Totem.Application.Services.IdentityServices
 			}
 
 			return Unsuccessful<string>();
+		}
+
+		public async Task<Result> InactiveUser(Guid userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				return Unsuccessful(Errors.UserNotFound);
+
+			await _userManager.SetTwoFactorEnabledAsync(user, true);
+			await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+
+			return Successful();
+		}
+
+		public async Task<Result> ActiveUser(Guid userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				return Unsuccessful(Errors.UserNotFound);
+
+			await _userManager.SetTwoFactorEnabledAsync(user, true);
+			await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+
+			return Successful();
 		}
 	}
 }

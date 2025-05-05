@@ -40,12 +40,6 @@ namespace Totem.Common.Services
 		{
 			return new Result();
 		}
-		protected Result Successful(string message)
-		{
-			var result = new Result();
-			return result;
-		}
-
 
 		protected (Result result, T data) Successful<T>()
 		{
@@ -55,10 +49,6 @@ namespace Totem.Common.Services
 		protected (Result result, T data) Successful<T>(T data)
 		{
 			return (new Result(), data);
-		}
-		protected (Result result, T data) Successful<T>(string message)
-		{
-			return (Successful(message), default(T));
 		}
 
 		protected Result Unsuccessful(List<Notificacao> notificacaos)
@@ -78,7 +68,6 @@ namespace Totem.Common.Services
 		{
 			return (Unsuccessful(message), default(T));
 		}
-
 		protected Result Unsuccessful(string message)
 		{
 			var result = new Result();
@@ -86,8 +75,6 @@ namespace Totem.Common.Services
 			//Notificar(message);
 			return result;
 		}
-
-
 		protected Result Unsuccessful()
 		{
 			var result = new Result();
