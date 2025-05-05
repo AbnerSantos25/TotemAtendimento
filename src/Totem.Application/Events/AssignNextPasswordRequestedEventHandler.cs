@@ -5,7 +5,7 @@ using Totem.Domain.Aggregates.QueueAggregate;
 
 namespace Totem.Application.Events
 {
-    public class AssignNextPasswordRequestedEventHandler : INotificationHandler<AssignNextPasswordRequestedEvent>
+    public class AssignNextPasswordRequestedEventHandler : INotificationHandler<AssignNextPasswordRequestedHistoryEvent>
     {
         private readonly IPasswordService _passwordService;
 
@@ -14,7 +14,7 @@ namespace Totem.Application.Events
             _passwordService = passwordService;
         }
 
-        public async Task Handle(AssignNextPasswordRequestedEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(AssignNextPasswordRequestedHistoryEvent notification, CancellationToken cancellationToken)
         {
             //TODO: (Abner) aqui talves poderia ter as validações se a queueId e serviceLocationId são válidos,
             //mas pra isso eu teria que injetar o repository de ServiceLocation e Queue

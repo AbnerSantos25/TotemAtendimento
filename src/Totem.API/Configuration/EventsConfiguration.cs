@@ -15,7 +15,7 @@ namespace Totem.API.Configuration
 			{
 				cfg.RegisterServicesFromAssemblyContaining<PasswordCreatedEvent>();
 				cfg.RegisterServicesFromAssemblyContaining<AssignNextPasswordRequestedEventHandler>();
-				cfg.RegisterServicesFromAssemblyContaining<PasswordMarkedAsServedEvent>();
+				cfg.RegisterServicesFromAssemblyContaining<PasswordMarkedAsServedHistoryEvent>();
 			});
 		}
 

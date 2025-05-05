@@ -93,7 +93,7 @@ namespace Totem.Application.Services.PasswordServices
 				return Unsuccessful<PasswordView>(Errors.ErrorSavingDatabase.ToString());
 
 			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
-			await _mediator.Publish(new PasswordServiceLocationChangedEvent(nextPassword.Id, oldServiceLocation, serviceLocationId));
+			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId));
 
 			return Successful<PasswordView>(Messages.AwaitingNextPassword);
 		}
@@ -144,7 +144,7 @@ namespace Totem.Application.Services.PasswordServices
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
 
-			await _mediator.Publish(new PasswordMarkedAsServedEvent(passwordId));
+			await _mediator.Publish(new PasswordMarkedAsServedHistoryEvent(passwordId));
 			return Successful();
 		}
 	}

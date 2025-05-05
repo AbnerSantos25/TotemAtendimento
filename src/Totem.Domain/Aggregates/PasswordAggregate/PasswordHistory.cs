@@ -5,7 +5,6 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 {
 	public class PasswordHistory : Entity, IAggregateRoot
 	{
-		public Guid Id { get; private set; }
 		public Guid PasswordId { get; private set; }
 		public DateTime Timestamp { get; private set; }
 		public string Action { get; private set; }
@@ -17,7 +16,6 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 
 		public PasswordHistory(Guid passwordId, string action, string description, string? oldValue = null, string? newValue = null)
 		{
-			Id = Guid.NewGuid();
 			PasswordId = passwordId;
 			Timestamp = DateTime.UtcNow;
 			Action = action;
