@@ -5,18 +5,19 @@ using Totem.Domain.Aggregates.PasswordAggregate.Events;
 
 namespace Totem.API.Configuration
 {
-    public static class EventsConfiguration
-    {
-        public static void AddEventsConfiguration(this IServiceCollection services)
-        {
-            services.AddScoped<IRealTimeNotifier, SignalRNotifier>();
+	public static class EventsConfiguration
+	{
+		public static void AddEventsConfiguration(this IServiceCollection services)
+		{
+			services.AddScoped<IRealTimeNotifier, SignalRNotifier>();
 
-            services.AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssemblyContaining<PasswordCreatedEvent>();
-                cfg.RegisterServicesFromAssemblyContaining<AssignNextPasswordRequestedEventHandler>();
-            });
-        }
+			services.AddMediatR(cfg =>
+			{
+				cfg.RegisterServicesFromAssemblyContaining<PasswordCreatedEvent>();
+				cfg.RegisterServicesFromAssemblyContaining<AssignNextPasswordRequestedEventHandler>();
+				cfg.RegisterServicesFromAssemblyContaining<PasswordMarkedAsServedHistoryEvent>();
+			});
+		}
 
-    }
+	}
 }
