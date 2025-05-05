@@ -32,5 +32,21 @@ namespace Totem.API.Controllers
             if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _identityService.LoginUserAsync(loginUser));
         }
-    }
+
+        [HttpPatch("user/{id}/inactivate")]
+        public async Task<ActionResult> InactivateUser([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            return CustomResponse(await _identityService.InactiveUser(id));
+		}
+		[HttpPatch("user/{id}/active")]
+		public async Task<ActionResult> ActiveUser([FromRoute] Guid id)
+		{
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+			return CustomResponse(await _identityService.ActiveUser(id));
+		}
+
+	}
 }

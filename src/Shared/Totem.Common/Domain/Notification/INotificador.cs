@@ -4,7 +4,7 @@
     {      
         public void AddNotifications(List<Notificacao> notificacoes);
         public void Handle(Notificacao notificacao);
-        public List<Notificacao> ObterNotificacoes();
+		public List<Notificacao> ObterNotificacoes();
         public bool TemNotificacao();
     }
 
