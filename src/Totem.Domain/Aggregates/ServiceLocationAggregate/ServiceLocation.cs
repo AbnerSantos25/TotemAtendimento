@@ -16,6 +16,7 @@ namespace Totem.Domain.Aggregates.ServiceLocationAggregate
 
         public ServiceLocation(string name, int? number = null)
 		{
+			//TODO: Abner Validar com Validator
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentException($"{Messages.UnableCreateServiceLocation}", nameof(name));
 
