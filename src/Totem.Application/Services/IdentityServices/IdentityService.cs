@@ -72,7 +72,6 @@ namespace Totem.Application.Services.IdentityServices
 			if (result.Succeeded)
 			{
 				await _signInManager.SignInAsync(user, false);
-				return Successful()
 				return await GenerateJwtTokenAsync();
 			}
 
@@ -107,5 +106,26 @@ namespace Totem.Application.Services.IdentityServices
 
 			return Successful();
 		}
+
+		public async Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request)
+		{
+			var user = await _userManager.FindByIdAsync(id.ToString());
+
+			if (user == null)
+				return Unsuccessful(Errors.UserNotFound);
+
+			var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+
+			if (!result.Succeeded)
+			{
+				foreach (var error in result.Errors)
+					Notificar(error.Description);
+
+				return Unsuccessful();
+			}
+
+			return Successful();
+		}
+
 	}
 }
