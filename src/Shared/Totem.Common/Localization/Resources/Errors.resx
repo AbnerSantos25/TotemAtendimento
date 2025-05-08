@@ -123,6 +123,9 @@
   <data name="IncorrectUsernamePassword" xml:space="preserve">
     <value>Usuário ou senha incorretos.</value>
   </data>
+  <data name="NameFieldRequired" xml:space="preserve">
+    <value>O campo Nome é obrigatório</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>Registro não encontrado.</value>
   </data>

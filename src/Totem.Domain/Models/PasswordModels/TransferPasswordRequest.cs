@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Totem.Common.Validation;
 
 namespace Totem.Domain.Models.PasswordModels
 {
     public class TransferPasswordRequest
     {
-        [Required]
-        public Guid PasswordId { get; set; }
-        [Required]
-        public Guid NewQueueId { get; set; }
+		[RequiredValidation]
+		public Guid PasswordId { get; set; }
+		[RequiredValidation]
+		public Guid NewQueueId { get; set; }
     }
 
 }

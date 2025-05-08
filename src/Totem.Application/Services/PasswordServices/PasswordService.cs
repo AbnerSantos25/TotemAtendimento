@@ -31,6 +31,8 @@ namespace Totem.Application.Services.PasswordServices
 			if (!ExecuteValidation(new PasswordValidations(), password))
 				return Unsuccessful<Guid>();
 
+			//TODO: Abner - Adicionar validação se existe a queue, porem tem que ser com o integration
+			
 			password.IncrementCode(await _passwordRepository.GetNextPasswordCodeAsync());
 
 			_passwordRepository.Add(password);
