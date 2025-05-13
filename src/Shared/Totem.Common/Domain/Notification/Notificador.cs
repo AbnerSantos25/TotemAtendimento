@@ -12,8 +12,6 @@ namespace Totem.Common.Domain.Notification
         public Notificador()
         {
             _notificacoes = new List<Notificacao>();
-            Console.WriteLine($"-------------------------->>>>>>>>>>>> hashcode ",_notificacoes.GetHashCode());
-
         }
 
         public void AddNotifications(List<Notificacao> notificacoes)
