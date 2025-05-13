@@ -71,10 +71,38 @@ namespace Totem.Common.Localization.Resources {
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Aguardando próxima senha da fila..
+        ///   Looks up a localized string similar to Chamando próxima senha da fila..
         /// </summary>
-        public static string AwaitingNextPassword {
+        public static string CallingNextPassword {
             get {
-                return ResourceManager.GetString("AwaitingNextPassword", resourceCulture);
+                return ResourceManager.GetString("CallingNextPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Senha {0} transferida da fila “{1}” para “{2}”.
+        /// </summary>
+        public static string HistoryQueueChanged {
+            get {
+                return ResourceManager.GetString("HistoryQueueChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Senha {0} marcada como atendida.
+        /// </summary>
+        public static string HistoryServed {
+            get {
+                return ResourceManager.GetString("HistoryServed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Senha {0} transferida de “{1}” para “{2}”.
+        /// </summary>
+        public static string HistoryTransferred {
+            get {
+                return ResourceManager.GetString("HistoryTransferred", resourceCulture);
             }
         }
         

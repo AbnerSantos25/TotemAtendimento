@@ -6,28 +6,28 @@ using Totem.Domain.Models.ServiceLocationModels;
 
 namespace Totem.API.Controllers
 {
-    [Route("api/totem/[controller]")]
-    public class ServiceLocationController : MainController
-    {
-        private readonly IServiceLocationService _serviceLocationService;
-        public ServiceLocationController(INotificador notificador, IServiceLocationService serviceLocationService) : base(notificador)
-        {
-            _serviceLocationService = serviceLocationService;
-        }
+	[Route("api/totem/[controller]")]
+	public class ServiceLocationController : MainController
+	{
+		private readonly IServiceLocationService _serviceLocationService;
+		public ServiceLocationController(INotificador notificador, IServiceLocationService serviceLocationService) : base(notificador)
+		{
+			_serviceLocationService = serviceLocationService;
+		}
 
 
-        [HttpPost("{serviceLocationId}/{queueId}/ready")]
-        public async Task<IActionResult> NotifyAvailable(Guid serviceLocationId, Guid queueId)
-        {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
+		[HttpPost("{serviceLocationId}/ready")]
+		public async Task<IActionResult> NotifyAvailable([FromRoute] Guid serviceLocationId, [FromBody] ServiceLocationReadyRequest request)
+		{
+			if (!ModelState.IsValid)
+				return CustomResponse(ModelState);
 
-            var password = await _serviceLocationService.AssignNextPasswordAsync(queueId, serviceLocationId);
+			var password = await _serviceLocationService.AssignNextPasswordAsync(serviceLocationId, request);
 
-            return CustomResponse(password);
-        }
+			return CustomResponse(password);
+		}
 
-        [HttpGet("{id}")]
+		[HttpGet("{id}")]
 		public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)

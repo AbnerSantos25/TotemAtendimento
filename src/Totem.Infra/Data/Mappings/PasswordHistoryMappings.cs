@@ -12,7 +12,7 @@ namespace Totem.Infra.Data.Mappings
 			builder.Property(x => x.Id).IsRequired();
 			builder.Property(x => x.PasswordId).IsRequired();
 			builder.Property(x => x.Timestamp).IsRequired();
-			builder.Property(x => x.Action).IsRequired().HasMaxLength(50);
+			builder.Property(x => x.PasswordHistoryEventType).HasConversion<string>().HasMaxLength(100).IsRequired();
 			builder.Property(x => x.Description).IsRequired().HasMaxLength(200);
 			builder.HasIndex(x => x.PasswordId);
 

@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Totem.Common.Enumerations;
+using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.PasswordAggregate.Events;
 
@@ -17,11 +19,17 @@ namespace Totem.Application.Events
 		{
 			try
 			{
+				var description = string.Format(
+				  Messages.HistoryQueueChanged,
+				  notification.Code,
+				  notification.OldDescription,
+				  notification.NewDescription
+				);
 
 				var history = new PasswordHistory(
 					notification.PasswordId,
-					"QueueChanged",
-					"Senha transferida para outra fila.",
+					PasswordHistoryEventType.QueueChanged,
+					description,
 					notification.OldQueueId.ToString(),
 					notification.NewQueueId.ToString()
 				);
