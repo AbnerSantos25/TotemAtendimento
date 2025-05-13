@@ -2,6 +2,6 @@
 
 namespace Totem.Domain.Aggregates.PasswordAggregate.Events
 {
-	public record PasswordMarkedAsServedHistoryEvent(Guid PasswordId) : INotification;
+	public record PasswordMarkedAsServedHistoryEvent(Guid PasswordId, int Code) : INotification;
 
 }

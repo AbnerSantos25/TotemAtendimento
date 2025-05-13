@@ -14,7 +14,7 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		public bool Served { get; private set; }
 		public bool Preferential { get; private set; }
 		public Guid? ServiceLocationId { get; private set; }
-		public ServiceLocation? ServiceLocation { get; private set; }
+		public ServiceLocation ServiceLocation { get; private set; }
 		[NotMapped]
 		public bool CanBeReassigned => !Served;
 

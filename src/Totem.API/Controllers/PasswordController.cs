@@ -43,12 +43,12 @@ namespace Totem.API.Controllers
 			return CustomResponse(teste);
 		}
 
-		[HttpPost("transfer")]
-		public async Task<IActionResult> Transfer([FromBody] TransferPasswordRequest request)
+		[HttpPost("{passwordId}/transfer")]
+		public async Task<IActionResult> Transfer([FromRoute] Guid passwordId, [FromBody] PasswordTransferRequest request)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-			return CustomResponse(await _passwordService.TransferPasswordAsync(request.PasswordId, request.NewQueueId));
+			return CustomResponse(await _passwordService.TransferPasswordAsync(passwordId, request));
 		}
 
 		[HttpPatch("{passwordId}/MarkAsServed")]

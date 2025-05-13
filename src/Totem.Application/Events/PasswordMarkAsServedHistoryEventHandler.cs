@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Totem.Common.Enumerations;
+using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.PasswordAggregate.Events;
 
@@ -15,14 +17,20 @@ namespace Totem.Application.Events
 
 		public async Task Handle(PasswordMarkedAsServedHistoryEvent notification, CancellationToken cancellationToken)
 		{
+
+			var description = string.Format(
+			  Messages.HistoryServed,
+			  notification.Code
+			);
+
 			try
 			{
 				var history = new PasswordHistory(
 				notification.PasswordId,
-				"Served",
-				"Senha marcada como atendida.",
-				"Waiting",
-				"Served"
+				PasswordHistoryEventType.Served,
+				description,
+				null,
+				PasswordHistoryEventType.Served.ToString()
 			);
 
 				await _historyRepository.AddAsync(history);
