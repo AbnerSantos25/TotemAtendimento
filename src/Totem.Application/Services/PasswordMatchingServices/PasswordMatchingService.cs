@@ -9,7 +9,7 @@ using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 
 namespace Totem.Application.Services.PasswordMatchingServices
 {
-	
+
 	public class PasswordMatchingService : BaseService, INotificationHandler<PasswordCreatedEvent>, INotificationHandler<ServiceLocationReadyEvent>, IPasswordMatchingService
 	{
 		private readonly Dictionary<Guid, Queue<Guid>> _waitingPasswords = new();
@@ -45,6 +45,7 @@ namespace Totem.Application.Services.PasswordMatchingServices
 				// busca a entidade Password, atribui o ServiceLocation e salva
 				var pwd = await _repo.GetByIdAsync(pwdId);
 				var oldServiceLocationId = pwd.ServiceLocationId;
+				var oldServiceLocationName = pwd.ServiceLocation.Name;
 
 				if (!pwd.CanBeReassigned)
 				{
@@ -55,7 +56,7 @@ namespace Totem.Application.Services.PasswordMatchingServices
 				_repo.Update(pwd);
 				await _repo.UnitOfWork.CommitAsync();
 
-				await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(pwd.Id, oldServiceLocationId, slId));
+				await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(pwd.Id, oldServiceLocationId, slId, oldServiceLocationName, pwd.ServiceLocation.Name, pwd.Code));
 				await _notifier.NotifyPasswordAssignedAsync(slId, pwd.Code, pwd.CreatedAt);
 
 				// TODO<Gabriel> Esse evento acima (SignalR) será recebido apenas pela aplicação Blazor?

@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Totem.Common.Enumerations;
+using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.PasswordAggregate;
 
 public class PasswordServiceLocationChangedHistoryEventHandler : INotificationHandler<PasswordServiceLocationChangedHistoryEvent>
@@ -14,11 +16,17 @@ public class PasswordServiceLocationChangedHistoryEventHandler : INotificationHa
 	{
 		try
 		{
+			var description = string.Format(
+			  Messages.HistoryTransferred,
+			  notification.Code,
+			  notification.OldDescription,
+			  notification.NewDescription
+			);
 
 			var history = new PasswordHistory(
 				notification.PasswordId,
-				"Transferred",
-				"Senha transferida para outro local de atendimento.",
+				PasswordHistoryEventType.Transferred,
+				description,
 				notification.OldServiceLocationId?.ToString(),
 				notification.NewServiceLocationId?.ToString()
 			);
