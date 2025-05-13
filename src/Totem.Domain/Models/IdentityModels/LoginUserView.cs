@@ -4,8 +4,6 @@ namespace Totem.Domain.Models.IdentityModels
 {
     public class LoginUserView
     {
-        public string Name { get; set; }
-
         [Required]
         [EmailAddress(ErrorMessage = "O {0} está em um formato inválido.")]
         public string Email { get; set; }

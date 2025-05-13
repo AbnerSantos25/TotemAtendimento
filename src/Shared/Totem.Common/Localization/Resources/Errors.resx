@@ -120,8 +120,11 @@
   <data name="ErrorSavingDatabase" xml:space="preserve">
     <value>Erro ao Salvar no Banco de dados. </value>
   </data>
+  <data name="IncorrectUsernamePassword" xml:space="preserve">
+    <value>Usuário ou senha incorretos.</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
-    <value>Não encontrado.</value>
+    <value>Registro não encontrado.</value>
   </data>
   <data name="PasswordCannotBeServed" xml:space="preserve">
     <value>Uma senha sem local de atendimento, não pode ser atendida.</value>
@@ -137,5 +140,11 @@
   </data>
   <data name="RegisterAlreadyExists" xml:space="preserve">
     <value>Registro  já existe.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Usuario não encontrado</value>
+  </data>
+  <data name="UserTemporarilyBlocked" xml:space="preserve">
+    <value>Usuário temporariamente bloqueado por tentativas inválidas.</value>
   </data>
 </root>
