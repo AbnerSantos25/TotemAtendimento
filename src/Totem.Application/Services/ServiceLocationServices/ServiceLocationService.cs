@@ -107,7 +107,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 
             try
             {
-                await _mediator.Publish(new AssignNextPasswordRequestedEvent(queueId, serviceLocationId));
+                await _mediator.Publish(new AssignNextPasswordRequestedHistoryEvent(queueId, serviceLocationId));
             }
             catch (Exception ex)
             {

@@ -54,7 +54,11 @@ namespace Totem.Application.Services.PasswordServices
 				return Unsuccessful(Errors.PasswordCannotBeTransfered);
 			}
 
+			var oldQueueId = password.QueueId;
+
 			password.AssignToQueue(queueId);
+
+			await _mediator.Publish(new PasswordQueueChangedEvent(password.Id, oldQueueId, queueId));
 
 			_passwordRepository.Update(password);
 
@@ -74,6 +78,8 @@ namespace Totem.Application.Services.PasswordServices
 			if (nextPassword == null)
 				return Successful<PasswordView>();
 
+			var oldServiceLocation = nextPassword.ServiceLocationId; // para o histórico.
+
 			if (!nextPassword.CanBeReassigned)
 			{
 				return Unsuccessful<PasswordView>(Errors.PasswordCannotBeTransfered);
@@ -88,7 +94,9 @@ namespace Totem.Application.Services.PasswordServices
 
 			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
 
-			return Successful<PasswordView>(nextPassword);
+			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId));
+
+			return Successful<PasswordView>(Messages.AwaitingNextPassword);
 		}
 
 		public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)
@@ -137,6 +145,7 @@ namespace Totem.Application.Services.PasswordServices
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
 
+			await _mediator.Publish(new PasswordMarkedAsServedHistoryEvent(passwordId));
 			return Successful();
 		}
 	}
