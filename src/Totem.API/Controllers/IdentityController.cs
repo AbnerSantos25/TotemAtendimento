@@ -40,6 +40,13 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _identityService.UpdatePasswordAsync(id, request));
 		}
 
+        [HttpPut("user/{id}/update-email")]
+		public async Task<ActionResult> UpdateEmail([FromRoute] Guid id, [FromBody] UpdateEmailRequest request)
+        {
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
+			return CustomResponse(await _identityService.UpdateEmailAsync(id, request));
+		}
+
 
 		[HttpPatch("user/{id}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid id)
