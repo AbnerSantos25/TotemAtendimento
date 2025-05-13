@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AwaitingNextPassword" xml:space="preserve">
-    <value>Aguardando próxima senha da fila.</value>
+  <data name="CallingNextPassword" xml:space="preserve">
+    <value>Chamando próxima senha da fila.</value>
+  </data>
+  <data name="HistoryQueueChanged" xml:space="preserve">
+    <value>Senha {0} transferida da fila “{1}” para “{2}”</value>
+  </data>
+  <data name="HistoryServed" xml:space="preserve">
+    <value>Senha {0} marcada como atendida</value>
+  </data>
+  <data name="HistoryTransferred" xml:space="preserve">
+    <value>Senha {0} transferida de “{1}” para “{2}”</value>
   </data>
   <data name="NoPasswordsInQueue" xml:space="preserve">
     <value>Não há senhas na fila. Aguarde.</value>
