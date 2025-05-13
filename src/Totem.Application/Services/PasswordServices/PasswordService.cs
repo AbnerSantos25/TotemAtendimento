@@ -76,7 +76,7 @@ namespace Totem.Application.Services.PasswordServices
 				.GetNextUnassignedPasswordFromQueueAsync(queueId);
 
 			if (nextPassword == null)
-				return Successful<PasswordView>(Messages.NoPasswordsInQueue);
+				return Successful<PasswordView>();
 
 			var oldServiceLocation = nextPassword.ServiceLocationId; // para o histórico.
 
@@ -93,6 +93,7 @@ namespace Totem.Application.Services.PasswordServices
 				return Unsuccessful<PasswordView>(Errors.ErrorSavingDatabase.ToString());
 
 			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
+
 			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId));
 
 			return Successful<PasswordView>(Messages.AwaitingNextPassword);
