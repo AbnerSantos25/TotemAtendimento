@@ -127,5 +127,14 @@ namespace Totem.Application.Services.IdentityServices
 			return Successful();
 		}
 
+		public async Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request)
+		{
+			//Terminar este metodo
+			var user = await _userManager.FindByIdAsync(id.ToString());
+			if (user == null)
+				return Unsuccessful(Errors.UserNotFound);
+
+			var result = await _userManager.SetEmailAsync(user, request.NewEmail);
+		}
 	}
 }
