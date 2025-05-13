@@ -76,7 +76,7 @@ namespace Totem.Application.Services.PasswordServices
 			var nextPassword = await _passwordRepository.GetNextUnassignedPasswordFromQueueAsync(queueId);
 
 			if (nextPassword == null)
-				return Successful<PasswordView>(Messages.NoPasswordsInQueue);
+				return Successful<PasswordView>();
 
 			var oldServiceLocation = nextPassword.ServiceLocationId;
 			var oldDescription = nextPassword.ServiceLocation?.Name ?? Labels.NoServiceLocation;

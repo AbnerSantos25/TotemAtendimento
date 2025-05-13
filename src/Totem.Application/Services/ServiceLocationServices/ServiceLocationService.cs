@@ -114,9 +114,8 @@ namespace Totem.Application.Services.ServiceLocationServices
 				Unsuccessful("Não foi possivel enviar o evento para regatar nova senha");
 			}
 
-
-			//TODO: (Abner) seria um problema aqui não retornar nada?
-			return Successful();
-		}
-	}
+            //TODO: (Abner) seria um problema aqui não retornar nada?
+            return Successful();
+        }
+    }
 }

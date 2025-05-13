@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Totem.Common.Domain.Notification
 {
-	public class Notificacao
+	public class Notificacao //trocar par ao ingles
 	{
 		public Notificacao(string mensagem)
 		{
