@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Totem.Common.Localization.Resources;
 using Totem.Common.Validation;
 
 namespace Totem.Domain.Models.PasswordModels
 {
-    public class PasswordRequest
+    public class TransferPasswordRequest
     {
 		[RequiredValidation]
-		public Guid QueueId { get; set; }
-        public bool Preferential { get; set; }
-
+		public Guid PasswordId { get; set; }
+		[RequiredValidation]
+		public Guid NewQueueId { get; set; }
     }
+
 }
