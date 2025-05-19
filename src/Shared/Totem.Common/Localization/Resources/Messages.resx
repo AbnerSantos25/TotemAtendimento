@@ -120,8 +120,9 @@
   <data name="ActiveUser" xml:space="preserve">
     <value>Usuário ativo.</value>
   </data>
-  <data name="AwaitingNextPassword" xml:space="preserve">
+	<data name="AwaitingNextPassword" xml:space="preserve">
     <value>Aguardando próxima senha da fila.</value>
+    </data>
   <data name="CallingNextPassword" xml:space="preserve">
     <value>Chamando próxima senha da fila.</value>
   </data>
@@ -133,6 +134,9 @@
   </data>
   <data name="HistoryTransferred" xml:space="preserve">
     <value>Senha {0} transferida de “{1}” para “{2}”</value>
+  </data>
+  <data name="InactivatedUser" xml:space="preserve">
+    <value>Usuario inativado.</value>
   </data>
   <data name="InactivatedUser" xml:space="preserve">
     <value>Usuario inativado.</value>

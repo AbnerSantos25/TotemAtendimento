@@ -31,6 +31,8 @@ namespace Totem.Application.Services.PasswordServices
 			if (!ExecuteValidation(new PasswordValidations(), password))
 				return Unsuccessful<Guid>();
 
+			//TODO: Abner - Adicionar validação se existe a queue, porem tem que ser com o integration
+			
 			password.IncrementCode(await _passwordRepository.GetNextPasswordCodeAsync());
 
 			_passwordRepository.Add(password);
@@ -96,7 +98,8 @@ namespace Totem.Application.Services.PasswordServices
 			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
 			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId, oldDescription, newServiceLocationName, nextPassword.Code));
 
-			return Successful<PasswordView>(Messages.CallingNextPassword);
+			//return Successful<PasswordView>(Messages.CallingNextPassword);
+			return Successful<PasswordView>();
 		}
 
 		public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)

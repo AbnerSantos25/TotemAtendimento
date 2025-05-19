@@ -11,7 +11,12 @@ public class Result
         _notificacoes.Add(notificacao);
     }
 
-    public List<Notificacao> ObterNotificacoes()
+	public void Handle(List<Notificacao> notificacoes)
+	{
+		_notificacoes.AddRange(notificacoes);
+	}
+
+	public List<Notificacao> ObterNotificacoes()
     {
         return _notificacoes;
     }

@@ -17,7 +17,7 @@ namespace Totem.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("new-account")]
+        [HttpPost("register")]
         public async Task<ActionResult> Registrar(RegisterUserView registerUser)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -33,7 +33,22 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.LoginUserAsync(loginUser));
         }
 
-        [HttpPatch("user/{id}/inactivate")]
+        [HttpPut("user/{id}/update-password")]
+        public async Task<ActionResult> UpdatePassword([FromRoute] Guid id, [FromBody] UpdatePasswordRequest request)
+		{
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
+			return CustomResponse(await _identityService.UpdatePasswordAsync(id, request));
+		}
+
+        [HttpPut("user/{id}/update-email")]
+		public async Task<ActionResult> UpdateEmail([FromRoute] Guid id, [FromBody] UpdateEmailRequest request)
+        {
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
+			return CustomResponse(await _identityService.UpdateEmailAsync(id, request));
+		}
+
+
+		[HttpPatch("user/{id}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -47,6 +62,5 @@ namespace Totem.API.Controllers
 
 			return CustomResponse(await _identityService.ActiveUser(id));
 		}
-
 	}
 }

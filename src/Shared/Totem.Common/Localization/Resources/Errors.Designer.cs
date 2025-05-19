@@ -79,6 +79,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O campo Nome é obrigatório.
+        /// </summary>
+        public static string NameFieldRequired {
+            get {
+                return ResourceManager.GetString("NameFieldRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Registro não encontrado..
         /// </summary>
         public static string NotFound {
