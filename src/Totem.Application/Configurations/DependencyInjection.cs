@@ -40,6 +40,9 @@ namespace Totem.Application.Configurations
 			services.AddScoped<IIdentityService, IdentityService>();
 
             services.AddScoped<IPasswordMatchingService, PasswordMatchingService>();
+
+			services.AddScoped<IPasswordHistoryRepository, PasswordHistoryRepository>();	
+
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		public bool Served { get; private set; }
 		public bool Preferential { get; private set; }
 		public Guid? ServiceLocationId { get; private set; }
-		public ServiceLocation? ServiceLocation { get; private set; }
+		public ServiceLocation ServiceLocation { get; private set; }
 		[NotMapped]
 		public bool CanBeReassigned => !Served;
 
@@ -56,7 +56,11 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 				throw new InvalidOperationException("Não é possível transferir uma senha já atendida.");
 		}
 
-		public void MarkAsServed() => Served = true;
+		public void MarkAsServed()
+		{
+			EnsureNotServed();
+			Served = true;
+		}
 
 		public void IncrementCode(int code)
 		{

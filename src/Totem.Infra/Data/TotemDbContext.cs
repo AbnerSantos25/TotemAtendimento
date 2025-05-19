@@ -7,26 +7,27 @@ using Totem.Domain.Aggregates.UserAggregate;
 
 namespace Totem.Infra.Data
 {
-    public class TotemDbContext : SharedDbContext
-    {
-        public TotemDbContext(DbContextOptions<TotemDbContext> options) : base(options)
-        {
+	public class TotemDbContext : SharedDbContext
+	{
+		public TotemDbContext(DbContextOptions<TotemDbContext> options) : base(options)
+		{
 
-        }
+		}
 
-        public DbSet<Password> Passwords { get; set; }
-        public DbSet<Queue> Queues { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<ServiceLocation> ServiceLocations { get; set; }
+		public DbSet<Password> Passwords { get; set; }
+		public DbSet<Queue> Queues { get; set; }
+		public DbSet<User> Users { get; set; }
+		public DbSet<ServiceLocation> ServiceLocations { get; set; }
+		public DbSet<PasswordHistory> PasswordHistories { get; set; }
 
 
-        protected override string GetDefaultContextSchema() => "Totem";
+		protected override string GetDefaultContextSchema() => "Totem";
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(TotemDbContext).Assembly);
-        }
-    }
+			modelBuilder.ApplyConfigurationsFromAssembly(typeof(TotemDbContext).Assembly);
+		}
+	}
 }
