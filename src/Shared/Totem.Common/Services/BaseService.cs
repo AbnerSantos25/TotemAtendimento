@@ -53,6 +53,7 @@ namespace Totem.Common.Services
 
 		protected Result Unsuccessful(List<Notificacao> notificacaos)
 		{
+			//TODO: validação de 
 			var result = new Result();
 			result.Handle(notificacaos);
 			//_notificador.AddNotifications(notificacaos);

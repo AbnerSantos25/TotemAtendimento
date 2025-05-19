@@ -9,7 +9,7 @@ namespace Totem.Common.Validation
 		public RequiredValidationAttribute()
 		{
 			// Mensagem padrão; será sobrescrita se você passar ErrorMessage
-			ErrorMessage = "O campo {0} é obrigatório. (deu certo)";
+			ErrorMessage = "O campo {0} é obrigatório.";
 		}
 
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)

@@ -7,6 +7,7 @@ using Totem.Common.Domain.Notification;
 using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
+using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.IdentityModels;
 
 namespace Totem.Application.Services.IdentityServices
@@ -129,12 +130,27 @@ namespace Totem.Application.Services.IdentityServices
 
 		public async Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request)
 		{
-			//Terminar este metodo
 			var user = await _userManager.FindByIdAsync(id.ToString());
 			if (user == null)
 				return Unsuccessful(Errors.UserNotFound);
 
-			var result = await _userManager.SetEmailAsync(user, request.NewEmail);
+			var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+			if (!passwordValid)
+				return Unsuccessful(Errors.IncorrectUsernamePassword);
+
+			user.Email = request.NewEmail;
+
+			var result = await _userManager.UpdateAsync(user);
+			if (!result.Succeeded)
+			{
+				foreach (var error in result.Errors)
+					Notificar(error.Description);
+
+				return Unsuccessful();
+			}
+
+			return Successful();
+
 		}
 	}
 }
