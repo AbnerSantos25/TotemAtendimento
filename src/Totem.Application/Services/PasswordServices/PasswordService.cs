@@ -70,22 +70,23 @@ namespace Totem.Application.Services.PasswordServices
 			await _mediator.Publish(new PasswordCreatedEvent(passwordId, passwordTransfer.QueueId));
 
 			await _mediator.Publish(new PasswordQueueChangedEvent(password.Id, oldQueueId, passwordTransfer.QueueId, password.Code, oldQueueName, passwordTransfer.Name));
+			
 			return Successful();
 		}
 
-		public async Task<(Result result, PasswordView data)> AssignNextPasswordAsync(Guid queueId, Guid serviceLocationId, string newServiceLocationName)
+		public async Task<Result> AssignNextPasswordAsync(Guid queueId, Guid serviceLocationId, string newServiceLocationName)
 		{
 			var nextPassword = await _passwordRepository.GetNextUnassignedPasswordFromQueueAsync(queueId);
 
 			if (nextPassword == null)
-				return Successful<PasswordView>();
+				return Successful();
 
 			var oldServiceLocation = nextPassword.ServiceLocationId;
 			var oldDescription = nextPassword.ServiceLocation?.Name ?? Labels.NoServiceLocation;
 
 			if (!nextPassword.CanBeReassigned)
 			{
-				return Unsuccessful<PasswordView>(Errors.PasswordCannotBeTransfered);
+				return Unsuccessful(Errors.PasswordCannotBeTransfered);
 			}
 
 			nextPassword.AssignToServiceLocation(serviceLocationId);
@@ -93,13 +94,12 @@ namespace Totem.Application.Services.PasswordServices
 			_passwordRepository.Update(nextPassword);
 
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
-				return Unsuccessful<PasswordView>(Errors.ErrorSavingDatabase.ToString());
+				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
 
 			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
 			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId, oldDescription, newServiceLocationName, nextPassword.Code));
 
-			//return Successful<PasswordView>(Messages.CallingNextPassword);
-			return Successful<PasswordView>();
+			return Successful();
 		}
 
 		public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)
