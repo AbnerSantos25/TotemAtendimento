@@ -19,6 +19,4 @@ namespace Totem.Application.Events
 			await _passwordService.AssignNextPasswordAsync(notification.QueueId, notification.ServiceLocationId, notification.Name);
 		}
 	}
-
-
 }
