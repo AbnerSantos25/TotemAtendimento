@@ -98,7 +98,7 @@ namespace Totem.Application.Services.PasswordServices
 			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
 			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId, oldDescription, newServiceLocationName, nextPassword.Code));
 
-			//return Successful<PasswordView>(Messages.CallingNextPassword);
+			return Successful();
 			return Successful<PasswordView>();
 		}
 
