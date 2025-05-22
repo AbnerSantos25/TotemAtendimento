@@ -6,6 +6,8 @@ using Totem.Domain.Aggregates.PasswordAggregate.Events;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 using Totem.Domain.Models.ServiceLocationModels;
+using Totem.SharedKernel.Models;
+using Totem.SharedKernel.Services;
 
 namespace Totem.Application.Services.ServiceLocationServices
 {
@@ -14,12 +16,14 @@ namespace Totem.Application.Services.ServiceLocationServices
 		private readonly IServiceLocationRepository _repository;
 		private readonly IServiceLocationQueries _queries;
 		private readonly IMediator _mediator;
+		private readonly IPasswordIntegrationService _passwordIntegrationService;
 
-		public ServiceLocationService(INotificador notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, IMediator mediator) : base(notificador)
+		public ServiceLocationService(INotificador notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, IMediator mediator, IPasswordIntegrationService passwordIntegrationService) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;
 			_mediator = mediator;
+			_passwordIntegrationService = passwordIntegrationService;
 		}
 
 		public async Task<Result> AddAsync(ServiceLocationRequest request)
@@ -99,23 +103,17 @@ namespace Totem.Application.Services.ServiceLocationServices
 			return Successful(list);
 		}
 
-		public async Task<Result> AssignNextPasswordAsync(Guid serviceLocationId, ServiceLocationReadyRequest request)
+		public async Task<(Result result, IPasswordView data)> ServiceLocationReadyAsync(Guid serviceLocationId, ServiceLocationReadyRequest request)
 		{
 			var serviceLocation = await _repository.GetByIdAsync(serviceLocationId);
 			if (serviceLocation == null)
-				return Unsuccessful(Errors.NotFound);
+				return Unsuccessful<IPasswordView>(Errors.NotFound); //Globalizazr com o erro passando o serviceLocation 
 
-			try
-			{
-				await _mediator.Publish(new AssignNextPasswordEvent(request.QueueId, serviceLocationId, request.Name));
-			}
-			catch (Exception ex)
-			{
-				Unsuccessful("Não foi possivel enviar o evento para regatar nova senha");
-			}
+			var response = await _passwordIntegrationService.ServiceLocationWaitingPasswordAsync(request.QueueId, serviceLocationId, request.Name);
+			if(!response.result.Success)
+				return Unsuccessful<IPasswordView>(response.result.ObterNotificacoes());
 
-            //TODO: (Abner) seria um problema aqui não retornar nada?
-            return Successful();
+			return Successful(response.data);
         }
     }
 }

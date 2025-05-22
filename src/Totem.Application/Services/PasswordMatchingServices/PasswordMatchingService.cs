@@ -10,7 +10,7 @@ using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 namespace Totem.Application.Services.PasswordMatchingServices
 {
 
-	public class PasswordMatchingService : BaseService, INotificationHandler<PasswordCreatedEvent>, INotificationHandler<ServiceLocationReadyEvent>, IPasswordMatchingService
+	public class PasswordMatchingService : BaseService, INotificationHandler<PasswordCreatedEvent>, INotificationHandler<ServiceLocationWaitingPasswordEvent>, IPasswordMatchingService
 	{
 		private readonly Dictionary<Guid, Queue<Guid>> _waitingPasswords = new();
 		private readonly Dictionary<Guid, Queue<Guid>> _waitingLocations = new();
@@ -68,7 +68,7 @@ namespace Totem.Application.Services.PasswordMatchingServices
 		public async Task Handle(PasswordCreatedEvent evt, CancellationToken _) =>
 			await TryMatch(evt.QueueId, evt.PasswordId, isPassword: true);
 
-		public async Task Handle(ServiceLocationReadyEvent evt, CancellationToken _) =>
+		public async Task Handle(ServiceLocationWaitingPasswordEvent evt, CancellationToken _) =>
 			await TryMatch(evt.QueueId, evt.ServiceLocationId, isPassword: false);
 	}
 

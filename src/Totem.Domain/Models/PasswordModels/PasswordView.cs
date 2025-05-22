@@ -1,10 +1,11 @@
 ﻿using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Models.ServiceLocationModels;
+using Totem.SharedKernel.Models;
 
 namespace Totem.Domain.Models.PasswordModels
 {
-    public class PasswordView
-    {
+    public class PasswordView : IPasswordView
+	{
         public Guid PasswordId { get; set; }
         public int Code { get; set; }
 		public DateTime CreatedAt { get; set; }
