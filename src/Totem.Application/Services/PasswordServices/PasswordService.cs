@@ -8,10 +8,12 @@ using Totem.Domain.Aggregates.PasswordAggregate.Events;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 using Totem.Domain.Models.PasswordModels;
+using Totem.SharedKernel.Models;
+using Totem.SharedKernel.Services;
 
 namespace Totem.Application.Services.PasswordServices
 {
-	public class PasswordService : BaseService, IPasswordService
+	public class PasswordService : BaseService, IPasswordService, IPasswordIntegrationService
 	{
 		private readonly IPasswordRepository _passwordRepository;
 		private readonly IPasswordQueries _passwordQueries;
@@ -74,19 +76,18 @@ namespace Totem.Application.Services.PasswordServices
 			return Successful();
 		}
 
-		public async Task<Result> AssignNextPasswordAsync(Guid queueId, Guid serviceLocationId, string newServiceLocationName)
+		public async Task<(Result result, IPasswordView data)> ServiceLocationWaitingPasswordAsync(Guid queueId, Guid serviceLocationId, string newServiceLocationName)
 		{
 			var nextPassword = await _passwordRepository.GetNextUnassignedPasswordFromQueueAsync(queueId);
-
 			if (nextPassword == null)
-				return Successful();
+				await _mediator.Publish(new ServiceLocationWaitingPasswordEvent(serviceLocationId,queueId));
 
 			var oldServiceLocation = nextPassword.ServiceLocationId;
 			var oldDescription = nextPassword.ServiceLocation?.Name ?? Labels.NoServiceLocation;
 
 			if (!nextPassword.CanBeReassigned)
 			{
-				return Unsuccessful(Errors.PasswordCannotBeTransfered);
+				return Unsuccessful<IPasswordView>(Errors.PasswordCannotBeTransfered);
 			}
 
 			nextPassword.AssignToServiceLocation(serviceLocationId);
@@ -94,12 +95,11 @@ namespace Totem.Application.Services.PasswordServices
 			_passwordRepository.Update(nextPassword);
 
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
-				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
+				return Unsuccessful<IPasswordView>(Errors.ErrorSavingDatabase.ToString());
 
-			await _mediator.Publish(new ServiceLocationReadyEvent(serviceLocationId, queueId));
 			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId, oldDescription, newServiceLocationName, nextPassword.Code));
 
-			return Successful();
+			return Successful<PasswordView>(nextPassword);
 		}
 
 		public async Task<(Result result, PasswordView data)> GetByIdPasswordAsync(Guid id)
