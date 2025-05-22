@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Totem.Common.Domain.Entity;
-using Totem.Common.Domain.Message;
 using Totem.Common.Domain.Notification;
 
 namespace Totem.Common.Services
@@ -57,6 +56,11 @@ namespace Totem.Common.Services
 			var result = new Result();
 			result.Handle(notificacaos);
 			return result;
+		}
+
+		protected (Result result, T data) Unsuccessful<T>(List<Notificacao> notificacaos)
+		{
+			return (Unsuccessful(), default(T));
 		}
 
 		protected (Result result, T data) Unsuccessful<T>()

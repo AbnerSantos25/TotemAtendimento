@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Totem.Common", "src\Shared\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Totem.Common.API", "src\Shared\Totem.Common.API\Totem.Common.API.csproj", "{4E2EDC0D-59B3-4B17-992C-EA35C085AA9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Totem.SharedKernel", "src\Services\Totem.SharedKernel\Totem.SharedKernel.csproj", "{8610EC42-837B-4986-97BC-2A997C17AA08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{4E2EDC0D-59B3-4B17-992C-EA35C085AA9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E2EDC0D-59B3-4B17-992C-EA35C085AA9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E2EDC0D-59B3-4B17-992C-EA35C085AA9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8610EC42-837B-4986-97BC-2A997C17AA08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8610EC42-837B-4986-97BC-2A997C17AA08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8610EC42-837B-4986-97BC-2A997C17AA08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8610EC42-837B-4986-97BC-2A997C17AA08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {8F28B976-0B32-41A3-B9E5-CF632B1166D3}
 		{3B718DDC-6D6B-483D-AE48-C6CEEEE96822} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{4E2EDC0D-59B3-4B17-992C-EA35C085AA9C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8610EC42-837B-4986-97BC-2A997C17AA08} = {0EB834D0-3958-461B-8352-E091AE013923}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {357098BD-4C06-4103-862F-6DCCCC63A2D8}

@@ -14,7 +14,6 @@ namespace Totem.API.Configuration
 			services.AddMediatR(cfg =>
 			{
 				cfg.RegisterServicesFromAssemblyContaining<PasswordCreatedEvent>();
-				cfg.RegisterServicesFromAssemblyContaining<AssignNextPasswordEventHandler>();
 				cfg.RegisterServicesFromAssemblyContaining<PasswordMarkedAsServedHistoryEvent>();
 			});
 		}

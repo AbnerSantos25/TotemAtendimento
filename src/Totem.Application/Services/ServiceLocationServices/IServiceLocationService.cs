@@ -1,5 +1,6 @@
 ﻿using Totem.Common.Services;
 using Totem.Domain.Models.ServiceLocationModels;
+using Totem.SharedKernel.Models;
 
 namespace Totem.Application.Services.ServiceLocationServices
 {
@@ -11,7 +12,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 		Task<Result> UpdateAsync(Guid Id, ServiceLocationRequest request);
 		Task<Result> DeleteAsync(Guid Id);
 
-		Task<Result> AssignNextPasswordAsync(Guid serviceLocationId, ServiceLocationReadyRequest request);
+		Task<(Result result, IPasswordView data)> ServiceLocationReadyAsync(Guid serviceLocationId, ServiceLocationReadyRequest request);
 
 	}
 }
