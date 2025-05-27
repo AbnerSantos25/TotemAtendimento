@@ -11,14 +11,14 @@ namespace Totem.API.Controllers
     public class IdentityController : MainController
     {
         private readonly IIdentityService _identityService;
-        public IdentityController(INotificador notificador, IIdentityService identityService) : base(notificador)
+        public IdentityController(INotificator notificator, IIdentityService identityService) : base(notificator)
         {
             _identityService = identityService;
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult> Registrar(RegisterUserView registerUser)
+        public async Task<ActionResult> Register(RegisterUserView registerUser)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 

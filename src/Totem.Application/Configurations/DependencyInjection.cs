@@ -23,7 +23,7 @@ namespace Totem.Application.Configurations
 	{
 		public static void TotemRegisterDependency(this IServiceCollection services)
 		{
-			services.AddScoped<INotificador, Notificador>();
+			services.AddScoped<INotificator, Notificator>();
 			services.AddScoped<PasswordValidations>();
 
 			services.AddScoped<IPasswordRepository, PasswordRepository>();

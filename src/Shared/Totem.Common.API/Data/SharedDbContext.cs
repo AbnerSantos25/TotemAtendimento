@@ -19,7 +19,6 @@ namespace Totem.Common.API.Data
             {
                 var result = await SaveChangesAsync() > 0;
 
-                // Se a operação foi bem-sucedida, commit da transação
                 if (result)
                 {
                     await transaction.CommitAsync();
