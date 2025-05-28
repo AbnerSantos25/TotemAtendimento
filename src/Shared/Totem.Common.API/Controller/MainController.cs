@@ -10,15 +10,15 @@ namespace Totem.Common.API.Controller
     [ApiController]
     public abstract class MainController : ControllerBase
     {
-        private readonly INotificador _notificador;
-		protected MainController(INotificador notificador)
+        private readonly INotificator _notificador;
+		protected MainController(INotificator notificador)
         {
 			_notificador = notificador;
 		}
 
         protected ActionResult CustomResponse<T>((Result Result, T Data) response)
         {
-            if (!response.Result.TemNotificacao())
+            if (!response.Result.HasNotifications())
             {
                 return Ok(new
                 {
@@ -30,7 +30,7 @@ namespace Totem.Common.API.Controller
             return BadRequest(new
             {
                 success = false,
-                errors = response.Result.ObterNotificacoes().Select(n => n.Mensagem)
+                errors = response.Result.GetNotifications().Select(n => n.Message)
             });
         }
 
@@ -38,7 +38,7 @@ namespace Totem.Common.API.Controller
 
         protected ActionResult CustomResponse(Result result)
         {
-            if (!result.TemNotificacao())
+            if (!result.HasNotifications())
             {
                 return Ok(new
                 {
@@ -47,11 +47,11 @@ namespace Totem.Common.API.Controller
                 });
             }
 
-            var notifications = result.ObterNotificacoes();
+            var notifications = result.GetNotifications();
             return BadRequest(new
             {
                 success = false,
-                errors = notifications.Select(n => n.Mensagem)
+                errors = notifications.Select(n => n.Message)
             });
         }
 
@@ -68,13 +68,13 @@ namespace Totem.Common.API.Controller
             foreach (var erro in erros)
             {
                 var errorMsg = erro.Exception == null ? erro.ErrorMessage : erro.Exception.Message;
-                NotificarErro(errorMsg);
+                NotifyError(errorMsg);
             }
         }
 
-        protected void NotificarErro(string mensagem)
+        protected void NotifyError(string message)
         {
-            _notificador.Handle(new Notificacao(mensagem));
+            _notificador.Handle(new Notification(message));
         }
     }
 }

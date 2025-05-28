@@ -3,33 +3,33 @@ using System.Text.Json.Serialization;
 
 namespace Totem.Common.Domain.Notification
 {
-    public class Notificador : INotificador
+    public class Notificator : INotificator
     {
-        private List<Notificacao> _notificacoes;
+        private List<Notification> _notificacoes;
 
         [JsonIgnore, NotMapped]
         public bool IsValid => !_notificacoes.Any();
-        public Notificador()
+        public Notificator()
         {
-            _notificacoes = new List<Notificacao>();
+            _notificacoes = new List<Notification>();
         }
 
-        public void AddNotifications(List<Notificacao> notificacoes)
+        public void AddNotifications(List<Notification> notificacoes)
         {
             _notificacoes.AddRange(notificacoes);
         }
 
-        public void Handle(Notificacao notificacao)
+        public void Handle(Notification notificacao)
         {
             _notificacoes.Add(notificacao);
         }
 
-        public List<Notificacao> ObterNotificacoes()
+        public List<Notification> GetNotifications()
         {
             return _notificacoes;
         }
 
-        public bool TemNotificacao()
+        public bool HasNotifications()
         {
             return _notificacoes.Any();
         }

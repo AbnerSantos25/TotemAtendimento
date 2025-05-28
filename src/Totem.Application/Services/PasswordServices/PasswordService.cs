@@ -18,14 +18,12 @@ namespace Totem.Application.Services.PasswordServices
 		private readonly IPasswordRepository _passwordRepository;
 		private readonly IPasswordQueries _passwordQueries;
 		private readonly IMediator _mediator;
-		private readonly IRealTimeNotifier _notifier;
 
-		public PasswordService(INotificador notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation, IServiceLocationRepository serviceLocationRepository, IMediator mediator, IRealTimeNotifier notifier) : base(notificador)
+		public PasswordService(INotificator notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation, IServiceLocationRepository serviceLocationRepository, IMediator mediator) : base(notificador)
 		{
 			_passwordRepository = passwordRepository;
 			_passwordQueries = passwordQueries;
 			_mediator = mediator;
-			_notifier = notifier;
 		}
 		public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
 		{
@@ -33,8 +31,6 @@ namespace Totem.Application.Services.PasswordServices
 			if (!ExecuteValidation(new PasswordValidations(), password))
 				return Unsuccessful<Guid>();
 
-			//TODO: Abner - Adicionar validação se existe a queue, porem tem que ser com o integration
-			
 			password.IncrementCode(await _passwordRepository.GetNextPasswordCodeAsync());
 
 			_passwordRepository.Add(password);
@@ -72,7 +68,7 @@ namespace Totem.Application.Services.PasswordServices
 			await _mediator.Publish(new PasswordCreatedEvent(passwordId, passwordTransfer.QueueId));
 
 			await _mediator.Publish(new PasswordQueueChangedEvent(password.Id, oldQueueId, passwordTransfer.QueueId, password.Code, oldQueueName, passwordTransfer.Name));
-			
+
 			return Successful();
 		}
 
@@ -80,7 +76,7 @@ namespace Totem.Application.Services.PasswordServices
 		{
 			var nextPassword = await _passwordRepository.GetNextUnassignedPasswordFromQueueAsync(queueId);
 			if (nextPassword == null)
-				await _mediator.Publish(new ServiceLocationWaitingPasswordEvent(serviceLocationId,queueId));
+				await _mediator.Publish(new ServiceLocationWaitingPasswordEvent(serviceLocationId, queueId));
 
 			var oldServiceLocation = nextPassword.ServiceLocationId;
 			var oldDescription = nextPassword.ServiceLocation?.Name ?? Labels.NoServiceLocation;

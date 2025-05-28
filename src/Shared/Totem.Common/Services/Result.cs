@@ -2,27 +2,27 @@
 
 public class Result
 {
-    public bool Success => !_notificacoes.Any(); //trocar para o ingles
+    public bool Success => !_notifications.Any();
 
-    private readonly List<Notificacao> _notificacoes = new();
+    private readonly List<Notification> _notifications = new();
 
-    public void Handle(Notificacao notificacao)
+    public void Handle(Notification notificacao)
     {
-        _notificacoes.Add(notificacao);
+        _notifications.Add(notificacao);
     }
 
-	public void Handle(List<Notificacao> notificacoes)
+	public void Handle(List<Notification> notificacoes)
 	{
-		_notificacoes.AddRange(notificacoes);
+		_notifications.AddRange(notificacoes);
 	}
 
-	public List<Notificacao> ObterNotificacoes()
+	public List<Notification> GetNotifications()
     {
-        return _notificacoes;
+        return _notifications;
     }
 
-    public bool TemNotificacao()
+    public bool HasNotifications()
     {
-        return _notificacoes.Any();
+        return _notifications.Any();
     }
 }

@@ -10,7 +10,7 @@ namespace Totem.API.Controllers
 	public class ServiceLocationController : MainController
 	{
 		private readonly IServiceLocationService _serviceLocationService;
-		public ServiceLocationController(INotificador notificador, IServiceLocationService serviceLocationService) : base(notificador)
+		public ServiceLocationController(INotificator notificator, IServiceLocationService serviceLocationService) : base(notificator)
 		{
 			_serviceLocationService = serviceLocationService;
 		}
