@@ -19,7 +19,7 @@ namespace Totem.Application.Services.PasswordMatchingServices
 		private readonly IRealTimeNotifier _notifier;
 		private readonly IMediator _mediator;
 
-		public PasswordMatchingService(INotificador notificador, IPasswordRepository repo, IRealTimeNotifier notifier, IMediator mediator) : base(notificador)
+		public PasswordMatchingService(INotificator notificador, IPasswordRepository repo, IRealTimeNotifier notifier, IMediator mediator) : base(notificador)
 		{
 			_repo = repo;
 			_notifier = notifier;

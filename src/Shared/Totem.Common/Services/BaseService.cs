@@ -8,31 +8,31 @@ namespace Totem.Common.Services
 	public abstract class BaseService
 	{
 
-		private readonly INotificador _notificador;
+		private readonly INotificator _notificator;
 
-		protected BaseService(INotificador notificador)
+		protected BaseService(INotificator notificator)
 		{
-			_notificador = notificador;
+			_notificator = notificator;
 		}
 
-		protected void Notificar(ValidationResult validationResult)
+		protected void Notify(ValidationResult validationResult)
 		{
 			foreach (var error in validationResult.Errors)
 			{
-				Notificar(error.ErrorMessage);
+				Notify(error.ErrorMessage);
 			}
 		}
 
-		protected void Notificar(string mensagem)
+		protected void Notify(string mensagem)
 		{
-			_notificador.Handle(new Notificacao(mensagem));
+			_notificator.Handle(new Notification(mensagem));
 		}
 
-		protected bool ExecuteValidation<TV, TE>(TV validacao, TE entidade) where TV : AbstractValidator<TE> where TE : Entity
+		protected bool ExecuteValidation<TV, TE>(TV validation, TE entity) where TV : AbstractValidator<TE> where TE : Entity
 		{
-			var validator = validacao.Validate(entidade);
+			var validator = validation.Validate(entity);
 			if (validator.IsValid) return true;
-			Notificar(validator);
+			Notify(validator);
 			return false;
 		}
 
@@ -51,14 +51,14 @@ namespace Totem.Common.Services
 			return (new Result(), data);
 		}
 
-		protected Result Unsuccessful(List<Notificacao> notificacaos)
+		protected Result Unsuccessful(List<Notification> notifications)
 		{
 			var result = new Result();
-			result.Handle(notificacaos);
+			result.Handle(notifications);
 			return result;
 		}
 
-		protected (Result result, T data) Unsuccessful<T>(List<Notificacao> notificacaos)
+		protected (Result result, T data) Unsuccessful<T>(List<Notification> notifications)
 		{
 			return (Unsuccessful(), default(T));
 		}
@@ -74,13 +74,13 @@ namespace Totem.Common.Services
 		protected Result Unsuccessful(string message)
 		{
 			var result = new Result();
-			result.Handle(new Notificacao(message));
+			result.Handle(new Notification(message));
 			return result;
 		}
 		protected Result Unsuccessful()
 		{
 			var result = new Result();
-			result.Handle(_notificador.ObterNotificacoes());
+			result.Handle(_notificator.GetNotifications());
 			return result;
 		}
 

@@ -11,7 +11,7 @@ namespace Totem.Application.Services.QueueServices
 		private readonly IQueueRepository _repository;
 		private readonly IQueueQueries _queries;
 
-		public QueueService(INotificador notificador, IQueueRepository repository, IQueueQueries queries) : base(notificador)
+		public QueueService(INotificator notificador, IQueueRepository repository, IQueueQueries queries) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;

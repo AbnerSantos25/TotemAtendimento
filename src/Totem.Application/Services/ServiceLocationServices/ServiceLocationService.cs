@@ -18,7 +18,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 		private readonly IMediator _mediator;
 		private readonly IPasswordIntegrationService _passwordIntegrationService;
 
-		public ServiceLocationService(INotificador notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, IMediator mediator, IPasswordIntegrationService passwordIntegrationService) : base(notificador)
+		public ServiceLocationService(INotificator notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, IMediator mediator, IPasswordIntegrationService passwordIntegrationService) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;
@@ -67,7 +67,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 
 			if (await _repository.ExistsAsync(request.Name, request.Number))
 			{
-				Notificar(Errors.RegisterAlreadyExists);
+				Notify(Errors.RegisterAlreadyExists);
 				return Unsuccessful();
 			}
 
@@ -111,7 +111,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 
 			var response = await _passwordIntegrationService.ServiceLocationWaitingPasswordAsync(request.QueueId, serviceLocationId, request.Name);
 			if(!response.result.Success)
-				return Unsuccessful<IPasswordView>(response.result.ObterNotificacoes());
+				return Unsuccessful<IPasswordView>(response.result.GetNotifications());
 
 			return Successful(response.data);
         }

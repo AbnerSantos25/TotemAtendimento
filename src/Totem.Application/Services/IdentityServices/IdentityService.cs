@@ -18,7 +18,7 @@ namespace Totem.Application.Services.IdentityServices
 		private readonly SignInManager<IdentityUser> _signInManager;
 		private readonly UserManager<IdentityUser> _userManager;
 
-		public IdentityService(INotificador notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings) : base(notificador)
+		public IdentityService(INotificator notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings) : base(notificador)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
@@ -78,7 +78,7 @@ namespace Totem.Application.Services.IdentityServices
 
 			foreach (var error in result.Errors)
 			{
-				Notificar(error.Description);
+				Notify(error.Description);
 			}
 
 			return Unsuccessful<string>();
@@ -120,7 +120,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
-					Notificar(error.Description);
+					Notify(error.Description);
 
 				return Unsuccessful();
 			}
@@ -144,7 +144,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
-					Notificar(error.Description);
+					Notify(error.Description);
 
 				return Unsuccessful();
 			}
