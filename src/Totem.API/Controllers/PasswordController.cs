@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Totem.Application.Services.PasswordServices;
 using Totem.Common.API.Controller;
@@ -57,7 +58,9 @@ namespace Totem.API.Controllers
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
 			return CustomResponse(await _passwordService.MarkAsServed(passwordId));
 		}
-		[HttpDelete]
+
+		[Authorize(Roles = "Admin")]
+		[HttpDelete("{id}")]
 		public async Task<IActionResult> RemovePassword(Guid id)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);

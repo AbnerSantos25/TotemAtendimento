@@ -5,7 +5,7 @@
 namespace Totem.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class Refactor_PasswordHistory : Migration
+    public partial class AddIdentityRoles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
