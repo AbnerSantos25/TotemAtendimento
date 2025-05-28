@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Totem.Common.API.Configurations;
+using Totem.Common.Enumerations;
 using Totem.Common.Extension;
 using Totem.Infra.Data;
 
@@ -16,7 +17,8 @@ namespace Totem.API.Configuration
             services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddErrorDescriber<IdentityCustomMenssages>()
-            .AddDefaultTokenProviders(); 
+            .AddRoles<IdentityRole>()
+			.AddDefaultTokenProviders(); 
 
 
             //JWT
