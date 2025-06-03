@@ -2,12 +2,13 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Totem.Common.Domain.Notification;
+using Totem.Common.Enumerations;
 using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
-using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.IdentityModels;
 
 namespace Totem.Application.Services.IdentityServices
@@ -25,31 +26,46 @@ namespace Totem.Application.Services.IdentityServices
 			_jwtSettings = jwtSettings.Value;
 		}
 
-		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync()
+		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(IdentityUser user)
 		{
-			var Key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+			var roles = await _userManager.GetRolesAsync(user);
 
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
-			var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
+			var claims = new List<Claim>
 			{
-				Issuer = _jwtSettings.Issuer,
-				Audience = _jwtSettings.ValidAt,
-				Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationTime),
-				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-			});
+				new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+				new Claim(JwtRegisteredClaimNames.Email, user.Email),
+				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+			};
 
-			var encodedToken = tokenHandler.WriteToken(token);
+			foreach (var role in roles)
+			{
+				claims.Add(new Claim(ClaimTypes.Role, role));
+			}
+
+			var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
+			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+			var token = new JwtSecurityToken(
+				issuer: _jwtSettings.Issuer,
+				audience: _jwtSettings.ValidAt,
+				claims: claims,
+				expires: DateTime.UtcNow.AddHours(_jwtSettings.ExpirationTime),
+				signingCredentials: creds
+			);
+
+			var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
 
 			return Successful<string>(encodedToken);
 		}
+
 
 		public async Task<(Result Result, string Data)> LoginUserAsync(LoginUserView loginUserView)
 		{
 			var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
 			if (result.Succeeded)
 			{
-				return await GenerateJwtTokenAsync();
+				var user = await _userManager.FindByEmailAsync(loginUserView.Email);
+				return await GenerateJwtTokenAsync(user);
 			}
 
 			if (result.IsLockedOut)
@@ -73,7 +89,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (result.Succeeded)
 			{
 				await _signInManager.SignInAsync(user, false);
-				return await GenerateJwtTokenAsync();
+				return await GenerateJwtTokenAsync(user);
 			}
 
 			foreach (var error in result.Errors)
@@ -151,6 +167,52 @@ namespace Totem.Application.Services.IdentityServices
 
 			return Successful();
 
+		}
+
+		public async Task<Result> AddUserToRoleAsync(Guid userId, EnumRoles role)
+		{
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				return Unsuccessful(Errors.UserNotFound);
+
+			var roles = await _userManager.GetRolesAsync(user);
+			if (roles.Contains(role.ToString()))
+				return Unsuccessful(Errors.UserAlreadyHasRole);
+
+			var result = await _userManager.AddToRoleAsync(user, role.ToString());
+
+			if (!result.Succeeded)
+			{
+				foreach (var error in result.Errors)
+					Notificar(error.Description);
+
+				return Unsuccessful();
+			}
+
+			return Successful();
+		}
+
+		public async Task<Result> RemoveUserFromRoleAsync(Guid userId, EnumRoles role)
+		{
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				return Unsuccessful(Errors.UserNotFound);
+
+			var roles = await _userManager.GetRolesAsync(user);
+			if (!roles.Contains(role.ToString()))
+				return Unsuccessful(Errors.UserAlreadyHasRole);
+
+			var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
+
+			if (!result.Succeeded)
+			{
+				foreach (var error in result.Errors)
+					Notificar(error.Description);
+
+				return Unsuccessful();
+			}
+
+			return Successful();
 		}
 	}
 }

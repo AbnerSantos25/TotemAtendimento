@@ -10,17 +10,11 @@ namespace Totem.Common.API.Configurations
 	{
 		public static void RegisterDependency(this IServiceCollection services, IConfiguration configuration)
 		{
-
-            //services.AddScoped<INotificador, Notificador>();
-
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddSingleton<DbConnection>(sp =>
             {
                 return new SqlConnection(connectionString);
             });
-
-			//services.AddSingleton(typeof(IStringLocalizer<Labels>), typeof(ResourceManagerStringLocalizer<Labels>));
-
 		}
 	}
 }

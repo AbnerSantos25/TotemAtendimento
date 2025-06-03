@@ -12,8 +12,8 @@ using Totem.Infra.Data;
 namespace Totem.Infra.Migrations
 {
     [DbContext(typeof(TotemDbContext))]
-    [Migration("20250508230739_Refactor_PasswordHistory")]
-    partial class Refactor_PasswordHistory
+    [Migration("20250527220127_AddIdentityRoles")]
+    partial class AddIdentityRoles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

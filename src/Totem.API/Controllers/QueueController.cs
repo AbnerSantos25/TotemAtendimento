@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Totem.Application.Services.QueueServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -33,6 +34,7 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _queueServices.GetListAsync());
 		}
 
+		[Authorize(Roles = "Admin, Manager")]
 		[HttpPost]
 		public async Task<IActionResult> AddAsync([FromBody] QueueRequest request)
 		{
@@ -42,6 +44,7 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _queueServices.AddAsync(request));
 		}
 
+		[Authorize(Roles = "Admin, Manager")]
 		[HttpPut("{id}")]
 		public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] QueueRequest request)
 		{
@@ -51,6 +54,7 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _queueServices.UpdateAsync(id, request));
 		}
 
+		[Authorize(Roles = "Admin, Manager")]
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
 		{
