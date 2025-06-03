@@ -1,4 +1,6 @@
 using MediatR;
+using Microsoft.AspNetCore.Identity;
+using System.Data;
 using Totem.API.Configuration;
 using Totem.API.RealTime;
 using Totem.Application.Configurations;
@@ -42,16 +44,20 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    await IdentitySeeder.SeedRolesAsync(serviceProvider);
+}
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapHub<PasswordHub>("/passwordHub");
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
-        // c.RoutePrefix = string.Empty; // para servir em ‘/’
-    });
+	app.MapOpenApi();
+	app.UseSwagger();
+	app.UseSwaggerUI(c =>
+	{
+		c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
+	});
 }
 
 app.UseCors();

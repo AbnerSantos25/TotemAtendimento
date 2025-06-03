@@ -142,6 +142,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário já possui esta função..
+        /// </summary>
+        public static string UserAlreadyHasRole {
+            get {
+                return ResourceManager.GetString("UserAlreadyHasRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Usuario não encontrado.
         /// </summary>
         public static string UserNotFound {
