@@ -4,7 +4,7 @@ using Totem.Common.Data;
 namespace Totem.Common.API.Data
 {
     public abstract class SharedDbContext : DbContext, IUnitOfWork
-    {
+	{
         public SharedDbContext(DbContextOptions options) : base(options)
         {
 
@@ -38,7 +38,6 @@ namespace Totem.Common.API.Data
                 return false;
             }
         }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
