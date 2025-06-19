@@ -13,7 +13,7 @@ namespace Totem.Application.Services.RefreshTokenServices
 		private readonly IRefreshTokenRepository _refreshTokenRepository;
 		private readonly IIdentityIntegrationService _identityIntegrationService;
 
-		public RefreshTokenService(INotificador notificador, IRefreshTokenRepository refreshTokenRepository, IIdentityIntegrationService identityIntegrationService) : base(notificador)
+		public RefreshTokenService(INotificator notificador, IRefreshTokenRepository refreshTokenRepository, IIdentityIntegrationService identityIntegrationService) : base(notificador)
 		{
 			_refreshTokenRepository = refreshTokenRepository;
 			_identityIntegrationService = identityIntegrationService;
@@ -37,12 +37,10 @@ namespace Totem.Application.Services.RefreshTokenServices
 			if (!await _identityIntegrationService.ExistsUser(userId))
 				return Unsuccessful<JwtAndTokenView>(Errors.UserNotFound);
 
-			// (Opcional) Gera novo refresh token
 			var newRefreshToken = await SaveRefreshTokenAsync(userId);
 			if (!newRefreshToken.result.Success)
-				return Unsuccessful<JwtAndTokenView>(newRefreshToken.result.ObterNotificacoes());
+				return Unsuccessful<JwtAndTokenView>(newRefreshToken.result.GetNotifications());
 
-			// Gera novo JWT
 			var jwt = await _identityIntegrationService.GenerateJwtTokenAsync(userId);
 
 			token.Revoke(newRefreshToken.data);
@@ -51,9 +49,7 @@ namespace Totem.Application.Services.RefreshTokenServices
 			if (!await _refreshTokenRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful<JwtAndTokenView>(Errors.ErrorSavingDatabase);
 
-			var result = new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken.data};
-
-			return Successful(result);
+			return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken.data });
 		}
 
 		public async Task<(Result result, Guid data)> SaveRefreshTokenAsync(string userId)

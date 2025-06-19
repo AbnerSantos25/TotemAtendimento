@@ -10,7 +10,7 @@ namespace Totem.API.Controllers
 	{
 		private readonly IRefreshTokenService _refreshTokenService;
 
-		public RefreshTokenController(INotificador notificador, IRefreshTokenService refreshTokenService) : base(notificador)
+		public RefreshTokenController(INotificator notificador, IRefreshTokenService refreshTokenService) : base(notificador)
 		{
 			_refreshTokenService = refreshTokenService;
 		}

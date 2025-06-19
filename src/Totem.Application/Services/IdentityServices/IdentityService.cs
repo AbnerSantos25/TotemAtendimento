@@ -12,6 +12,7 @@ using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.RefreshTokenAggregate.Events;
 using Totem.Domain.Models.IdentityModels;
+using Totem.SharedKernel.Models;
 using Totem.SharedKernel.Services;
 
 namespace Totem.Application.Services.IdentityServices
@@ -24,7 +25,7 @@ namespace Totem.Application.Services.IdentityServices
 		private readonly IMediator _mediator;
 
 
-		public IdentityService(INotificador notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings, IMediator mediator) : base(notificador)
+		public IdentityService(INotificator notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings, IMediator mediator) : base(notificador)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
@@ -64,32 +65,31 @@ namespace Totem.Application.Services.IdentityServices
 			return Successful<string>(encodedToken);
 		}
 
-		public async Task<(Result Result, object Data)> LoginUserAsync(LoginUserView loginUserView)
+		public async Task<(Result Result, JwtAndTokenView Data)> LoginUserAsync(LoginUserView loginUserView)
 		{
 			var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
 			if (result.Succeeded)
 			{
 				var user = await _userManager.FindByEmailAsync(loginUserView.Email);
 				if (user == null)
-					return Unsuccessful<object>(Errors.UserNotFound);
+					return Unsuccessful<JwtAndTokenView>(Errors.UserNotFound);
 
-				var token = Guid.NewGuid();
+				var newRefreshToken = Guid.NewGuid();
+				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
 
-				await _mediator.Publish(new SaveRefreshTokenEvent(token, user.Id));
-
-				var tokenJWT = await GenerateJwtTokenAsync(user);
-				return Successful<object>(new { tokenJWT.Data, token });
+				var jwt = await GenerateJwtTokenAsync(user);
+				return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken });
 			}
 
 			if (result.IsLockedOut)
 			{
-				return Unsuccessful<string>(Errors.UserTemporarilyBlocked);
+				return Unsuccessful<JwtAndTokenView>(Errors.UserTemporarilyBlocked);
 			}
 
-			return Unsuccessful<string>(Errors.IncorrectUsernamePassword);
+			return Unsuccessful<JwtAndTokenView>(Errors.IncorrectUsernamePassword);
 		}
 
-		public async Task<(Result Result, object Data)> RegisterUserAsync(RegisterUserView registerUserView)
+		public async Task<(Result Result, JwtAndTokenView Data)> RegisterUserAsync(RegisterUserView registerUserView)
 		{
 			var user = new IdentityUser
 			{
@@ -103,18 +103,19 @@ namespace Totem.Application.Services.IdentityServices
 			{
 				await _signInManager.SignInAsync(user, false);
 
-				var token = Guid.NewGuid();
-				await _mediator.Publish(new SaveRefreshTokenEvent(token, user.Id));
+				var newRefreshToken = Guid.NewGuid();
+				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
 
-				var tokenJWT = await GenerateJwtTokenAsync(user);
-				return Successful<object>((tokenJWT.Data, token));
+				var jwt = await GenerateJwtTokenAsync(user);
+
+				return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken});
 			}
 
 			foreach (var error in result.Errors)
 			{
 				Notify(error.Description);
 			}
-			return Unsuccessful<object>();
+			return Unsuccessful<JwtAndTokenView>();
 		}
 
 		public async Task<Result> InactiveUser(Guid userId)
@@ -177,7 +178,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
-					Notificar(error.Description);
+					Notify(error.Description);
 
 				return Unsuccessful();
 			}
@@ -201,7 +202,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
-					Notificar(error.Description);
+					Notify(error.Description);
 
 				return Unsuccessful();
 			}
@@ -224,7 +225,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
-					Notificar(error.Description);
+					Notify(error.Description);
 
 				return Unsuccessful();
 			}
