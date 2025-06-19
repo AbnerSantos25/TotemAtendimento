@@ -112,7 +112,7 @@ namespace Totem.Application.Services.IdentityServices
 
 			foreach (var error in result.Errors)
 			{
-				Notificar(error.Description);
+				Notify(error.Description);
 			}
 			return Unsuccessful<object>();
 		}
@@ -153,7 +153,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
-					Notificar(error.Description);
+					Notify(error.Description);
 
 				return Unsuccessful();
 			}

@@ -12,7 +12,7 @@ namespace Totem.API.Controllers
 	public class PasswordController : MainController
 	{
 		private readonly IPasswordService _passwordService;
-		public PasswordController(INotificador notificador, IPasswordService passwordService) : base(notificador)
+		public PasswordController(INotificator notificator, IPasswordService passwordService) : base(notificator)
 		{
 			_passwordService = passwordService;
 		}

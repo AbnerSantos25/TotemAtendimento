@@ -11,7 +11,7 @@ namespace Totem.API.Controllers
 	public class QueueController : MainController
 	{
 		private readonly IQueueServices _queueServices;
-		public QueueController(INotificador notificador, IQueueServices queueServices) : base(notificador)
+		public QueueController(INotificator notificator, IQueueServices queueServices) : base(notificator)
 		{
 			_queueServices = queueServices;
 		}
