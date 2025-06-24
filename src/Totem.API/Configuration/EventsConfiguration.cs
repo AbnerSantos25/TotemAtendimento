@@ -2,6 +2,7 @@
 using Totem.Application.Events;
 using Totem.Application.Events.Notifications;
 using Totem.Domain.Aggregates.PasswordAggregate.Events;
+using Totem.Domain.Aggregates.RefreshTokenAggregate.Events;
 
 namespace Totem.API.Configuration
 {
@@ -15,6 +16,7 @@ namespace Totem.API.Configuration
 			{
 				cfg.RegisterServicesFromAssemblyContaining<PasswordCreatedEvent>();
 				cfg.RegisterServicesFromAssemblyContaining<PasswordMarkedAsServedHistoryEvent>();
+				cfg.RegisterServicesFromAssembly(typeof(SaveRefreshTokenEventHandler).Assembly);
 			});
 		}
 

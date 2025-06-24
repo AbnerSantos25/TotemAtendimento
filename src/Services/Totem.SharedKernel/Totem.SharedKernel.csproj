@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\Shared\Totem.Common\Totem.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
+
 </Project>

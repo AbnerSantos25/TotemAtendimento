@@ -6,7 +6,7 @@ using System.Text;
 using Totem.Common.API.Configurations;
 using Totem.Common.Enumerations;
 using Totem.Common.Extension;
-using Totem.Infra.Data;
+using Totem.Infra.Data.IdentityData;
 
 namespace Totem.API.Configuration
 {
@@ -18,8 +18,7 @@ namespace Totem.API.Configuration
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddErrorDescriber<IdentityCustomMenssages>()
             .AddRoles<IdentityRole>()
-			.AddDefaultTokenProviders(); 
-
+			.AddDefaultTokenProviders();
 
             //JWT
 

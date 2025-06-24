@@ -1,19 +1,21 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Totem.Application.Services.IdentityServices;
 using Totem.Application.Services.PasswordMatchingServices;
 using Totem.Application.Services.PasswordServices;
 using Totem.Application.Services.QueueServices;
+using Totem.Application.Services.RefreshTokenServices;
 using Totem.Application.Services.ServiceLocationServices;
 using Totem.Common.Domain.Notification;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
+using Totem.Domain.Aggregates.RefreshTokenAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Infra.Data.Queries.PasswordQueries;
 using Totem.Infra.Data.Queries.QueueQueries;
 using Totem.Infra.Data.Queries.ServiceLocationQueries;
 using Totem.Infra.Data.Repositories.PasswordRepository;
 using Totem.Infra.Data.Repositories.QueueRepository;
+using Totem.Infra.Data.Repositories.RefrashTokenRepository;
 using Totem.Infra.Data.Repositories.ServiceLocationRepository;
 using Totem.SharedKernel.Services;
 
@@ -39,12 +41,18 @@ namespace Totem.Application.Configurations
 			services.AddScoped<IQueueServices, QueueService>();
 
 			services.AddScoped<IIdentityService, IdentityService>();
+			services.AddScoped<IIdentityIntegrationService, IdentityService>();
 
             services.AddScoped<IPasswordMatchingService, PasswordMatchingService>();
 
 			services.AddScoped<IPasswordHistoryRepository, PasswordHistoryRepository>();
 
 			services.AddScoped<IPasswordIntegrationService, PasswordService>();
+
+			services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+
+			services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
 		}
 	}
 }
