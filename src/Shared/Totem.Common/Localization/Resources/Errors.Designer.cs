@@ -79,6 +79,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Não foi possível atualizar sua permissão..
+        /// </summary>
+        public static string InvalidRefreshToken {
+            get {
+                return ResourceManager.GetString("InvalidRefreshToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a O campo Nome é obrigatório.
         /// </summary>
         public static string NameFieldRequired {
@@ -129,6 +138,15 @@ namespace Totem.Common.Localization.Resources {
         public static string PasswordRequestNull {
             get {
                 return ResourceManager.GetString("PasswordRequestNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Token de atualização não encontrado..
+        /// </summary>
+        public static string RefreshTokenNotFound {
+            get {
+                return ResourceManager.GetString("RefreshTokenNotFound", resourceCulture);
             }
         }
         

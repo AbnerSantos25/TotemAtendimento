@@ -138,25 +138,6 @@ namespace Totem.Infra.Migrations
                     b.ToTable("ServiceLocations", "Totem");
                 });
 
-            modelBuilder.Entity("Totem.Domain.Aggregates.UserAggregate.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("HashedPassword")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users", "Totem");
-                });
-
             modelBuilder.Entity("Totem.Domain.Aggregates.PasswordAggregate.Password", b =>
                 {
                     b.HasOne("Totem.Domain.Aggregates.QueueAggregate.Queue", "Queue")

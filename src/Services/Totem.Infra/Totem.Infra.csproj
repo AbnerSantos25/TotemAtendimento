@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Totem.Domain\Totem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\AppIdentityDb\" />
+  </ItemGroup>
+
 </Project>

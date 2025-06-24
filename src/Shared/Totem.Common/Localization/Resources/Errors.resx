@@ -123,6 +123,9 @@
   <data name="IncorrectUsernamePassword" xml:space="preserve">
     <value>Usuário ou senha incorretos.</value>
   </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>Não foi possível atualizar sua permissão.</value>
+  </data>
   <data name="NameFieldRequired" xml:space="preserve">
     <value>O campo Nome é obrigatório</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="PasswordRequestNull" xml:space="preserve">
     <value>O campo senha não pode ser nulo</value>
+  </data>
+  <data name="RefreshTokenNotFound" xml:space="preserve">
+    <value>Token de atualização não encontrado.</value>
   </data>
   <data name="RegisterAlreadyExists" xml:space="preserve">
     <value>Registro  já existe.</value>

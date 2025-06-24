@@ -3,7 +3,7 @@ using Totem.Common.API.Data;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
-using Totem.Domain.Aggregates.UserAggregate;
+using Totem.Infra.Data.Mappings;
 
 namespace Totem.Infra.Data
 {
@@ -16,10 +16,8 @@ namespace Totem.Infra.Data
 
 		public DbSet<Password> Passwords { get; set; }
 		public DbSet<Queue> Queues { get; set; }
-		public DbSet<User> Users { get; set; }
 		public DbSet<ServiceLocation> ServiceLocations { get; set; }
 		public DbSet<PasswordHistory> PasswordHistories { get; set; }
-
 
 		protected override string GetDefaultContextSchema() => "Totem";
 
@@ -27,7 +25,10 @@ namespace Totem.Infra.Data
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.ApplyConfigurationsFromAssembly(typeof(TotemDbContext).Assembly);
+			modelBuilder.ApplyConfiguration(new PasswordMappings());
+			modelBuilder.ApplyConfiguration(new PasswordHistoryMappings());
+			modelBuilder.ApplyConfiguration(new QueueMappings());
+			modelBuilder.ApplyConfiguration(new ServiceLocationMappings());
 		}
 	}
 }
