@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,21 +10,27 @@ using Totem.Common.Enumerations;
 using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
+using Totem.Domain.Aggregates.RefreshTokenAggregate.Events;
 using Totem.Domain.Models.IdentityModels;
+using Totem.SharedKernel.Models;
+using Totem.SharedKernel.Services;
 
 namespace Totem.Application.Services.IdentityServices
 {
-	public class IdentityService : BaseService, IIdentityService
+	public class IdentityService : BaseService, IIdentityService , IIdentityIntegrationService
 	{
 		private readonly JwtSettings _jwtSettings;
 		private readonly SignInManager<IdentityUser> _signInManager;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly IMediator _mediator;
 
-		public IdentityService(INotificator notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings) : base(notificador)
+
+		public IdentityService(INotificator notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings, IMediator mediator) : base(notificador)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_jwtSettings = jwtSettings.Value;
+			_mediator = mediator;
 		}
 
 		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(IdentityUser user)
@@ -58,25 +65,31 @@ namespace Totem.Application.Services.IdentityServices
 			return Successful<string>(encodedToken);
 		}
 
-
-		public async Task<(Result Result, string Data)> LoginUserAsync(LoginUserView loginUserView)
+		public async Task<(Result Result, JwtAndTokenView Data)> LoginUserAsync(LoginUserView loginUserView)
 		{
 			var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
 			if (result.Succeeded)
 			{
 				var user = await _userManager.FindByEmailAsync(loginUserView.Email);
-				return await GenerateJwtTokenAsync(user);
+				if (user == null)
+					return Unsuccessful<JwtAndTokenView>(Errors.UserNotFound);
+
+				var newRefreshToken = Guid.NewGuid();
+				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
+
+				var jwt = await GenerateJwtTokenAsync(user);
+				return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken });
 			}
 
 			if (result.IsLockedOut)
 			{
-				return Unsuccessful<string>(Errors.UserTemporarilyBlocked);
+				return Unsuccessful<JwtAndTokenView>(Errors.UserTemporarilyBlocked);
 			}
 
-			return Unsuccessful<string>(Errors.IncorrectUsernamePassword);
+			return Unsuccessful<JwtAndTokenView>(Errors.IncorrectUsernamePassword);
 		}
 
-		public async Task<(Result Result, string Data)> RegisterUserAsync(RegisterUserView registerUserView)
+		public async Task<(Result Result, JwtAndTokenView Data)> RegisterUserAsync(RegisterUserView registerUserView)
 		{
 			var user = new IdentityUser
 			{
@@ -89,15 +102,20 @@ namespace Totem.Application.Services.IdentityServices
 			if (result.Succeeded)
 			{
 				await _signInManager.SignInAsync(user, false);
-				return await GenerateJwtTokenAsync(user);
+
+				var newRefreshToken = Guid.NewGuid();
+				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
+
+				var jwt = await GenerateJwtTokenAsync(user);
+
+				return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken});
 			}
 
 			foreach (var error in result.Errors)
 			{
 				Notify(error.Description);
 			}
-
-			return Unsuccessful<string>();
+			return Unsuccessful<JwtAndTokenView>();
 		}
 
 		public async Task<Result> InactiveUser(Guid userId)
@@ -184,7 +202,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
-					Notificar(error.Description);
+					Notify(error.Description);
 
 				return Unsuccessful();
 			}
@@ -207,12 +225,34 @@ namespace Totem.Application.Services.IdentityServices
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
-					Notificar(error.Description);
+					Notify(error.Description);
 
 				return Unsuccessful();
 			}
 
 			return Successful();
+		}
+
+
+		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(string userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				return Unsuccessful<string>(Errors.UserNotFound);
+
+			var tokenResult = await GenerateJwtTokenAsync(user);
+			if (!tokenResult.Result.Success)
+				return Unsuccessful<string>();
+
+			return Successful(tokenResult.Data);
+		}
+		public async Task<bool> ExistsUser(string userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				return false;
+
+			return true;
 		}
 	}
 }
