@@ -7,7 +7,7 @@ namespace Totem.Common.Extension
         //TODO: (Abner) Globalizar mensagens de erro
         public override IdentityError DefaultError()
         {
-            return new IdentityError { Code = nameof(DefaultError), Description = "Ocorreu uma falha desconhecida." };
+    return new IdentityError { Code = nameof(DefaultError), Description = "Ocorreu uma falha desconhecida." };
         }
 
         public override IdentityError ConcurrencyFailure()

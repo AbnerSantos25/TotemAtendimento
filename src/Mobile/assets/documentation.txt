@@ -1,0 +1,6 @@
+Tela Inicial
+    > Acho que podemos melhorar a animação do botão ao ser clicado, (transition, ou animation)
+
+Tela Login
+
+Configurações

@@ -8,7 +8,7 @@ namespace Totem.Common.Services
 	public abstract class BaseService
 	{
 
-		private readonly INotificator _notificator;
+	private readonly INotificator _notificator;
 
 		protected BaseService(INotificator notificator)
 		{
