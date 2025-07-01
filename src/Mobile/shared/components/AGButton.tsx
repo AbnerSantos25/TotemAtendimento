@@ -23,7 +23,7 @@ export default function AGButton({ title, route }: { title: string; route: strin
       underlayColor="transparent" // Desativa o efeito padrão do TouchableHighlight
     >
       <LinearGradient  colors={pressed ? ["#6830c0", "#f75f6c"] : ["rgba(74,73,76,.5)", "rgba(74,73,76,.5)"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[buttonStyles.gradient, { paddingVertical: "12.5%" }]}>
-        <Text style={[buttonStyles.buttonText, { fontSize: 44 }]}>{title}</Text>
+        <Text style={[buttonStyles.buttonText]}>{title}</Text>
       </LinearGradient>
     </TouchableHighlight>
   );
@@ -44,7 +44,7 @@ const buttonStyles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFFFFF",
-    fontSize: 24,
+    fontSize: 44,
     fontWeight: "bold",
   },
 });
