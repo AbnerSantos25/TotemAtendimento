@@ -12,8 +12,7 @@ export default function RootLayout() {
           fontWeight: "bold",
         },
       }}>
-      <Stack.Screen name="index" options={{ title: "Serviços", headerTitleAlign:"center" }} />
-      <Stack.Screen name="details" options={{ title: "Detalhes" }} />
+      <Stack.Screen name="/app/features/homeScreen/index.tsx" options={{ title: "Serviços", headerTitleAlign:"center" }} />
     </Stack>
   );
 }
