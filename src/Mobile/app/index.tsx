@@ -1,8 +1,8 @@
 import { StyleSheet, ImageBackground } from "react-native";
-import AGButton from "../../../shared/components/AGButton";
+import AGButton from "../shared/components/AGButton";
 import BackgroundImage from "../assets/images/background.png";
 
-export default function HomeScreen() {
+export default function Initial() {
   return (
     <ImageBackground
       source={BackgroundImage}

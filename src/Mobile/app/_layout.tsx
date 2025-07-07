@@ -2,8 +2,7 @@ import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
+    <Stack screenOptions={{
         headerStyle: {
           backgroundColor: "#222222",
         },
@@ -12,7 +11,10 @@ export default function RootLayout() {
           fontWeight: "bold",
         },
       }}>
-      <Stack.Screen name="/app/features/homeScreen/index.tsx" options={{ title: "Serviços", headerTitleAlign:"center" }} />
+        
+      <Stack.Screen name="index" options={{ title: "Teste", headerTitleAlign:"center" }} />
+      <Stack.Screen name="features/login" options={{ title: "Login", headerTitleAlign:"center" }} />
+      <Stack.Screen name="features/configurations" options={{ title: "Configurações", headerTitleAlign:"center" }} />
     </Stack>
   );
 }
