@@ -23,6 +23,13 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     textDecorationLine: "underline",
   },
+
+  icon:{
+    width: 24,
+    height: 24,
+    marginRight: 10,
+    color: "#9999ff",
+  }
 });
 
 export default styles;
