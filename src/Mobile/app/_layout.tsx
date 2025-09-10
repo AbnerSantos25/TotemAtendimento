@@ -7,8 +7,7 @@ export default function RootLayout() {
   const router = useRouter();
 
   return (
-    <Stack
-      screenOptions={{
+    <Stack screenOptions={{
         headerStyle: {
           backgroundColor: '#121212',
         },

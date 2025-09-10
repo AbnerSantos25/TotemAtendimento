@@ -1,7 +1,7 @@
 // Arquivo: app/index.tsx
 import { StyleSheet, ImageBackground, View } from "react-native";
 // A DEFINIÇÃO do seu componente é importada daqui (como sugeri na estrutura)
-import AGButton from "../shared/components/AGButton"; 
+import AGButton from "../shared/components/AGButton";
 import BackgroundImage from "../assets/images/background.png";
 
 export default function InitialScreen() {
