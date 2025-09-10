@@ -1,21 +1,32 @@
-import { StyleSheet, ImageBackground } from "react-native";
-import AGButton from "../shared/components/AGButton";
+// Arquivo: app/index.tsx
+import { StyleSheet, ImageBackground, View } from "react-native";
+// A DEFINIÇÃO do seu componente é importada daqui (como sugeri na estrutura)
+import AGButton from "../shared/components/AGButton"; 
 import BackgroundImage from "../assets/images/background.png";
 
-export default function Initial() {
+export default function InitialScreen() {
   return (
     <ImageBackground
       source={BackgroundImage}
       resizeMode="cover"
-      style={estiloTests.backgroundImage}
+      style={styles.backgroundImage}
     >
-      <AGButton title="Atendimento" route="" />
-      <AGButton title="Preferencial" route="" />
-      <AGButton title="Retirada de Exames" route="" />
+      <View style={styles.container}>
+        <AGButton title="Atendimento" route="/atendimento" />
+        <AGButton title="Preferencial" route="/preferencial" />
+        <AGButton title="Retirada de Exames" route="/retirada-exames" />
+      </View>
     </ImageBackground>
   );
 }
-const estiloTests = StyleSheet.create({
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
   backgroundImage: {
     flex: 1,
     justifyContent: "center",
