@@ -12,9 +12,9 @@ export default function InitialScreen() {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <AGHomeButton title="Atendimento" route="/atendimento" />
-        <AGHomeButton title="Preferencial" route="/preferencial" />
-        <AGHomeButton title="Retirada de Exames" route="/retirada-exames" />
+        <AGHomeButton title="Atendimento" route="/atendimento"  width={"100%"}/>
+        <AGButton title="Preferencial" route="/preferencial"  width={"100%"}/>
+        <AGButton title="Retirada de Exames" route="/retirada-exames" width={"90%"} />
       </View>
     </ImageBackground>
   );
