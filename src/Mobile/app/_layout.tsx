@@ -1,20 +1,21 @@
-import { Stack, useRouter } from 'expo-router';
+// app/_layout.tsx
+import { Stack } from 'expo-router';
+// Importe o componente que você acabou de criar (ajuste o caminho se necessário)
+
+// Não precisamos mais do useRouter aqui!
+// import { useRouter } from 'expo-router'; // <== REMOVER OU COMENTAR
 import { Pressable } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import HeaderConfigButton from '../shared/components/HeaderConfigButton';
 
-// Este arquivo define a navegação em pilha para o seu aplicativo.
 export default function RootLayout() {
-  const router = useRouter();
+  // const router = useRouter(); // <== REMOVER OU COMENTAR
 
   return (
     <Stack screenOptions={{
-        headerStyle: {
-          backgroundColor: '#121212',
-        },
+        headerStyle: { backgroundColor: '#121212' },
         headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        headerTitleStyle: { fontWeight: 'bold' },
         headerTitleAlign: 'center'
       }}
     >
@@ -22,16 +23,7 @@ export default function RootLayout() {
         name="index"
         options={{
           title: 'Início',
-          headerRight: () => (
-            <Pressable onPress={() => router.push('/configuration/configuracoes')}>
-              <FontAwesome 
-                name="cog" 
-                size={25} 
-                color="lightgray" 
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
+          headerRight: () => <HeaderConfigButton />,
         }}
       />
       <Stack.Screen name="atendimento" options={{ title: 'Atendimento' }} />

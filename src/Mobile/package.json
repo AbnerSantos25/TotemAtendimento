@@ -9,11 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "expo": "^54.0.0",
+    "babel-preset-expo": "^54.0.4",
+    "expo": "^54.0.13",
     "expo-linear-gradient": "~14.1.5",
     "expo-router": "^5.1.0",
     "expo-status-bar": "~2.2.3",
-    "nativewind": "^4.2.1",
     "react": "19.0.0",
     "react-native": "0.79.3",
     "react-native-safe-area-context": "5.4.0"
