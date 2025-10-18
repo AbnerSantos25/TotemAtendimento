@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View, Dimensions, Image } from "react-native";
-import MainStyles from "../../shared/styles/mainStyles";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
