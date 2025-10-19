@@ -40,7 +40,7 @@ export default function ConfigButton({
           <Text style={{color:"white", fontSize:18, paddingLeft:7}}>{title}</Text>
         </View>
         <View style={{width:"10%", alignItems:"flex-end"}}>
-          <Text style={{color:"white", fontSize:20}}>&gt;</Text>
+          <Ionicons style={{fontSize:24, color:"white"}} name="arrow-forward-circle-outline"></Ionicons>
         </View>
       </View>
     </Pressable>

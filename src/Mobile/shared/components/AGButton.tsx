@@ -71,9 +71,4 @@ const buttonStyles = StyleSheet.create({
     textAlign: "center",
     padding: 15,
   },
- viewBase: {
-    width: "100%", 
-    height: 40,
-    flexDirection: "row",
-  }
 });
