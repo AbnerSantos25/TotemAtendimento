@@ -1,16 +1,7 @@
-// app/_layout.tsx
 import { Stack } from 'expo-router';
-// Importe o componente que você acabou de criar (ajuste o caminho se necessário)
-
-// Não precisamos mais do useRouter aqui!
-// import { useRouter } from 'expo-router'; // <== REMOVER OU COMENTAR
-import { Pressable } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 import HeaderConfigButton from '../shared/components/HeaderConfigButton';
 
 export default function RootLayout() {
-  // const router = useRouter(); // <== REMOVER OU COMENTAR
-
   return (
     <Stack screenOptions={{
         headerStyle: { backgroundColor: '#121212' },
