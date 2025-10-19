@@ -1,4 +1,6 @@
-import { StyleSheet, Text, View, Dimensions, Image } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Image, ImageBackground } from "react-native";
+import BackgroundImage from "../../assets/images/background.png";
+import ConfigButton from "../../shared/components/ConfigButton";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -11,7 +13,7 @@ export default function configuration() {
       style={ConfigStyle.backgroundImage}
     >
       <View style={[ConfigStyle.MainContainer]}>
-        <View>
+        <View style={{flex:1, alignItems: 'center'}}>
           <View id="UserInfo" style={[ConfigStyle.UserInfo]}>
               <View id="img" style={[ConfigStyle.ViewPersonImage]}>
                   <Image
@@ -23,9 +25,13 @@ export default function configuration() {
                   <Text style={[ConfigStyle.UserEmail]}>Abner@gmail.com</Text>
               </View>
           </View>
-          <View id="2">
-              <View><Text>2Configurações Gerais</Text></View>
-              <View></View>
+          <View id="Configurations" style={{width: "90%", marginTop:20, alignItems: 'center'}}>
+              <View style={[ConfigStyle.DivConfig]}>
+                <Text style={{textAlign:"center"}}>Configurações Gerais</Text>
+              </View>
+              <View style={{width: "90%", marginTop:2}}>
+                <ConfigButton title="Temas" route="/" iconName="settings-outline"></ConfigButton>
+              </View>
           </View>
           <View id="3">
 
@@ -42,6 +48,15 @@ const ConfigStyle = StyleSheet.create({
     height: screenHeight,
     // backgroundColor: "#363636ff",
     flex:1,
+  },
+  DivConfig:{
+    backgroundColor: "#ffffffaa",
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 10,
+    padding: 10,
+    width: "100%",
+    textAlign: "center",
   },
   ViewPersonImage:{
     padding:10,
