@@ -1,23 +1,57 @@
 // src/shared/components/ConfigButton.tsx
-import { Pressable } from 'react-native';
+import { Pressable, DimensionValue, View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router'; // Importa o hook de navegação
+import { useRouter } from 'expo-router';
+import { ComponentProps } from 'react';
 
-export default function ConfigButton() {
-  const router = useRouter(); // Instancia o hook para poder navegar
+type IoniconName = ComponentProps<typeof Ionicons>['name'];
+
+interface ConfigButtonProps {
+  title: string;
+  route: string;
+  color?: string;
+  width?: DimensionValue;
+  height?: DimensionValue;
+  iconName?: IoniconName;
+}
+export default function ConfigButton({
+  title,
+  route,
+  color = "white",
+  width = 50,
+  height = 50,
+  iconName = "settings-outline",
+}: ConfigButtonProps){
+  
+  const router = useRouter();
 
   return (
     <Pressable
       onPress={() => {
-        // Usa o router para navegar para a tela de configurações.
-        // O caminho pode ser "/features/configurations" ou algo similar.
-        // Se a navegação já estiver no contexto de "configurations", você pode usar `router.push("/")`
-        // Ou o caminho completo, se o botão estiver em outra tela.
-        router.push("/features/configurations");
+        router.push("" + route);
       }}
       style={{ marginRight: 15 }} // Estilo para dar um espaçamento
     >
-      <Ionicons name="settings-outline" size={24} color="black" />
+      <View style={[ConfigButtonStyles.buttonContainer]}>
+        <View style={{width:"10%"}}>
+          <Ionicons name={iconName} size={24} color={color} />
+        </View>
+        <View style={{width:"80%", alignItems:"flex-start"}}>
+          <Text style={{color:"white", fontSize:18, paddingLeft:7}}>{title}</Text>
+        </View>
+        <View style={{width:"10%", alignItems:"flex-end"}}>
+          <Ionicons style={{fontSize:24, color:"white"}} name="arrow-forward-circle-outline"></Ionicons>
+        </View>
+      </View>
     </Pressable>
   );
 }
+
+const ConfigButtonStyles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection:"row", 
+    // justifyContent:"space-between", 
+    padding:12
+    // backgroundColor: '#ddd',
+  },
+});
