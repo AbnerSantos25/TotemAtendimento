@@ -1,4 +1,7 @@
-import { StyleSheet, Text, View, Dimensions, Image } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Image, ImageBackground, Pressable } from "react-native";
+import BackgroundImage from "../../assets/images/background.png";
+import ConfigButton from "../../shared/components/ConfigButton";
+import { Ionicons } from '@expo/vector-icons';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -11,24 +14,44 @@ export default function configuration() {
       style={ConfigStyle.backgroundImage}
     >
       <View style={[ConfigStyle.MainContainer]}>
-        <View>
+        <View style={{flex:1, alignItems: 'center'}}>
           <View id="UserInfo" style={[ConfigStyle.UserInfo]}>
-              <View id="img" style={[ConfigStyle.ViewPersonImage]}>
-                  <Image
-                    source={require("../../assets/images/personImage.png")}
-                    style={{ width: 120, height: 120, borderRadius:100 }}/>
+              <Pressable  onPress={() => {
+                  console.log("Usuário quer editar a foto!");
+              }}>
+              <View style={ConfigStyle.ProfileImageContainer}>
+                <Image
+                source={require("../../assets/images/personImage.png")}
+                  style={ConfigStyle.ProfileImage}/>
+                <View style={ConfigStyle.EditIconContainer}>
+                  <Ionicons name="pencil" size={20} color="#ffffff" />
+                </View>
               </View>
+              </Pressable>
+            {/* FIM DO NOVO CONTÊINER */}
               <View id="Name">
                   <Text style={[ConfigStyle.UserName]}>Abner Da Silva Santos</Text>
                   <Text style={[ConfigStyle.UserEmail]}>Abner@gmail.com</Text>
               </View>
           </View>
-          <View id="2">
-              <View><Text>2Configurações Gerais</Text></View>
-              <View></View>
+          <View id="Configurations" style={{width: "90%", marginTop:20, alignItems: 'center'}}>
+              <View style={[ConfigStyle.DivConfig]}>
+                <Text style={[ConfigStyle.ManuTitle]}>Configurações Gerais</Text>
+              </View>
+              <View style={{width: "90%", marginTop:2, rowGap:2}}>
+                <ConfigButton title="Temas" route="/" iconName="invert-mode-outline"></ConfigButton>
+                <ConfigButton title="Idiomas" route="/" iconName="language-outline"></ConfigButton>
+              </View>
           </View>
-          <View id="3">
-
+          <View id="Informações" style={{width: "90%", marginTop:20, alignItems: 'center'}}>
+              <View style={[ConfigStyle.DivConfig]}>
+                <Text style={[ConfigStyle.ManuTitle]}>Informações</Text>
+              </View>
+              <View style={{width: "90%", marginTop:2, rowGap:2}}>
+                <ConfigButton title="Sobre o Aplicativo" route="/" iconName="phone-portrait-outline"></ConfigButton>
+                <ConfigButton title="Termos & Condições" route="/" iconName="reader-outline"></ConfigButton>
+                <ConfigButton title="Políticas de Privacidade" route="/" iconName="shield-half-outline"></ConfigButton>
+              </View>
           </View>
         </View>
       </View>
@@ -42,6 +65,15 @@ const ConfigStyle = StyleSheet.create({
     height: screenHeight,
     // backgroundColor: "#363636ff",
     flex:1,
+  },
+  DivConfig:{
+    backgroundColor: "#ffffffaa",
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 10,
+    padding: 10,
+    width: "100%",
+    textAlign: "center",
   },
   ViewPersonImage:{
     padding:10,
@@ -62,7 +94,7 @@ const ConfigStyle = StyleSheet.create({
   UserEmail:{
     marginTop: 5,       
     fontSize: 15,           
-    color: "#fff",          
+    color: "#b7b5b5ff",          
     textAlign: "center",   
     textTransform: "capitalize", 
     letterSpacing: 1, 
@@ -72,5 +104,35 @@ const ConfigStyle = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 16,
+  },
+  ManuTitle:{
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
+  },
+ProfileImageContainer: {
+    position: 'relative',
+    width: 140,
+    height: 140,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+
+  ProfileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+
+  EditIconContainer: {
+    position: 'absolute',
+    bottom: 7,     
+    right: 15,     
+    backgroundColor: '#4359e9ff',
+    borderRadius: 15,
+    padding: 5,
+    zIndex: 10, 
   },
 });
