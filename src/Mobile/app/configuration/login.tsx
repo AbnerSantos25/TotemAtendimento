@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { AuthData, UserRequest, UserView } from "./models/UserModels";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BaseService } from "../../shared/services/baseSerice";
+import { BaseService } from "../../shared/services/baseService";
 
 export default function ConfigurationsScreen() {
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
