@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { UserRequest, UserView } from "./models/UserModels";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { AuthData, UserRequest, UserView } from "./models/UserModels";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BaseService } from "../../shared/services/baseSerice";
 
 export default function ConfigurationsScreen() {
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
@@ -28,34 +29,16 @@ export default function ConfigurationsScreen() {
     // pensar em como criar services para essas requisições.
     // pensar em o que fazer com o token que recebo de volta.
 
-    try {
-      const response = await fetch("http://10.0.2.2:50633/api/totem/identity/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginRequest),
-      });
+    const response = await BaseService.PostAsync<AuthData, UserRequest>("/totem/identity/login", loginRequest);
 
-      if (!response.ok) {
-        const errorBody = await response.text();
+    if (response.success) {
+      console.log("ResponseData", response.data);
 
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      console.log("Sucesso! Dados recebidos:", data);
-
-      await AsyncStorage.setItem("jwt", data.data.jwt);
-      await AsyncStorage.setItem("newToken", data.data.newToken);
-
-      AsyncStorage.getAllKeys().then((keys) => {
-        console.log("Chaves armazenadas no AsyncStorage:", keys);
-      });
-      
-    } catch (error) {
-      console.error("Falha na requisição fetch:", error);
+      await AsyncStorage.setItem("jwt", response.data.jwt);
+      await AsyncStorage.setItem("newToken", response.data.newToken);
+    } else {
+      console.error("Falha na requisição:", response.error.message);
+      Alert.alert("Erro no Login", response.error.message);
     }
   };
   return (
