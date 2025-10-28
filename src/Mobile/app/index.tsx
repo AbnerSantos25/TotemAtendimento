@@ -1,20 +1,20 @@
 import { StyleSheet, ImageBackground, View } from "react-native";
-import BackgroundImage from "../assets/images/background.png";
-import AGButton from "../shared/components/AGButton";
+import { Redirect } from "expo-router";
 
 export default function HomeScreen() {
   return (
-    <ImageBackground
-      source={BackgroundImage}
-      resizeMode="cover"
-      style={styles.backgroundImage}
-    >
-      <View style={styles.container}>
-        <AGButton title="Atendimento" route="/atendimento"  width={"100%"}/>
-        <AGButton title="Preferencial" route="/preferencial"  width={"100%"}/>
-        <AGButton title="Retirada de Exames" route="/retirada-exames" width={"90%"} />
-      </View>
-    </ImageBackground>
+    <Redirect href={"/configuration/login"}/>
+    // <ImageBackground
+    //   source={BackgroundImage}
+    //   resizeMode="cover"
+    //   style={styles.backgroundImage}
+    // >
+    //   <View style={styles.container}>
+    //     <AGButton title="Atendimento" route="/atendimento"  width={"100%"}/>
+    //     <AGButton title="Preferencial" route="/preferencial"  width={"100%"}/>
+    //     <AGButton title="Retirada de Exames" route="/retirada-exames" width={"90%"} />
+    //   </View>
+    // </ImageBackground>
   );
 }
 
