@@ -37,7 +37,7 @@ export default function ConfigurationsScreen() {
       await AsyncStorage.setItem("jwt", response.data.jwt);
       await AsyncStorage.setItem("newToken", response.data.newToken);
     } else {
-      console.error("Falha na requisição:", response.error.message);
+      // console.error("Falha na requisição:", response.error.message);
       Alert.alert("Erro no Login", response.error.message);
     }
   };

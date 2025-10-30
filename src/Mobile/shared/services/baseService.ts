@@ -1,10 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_BASE_URL = "http://10.0.2.2:50633/api"; // substituir por .env
+
+const API_BASE_URL = "http://10.0.2.2:50170/api"; // substituir por .env
 const token = AsyncStorage.getItem("jwt");
 // separar em um arquivo de models
 // TODO<Gabriel> pensar no que fazer quando o token expirar.
-
 interface ApiResponse<T> {
   success: boolean;
   data: T;
