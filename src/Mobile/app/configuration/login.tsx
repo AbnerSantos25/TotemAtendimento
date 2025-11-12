@@ -1,53 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { AuthData, UserRequest, UserView } from "./models/UserModels";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserRequest, UserView } from "./models/UserModels";
 import { BaseService } from "../../shared/services/baseService";
+import { SessionService } from "../../shared/services/sessionServices";
+import { AuthData, Status } from "../../shared/services/models/baseServiceModels";
+import TemporaryComponent from "./temporaryComponent";
 
 export default function ConfigurationsScreen() {
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
     email: "",
     password: "",
   });
+  const [status, setStatus] = useState<string | null>(null);
 
   const handleInputChange = (field: keyof UserRequest, value: string) => {
     setLoginRequest({ ...loginRequest, [field]: value });
   };
 
+  useEffect(() => {
+    async () => {
+      const storedStatus = await SessionService.getJwtTokenAsync();
+      setStatus(storedStatus);
+    }
+  }, [10])
+
   const handleLogin = async () => {
     console.log("Tentando fazer login com:", loginRequest);
-    // Muito estranho.. preciso usar esse IP para funcionar: '10.0.2.2' (se for testar pelo emulador.)
-    // pelo que me lembro, usava o ip da minha máquina quando testava... E no final passei a API pro servidor... enfim.
-
-    /*
-      "email": "user@example.com"
-      "password": "Teste@123" 
-    */
-
-    // Próximos passos:
-    // instalar o dotEnv
-    // pensar em como criar services para essas requisições.
-    // pensar em o que fazer com o token que recebo de volta.
-
     const response = await BaseService.PostAsync<AuthData, UserRequest>("/totem/identity/login", loginRequest);
 
     if (response.success) {
-      console.log("ResponseData", response.data);
+      await SessionService.saveAuthDataAsync(response.data);
 
-      await AsyncStorage.setItem("jwt", response.data.jwt);
-      await AsyncStorage.setItem("newToken", response.data.newToken);
+      Alert.alert("Logado com sucesso")
+
+      setStatus(Status.loggedIn.toString())
+
     } else {
-      // console.error("Falha na requisição:", response.error.message);
       Alert.alert("Erro no Login", response.error.message);
     }
   };
   return (
-    <View style={{ width: "50%", flex: 1, alignSelf: "center", justifyContent: "center" }}>
-      <Text style={formStyles.label}>E-mail:</Text>
-      <TextInput value={loginRequest.email} onChangeText={(txt) => handleInputChange("email", txt)} style={formStyles.input} />
-      <Text style={formStyles.label}>Senha:</Text>
-      <TextInput value={loginRequest.password} onChangeText={(txt) => handleInputChange("password", txt)} style={formStyles.input} secureTextEntry />
-      <Button title="Entrar" onPress={handleLogin} />
+    <View style={{ width: "50%", flex: 1, alignSelf: "center", justifyContent: "center", gap: 30 }}>
+      <View >
+        <Text style={formStyles.label}>E-mail:</Text>
+        <TextInput value={loginRequest.email} onChangeText={(txt) => handleInputChange("email", txt)} style={formStyles.input} />
+        <Text style={formStyles.label}>Senha:</Text>
+        <TextInput value={loginRequest.password} onChangeText={(txt) => handleInputChange("password", txt)} style={formStyles.input} secureTextEntry />
+        <Button title="Entrar" onPress={handleLogin} />
+      </View>
+      <View style={{ borderWidth: 1, display: "flex", alignSelf: "center", width: 400 }}>
+        <Text style={{ textAlign: 'center', fontSize: 25 }}>Situação Login:</Text>
+        {
+          status == Status.loggedIn.toString()
+            ? <Text style={{ fontSize: 28, textAlign: 'center', color: 'green' }}>Logado</Text>
+            : <Text style={{ fontSize: 28, textAlign: 'center', color: 'red' }}>Não Logado!!!</Text>
+        }
+      </View>
+      <TemporaryComponent/>
     </View>
   );
 }
