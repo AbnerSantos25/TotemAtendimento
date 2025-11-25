@@ -35,19 +35,22 @@ export default function ConfigurationsScreen() {
 
       setStatus(Status.loggedIn.toString())
 
+      await AsyncStorage.setItem("jwt", response.data.jwt);
+      await AsyncStorage.setItem("newToken", response.data.newToken);
     } else {
+      console.error("Falha na requisição:", response.error.message);
       Alert.alert("Erro no Login", response.error.message);
     }
   };
   return (
     <View style={{ width: "50%", flex: 1, alignSelf: "center", justifyContent: "center", gap: 30 }}>
       <View >
-        <Text style={formStyles.label}>E-mail:</Text>
-        <TextInput value={loginRequest.email} onChangeText={(txt) => handleInputChange("email", txt)} style={formStyles.input} />
-        <Text style={formStyles.label}>Senha:</Text>
-        <TextInput value={loginRequest.password} onChangeText={(txt) => handleInputChange("password", txt)} style={formStyles.input} secureTextEntry />
-        <Button title="Entrar" onPress={handleLogin} />
-      </View>
+      <Text style={formStyles.label}>E-mail:</Text>
+      <TextInput value={loginRequest.email} onChangeText={(txt) => handleInputChange("email", txt)} style={formStyles.input} />
+      <Text style={formStyles.label}>Senha:</Text>
+      <TextInput value={loginRequest.password} onChangeText={(txt) => handleInputChange("password", txt)} style={formStyles.input} secureTextEntry />
+      <Button title="Entrar" onPress={handleLogin} />
+    </View>
       <View style={{ borderWidth: 1, display: "flex", alignSelf: "center", width: 400 }}>
         <Text style={{ textAlign: 'center', fontSize: 25 }}>Situação Login:</Text>
         {

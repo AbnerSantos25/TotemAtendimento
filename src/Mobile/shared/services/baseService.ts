@@ -15,28 +15,28 @@ async function createApiErrorAsync(response: Response): Promise<ApiError> {
 
   try {
     errorBodyText = await response.text();
-
+    
     try {
       const errorJson = JSON.parse(errorBodyText);
 
       if (errorJson.errors && typeof errorJson.errors === 'object' && !Array.isArray(errorJson.errors)) {
-
-        validationErrors = errorJson.errors;
+        
+        validationErrors = errorJson.errors; 
         friendlyMessage = errorJson.title || "Erro.";
-
-      }
+      
+      } 
 
       else if (errorJson.errors && Array.isArray(errorJson.errors)) {
-        friendlyMessage = errorJson.errors.join(', ');
-      }
-
+         friendlyMessage = errorJson.errors.join(', ');
+      } 
+     
       else {
         friendlyMessage = errorBodyText;
       }
     } catch (jsonError) {
-      friendlyMessage = errorBodyText;
+       friendlyMessage = errorBodyText;
     }
-
+    
   } catch (e) {
     errorBodyText = "Não foi possível ler o corpo do erro.";
     friendlyMessage = "Não foi possível ler o corpo do erro.";
@@ -44,9 +44,9 @@ async function createApiErrorAsync(response: Response): Promise<ApiError> {
 
   return {
     statusCode: response.status,
-    message: friendlyMessage,
-    body: errorBodyText,
-    validationErrors: validationErrors
+    message: friendlyMessage,          
+    body: errorBodyText,               
+    validationErrors: validationErrors 
   };
 }
 
@@ -147,4 +147,6 @@ console.log(token)
       return { success: false, error: netError };
     }
   },
+
+  // Você pode adicionar os métodos put, delete, etc. aqui
 };
