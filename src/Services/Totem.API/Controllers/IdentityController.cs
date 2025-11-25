@@ -10,6 +10,7 @@ namespace Totem.API.Controllers
     [Route("api/totem/[controller]")]
     public class IdentityController : MainController
     {
+
         private readonly IIdentityService _identityService;
         public IdentityController(INotificator notificator, IIdentityService identityService) : base(notificator)
         {
