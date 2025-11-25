@@ -1,23 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ApiError, ApiResponse, ServiceResult } from "./models/baseServiceModels";
+import { SessionService } from "./sessionServices";
 
-const API_BASE_URL = "http://10.0.2.2:50633/api"; // substituir por .env
-const token = AsyncStorage.getItem("jwt");
-// separar em um arquivo de models
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+
+// const token = AsyncStorage.getItem("jwt");
+
 // TODO<Gabriel> pensar no que fazer quando o token expirar.
-
-interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  errors?: string[];
-}
-export interface ApiError {
-  statusCode: number;
-  message: string;
-  body?: string;
-  validationErrors?: Record<string, string[]>;
-}
-
-export type ServiceResult<T> = { success: true; data: T } | { success: false; error: ApiError };
 
 async function createApiErrorAsync(response: Response): Promise<ApiError> {
   let errorBodyText: string;
@@ -63,8 +52,10 @@ async function createApiErrorAsync(response: Response): Promise<ApiError> {
 
 export const BaseService = {
   PostAsync: async <TResponse, TRequest>(endpoint: string, body: TRequest): Promise<ServiceResult<TResponse>> => {
+    const token = await SessionService.getJwtTokenAsync();
     const url = `${API_BASE_URL}${endpoint}`;
 
+    console.log(url);
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -75,7 +66,12 @@ export const BaseService = {
         body: JSON.stringify(body),
       });
 
-      if (!response.ok) {
+      // TODO<Gabriel> Continuar a partir daqui.
+      // Acredito que tenha que existir AQUI, o serviço que verificar se a requisição foi 401.
+      // Caso não for, prosseguir normalmente.
+      // Se for, precisa fazer a requisição para o refresh token. E re-enviar esta requisição que falhou.
+
+      if (!response) {
         console.log("Resposta nao ok!");
         const error = await createApiErrorAsync(response);
         return { success: false, error: error };
@@ -109,8 +105,10 @@ export const BaseService = {
   },
 
   GetAsync: async <TResponse>(endpoint: string): Promise<ServiceResult<TResponse>> => {
+    const token = await SessionService.getJwtTokenAsync();
     const url = `${API_BASE_URL}${endpoint}`;
-
+console.log(url)
+console.log(token)
     try {
       const response = await fetch(url, {
         method: "GET",

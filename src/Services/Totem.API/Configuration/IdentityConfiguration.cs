@@ -43,7 +43,9 @@ namespace Totem.API.Configuration
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidAudience = jwtSettings.ValidAt,
-                    ValidIssuer = jwtSettings.Issuer
+                    ValidIssuer = jwtSettings.Issuer,
+                    ClockSkew = TimeSpan.Zero
+
                 };
             });
 
