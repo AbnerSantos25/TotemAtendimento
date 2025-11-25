@@ -3,9 +3,6 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { AuthData, UserRequest, UserView } from "./models/UserModels";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BaseService } from "../../shared/services/baseService";
-import { RootSiblingParent } from 'react-native-root-siblings';
-import { AGMessageType, AGShowMessage } from "../../shared/components/ShowMessage";
-
 
 export default function ConfigurationsScreen() {
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
@@ -18,26 +15,33 @@ export default function ConfigurationsScreen() {
   };
 
   const handleLogin = async () => {
+    console.log("Tentando fazer login com:", loginRequest);
+    // Muito estranho.. preciso usar esse IP para funcionar: '10.0.2.2' (se for testar pelo emulador.)
+    // pelo que me lembro, usava o ip da minha máquina quando testava... E no final passei a API pro servidor... enfim.
+
+    /*
+      "email": "user@example.com"
+      "password": "Teste@123" 
+    */
+
     // Próximos passos:
     // instalar o dotEnv
     // pensar em como criar services para essas requisições.
-    // pensar em o que fazer com o token que recebo de volta
+    // pensar em o que fazer com o token que recebo de volta.
+
     const response = await BaseService.PostAsync<AuthData, UserRequest>("/totem/identity/login", loginRequest);
-    console.log("passou pela request:", loginRequest);
 
     if (response.success) {
-      AGShowMessage(response.data.newToken, AGMessageType.success);
-      console.log("Success - ResponseData", response.data);
+      console.log("ResponseData", response.data);
 
       await AsyncStorage.setItem("jwt", response.data.jwt);
       await AsyncStorage.setItem("newToken", response.data.newToken);
     } else {
-      AGShowMessage(response.error.message, AGMessageType.error);
-      console.error(response.error.message);
+      console.error("Falha na requisição:", response.error.message);
+      Alert.alert("Erro no Login", response.error.message);
     }
   };
   return (
-    <RootSiblingParent>
     <View style={{ width: "50%", flex: 1, alignSelf: "center", justifyContent: "center" }}>
       <Text style={formStyles.label}>E-mail:</Text>
       <TextInput value={loginRequest.email} onChangeText={(txt) => handleInputChange("email", txt)} style={formStyles.input} />
@@ -45,7 +49,6 @@ export default function ConfigurationsScreen() {
       <TextInput value={loginRequest.password} onChangeText={(txt) => handleInputChange("password", txt)} style={formStyles.input} secureTextEntry />
       <Button title="Entrar" onPress={handleLogin} />
     </View>
-    </RootSiblingParent>
   );
 }
 
