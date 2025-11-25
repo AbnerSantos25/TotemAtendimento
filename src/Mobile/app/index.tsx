@@ -1,5 +1,8 @@
 import { StyleSheet, ImageBackground, View } from "react-native";
+import BackgroundImage from "../assets/images/background.png";
+import AGButton from "../shared/components/AGButton";
 import { Redirect } from "expo-router";
+
 
 export default function HomeScreen() {
   return (
