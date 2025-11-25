@@ -1,31 +1,19 @@
+import { AGMessageType, AGShowMessage } from '../../../shared/components/AGShowMessage';
+import { BaseService } from '../../../shared/services/baseService';
 import { 
   UserRequest,
   UserView 
 } from '../models/UserModels';
 
-export async function updateUserEmail(
-  userId: string, 
-  token: string, 
-  request: UserRequest
-): Promise<UserView> {
-  
-  const url = `user/${userId}/update-email`;
+export async function UpdateUserEmail(request: UserRequest): Promise<UserView> {
 
-  const response = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
-    body: JSON.stringify(request), // Envia o DTO de Requisição
-  });
-
-  if (response.status === 200 || response.status === 201) {
-    // Sucesso: Retorna o novo perfil completo ou apenas os dados necessários
-    const data: UserView = await response.json(); 
-    return data;
+  const response = await BaseService.PutAsync<UserView, UserRequest>("/totem/identity/email-update", request);
+  if (response.success) {
+    AGShowMessage(AGMessageType.success);
+    return response.data;
+  }else{
+    AGShowMessage(response.error.message, AGMessageType.error);
+    console.error(response.error.message);
   }
-  
-  // Trata falhas de rede ou servidor
-  throw new Error("Não foi possível alterar o nome. Tente novamente.");
+  throw response.error.message;
 }
