@@ -5,15 +5,8 @@ import {
   TouchableHighlight,
   Text,
   StyleSheet,
-  DimensionValue,
 } from "react-native";
-
-interface AGButtonProps {
-  title: string;
-  route: string;
-  width?: DimensionValue;
-  height?: DimensionValue;
-}
+import { AGButtonProps } from "./Models/AGButtonProps";
 
 export default function AGButton({
   title,

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_BASE_URL = "http://10.0.2.2:50633/api"; // substituir por .env
-const token = AsyncStorage.getItem("jwt");
+const API_BASE_URL = "http://192.168.1.103:50765/api"; // substituir por .env
+const token = AsyncStorage.getItem("jwt"); 
 // separar em um arquivo de models
 // TODO<Gabriel> pensar no que fazer quando o token expirar.
 
@@ -73,6 +73,7 @@ export const BaseService = {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(body),
+        
       });
 
       if (!response.ok) {
@@ -98,7 +99,7 @@ export const BaseService = {
         };
       }
     } catch (error) {
-      console.error(`Falha na requisição POST para ${url}:`, error);
+      console.error(`Falha na requisição POST para ${url}:`);
       const netError: ApiError = {
         statusCode: 0,
         message: (error as Error).message || "Falha de rede desconhecida",
@@ -110,7 +111,6 @@ export const BaseService = {
 
   GetAsync: async <TResponse>(endpoint: string): Promise<ServiceResult<TResponse>> => {
     const url = `${API_BASE_URL}${endpoint}`;
-
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -150,5 +150,52 @@ export const BaseService = {
     }
   },
 
+
+  PutAsync: async <TResponse, TRequest>(endpoint: string, body: TRequest): Promise<ServiceResult<TResponse>> => {
+    const url = `${API_BASE_URL}${endpoint}`;
+    
+    // CORREÇÃO: Obter o token com await AQUI DENTRO
+    const token = await AsyncStorage.getItem("jwt"); 
+
+    try {
+      const response = await fetch(url, {
+        method: "PUT", // Mudança aqui
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, 
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const error = await createApiErrorAsync(response);
+        return { success: false, error: error };
+      }
+
+      const result: ApiResponse<TResponse> = await response.json();
+
+      if (result.success) {
+        return { success: true, data: result.data };
+      } else {
+        const errorMessage = result.errors ? result.errors.join(", ") : JSON.stringify(result);
+        return {
+          success: false,
+          error: {
+            statusCode: 200,
+            message: errorMessage,
+            body: JSON.stringify(result),
+          },
+        };
+      }
+    } catch (error) {
+      console.error(`Falha na requisição PUT para ${url}:`);
+      const netError: ApiError = {
+        statusCode: 0,
+        message: (error as Error).message || "Falha de rede desconhecida",
+      };
+
+      return { success: false, error: netError };
+    }
+  },
   // Você pode adicionar os métodos put, delete, etc. aqui
 };
