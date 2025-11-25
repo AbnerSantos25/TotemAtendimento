@@ -148,5 +148,52 @@ console.log(token)
     }
   },
 
+  PutAsync: async <TResponse, TRequest>(endpoint: string, body: TRequest): Promise<ServiceResult<TResponse>> => {
+  const url = `${API_BASE_URL}${endpoint}`;
+  
+  // CORREÇÃO: Obter o token com await AQUI DENTRO
+  const token = await AsyncStorage.getItem("jwt"); 
+
+  try {
+    const response = await fetch(url, {
+      method: "PUT", // Mudança aqui
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, 
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const error = await createApiErrorAsync(response);
+      return { success: false, error: error };
+    }
+
+    const result: ApiResponse<TResponse> = await response.json();
+
+    if (result.success) {
+      return { success: true, data: result.data };
+    } else {
+      const errorMessage = result.errors ? result.errors.join(", ") : JSON.stringify(result);
+      return {
+        success: false,
+        error: {
+          statusCode: 200,
+          message: errorMessage,
+          body: JSON.stringify(result),
+        },
+      };
+    }
+  } catch (error) {
+    console.error(`Falha na requisição PUT para ${url}:`);
+    const netError: ApiError = {
+      statusCode: 0,
+      message: (error as Error).message || "Falha de rede desconhecida",
+    };
+
+    return { success: false, error: netError };
+  }
+  },
+
   // Você pode adicionar os métodos put, delete, etc. aqui
 };
