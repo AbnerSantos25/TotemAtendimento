@@ -7,7 +7,7 @@ namespace Totem.API.Configuration
 	{
 		public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
 		{
-			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
 			var roles = Enum.GetNames(typeof(EnumRoles));
 
@@ -15,7 +15,7 @@ namespace Totem.API.Configuration
 			{
 				if (!await roleManager.RoleExistsAsync(role))
 				{
-					await roleManager.CreateAsync(new IdentityRole(role));
+					await roleManager.CreateAsync(new IdentityRole<Guid>(role));
 				}
 			}
 		}

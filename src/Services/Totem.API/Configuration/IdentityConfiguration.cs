@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Totem.Common.API.Configurations;
 using Totem.Common.Extension;
+using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Infra.Data.IdentityData;
 
 namespace Totem.API.Configuration
@@ -13,10 +12,10 @@ namespace Totem.API.Configuration
     {
         public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddErrorDescriber<IdentityCustomMenssages>()
-            .AddRoles<IdentityRole>()
+            .AddRoles<IdentityRole<Guid>>()
 			.AddDefaultTokenProviders();
 
             //JWT

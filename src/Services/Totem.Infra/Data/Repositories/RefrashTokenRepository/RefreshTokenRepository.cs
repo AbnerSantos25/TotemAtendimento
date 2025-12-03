@@ -31,7 +31,7 @@ namespace Totem.Infra.Data.Repositories.RefrashTokenRepository
 			return await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == token);
 		}
 
-		public async Task<List<RefreshToken>> GetByUserIdAsync(string userId)
+		public async Task<List<RefreshToken>> GetByUserIdAsync(Guid userId)
 		{
 			return await _context.RefreshTokens.Where(rt => rt.UserId == userId).ToListAsync();
 		}

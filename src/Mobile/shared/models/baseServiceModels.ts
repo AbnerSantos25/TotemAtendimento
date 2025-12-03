@@ -1,3 +1,5 @@
+import {UserView} from "./CommonModels"
+
 export interface ApiResponse<T> {
     success: boolean;
     data: T;
@@ -13,6 +15,7 @@ export interface ApiError {
 export interface AuthData {
   jwt: string;
   newToken: string;
+  userView: UserView
 }
 
 export enum Status{

@@ -1,11 +1,10 @@
 import { AGMessageType, AGShowMessage } from '../../../shared/components/AGShowMessage';
 import { BaseService } from '../../../shared/services/baseService';
-import { 
-  UserRequest,
-  UserView 
-} from '../models/UserModels';
+import { UserRequest, } from '../models/UserModels';
+import { SessionService } from '../../../shared/services/sessionServices';
+import { UserView } from '../../../shared/models/CommonModels';
 
-export async function UpdateUserEmail(request: UserRequest): Promise<UserView> {
+export async function UpdateUserEmailAsync(request: UserRequest): Promise<UserView> {
 
   const response = await BaseService.PutAsync<UserView, UserRequest>("/totem/identity/email-update", request);
   if (response.success) {
@@ -16,4 +15,14 @@ export async function UpdateUserEmail(request: UserRequest): Promise<UserView> {
     console.error(response.error.message);
   }
   throw response.error.message;
+}
+
+export async function GetUserDataAsync() : Promise<UserView | null> {
+  const userView = SessionService.getUser();
+  if(userView == null)
+  {
+    throw("Erro ao tentar resgatar as informações do usuario");
+  }
+
+  return userView;
 }

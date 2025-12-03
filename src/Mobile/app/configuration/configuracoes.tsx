@@ -1,12 +1,32 @@
-import { StyleSheet, Text, View, Dimensions, Image, ImageBackground, Pressable } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Image, ImageBackground, Pressable, ActivityIndicator } from "react-native";
 import BackgroundImage from "../../assets/images/background.png";
 import ConfigButton from "../../shared/components/ConfigButton";
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from "react";
+import { GetUserDataAsync } from "./services/configService";
+import { UserView } from "../../shared/models/CommonModels";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 export default function configuration() {
+  const [user, setUser] = useState<UserView | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      const loggedUser = await GetUserDataAsync();
+      setUser(loggedUser);
+      setLoading(false);
+    };
+
+    loadUserData();
+  });
+
+  if (loading) {
+    return <ActivityIndicator size="large" />;
+  }
+
   return (
   <ImageBackground
       source={BackgroundImage}

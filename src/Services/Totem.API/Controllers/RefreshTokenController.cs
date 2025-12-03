@@ -16,7 +16,7 @@ namespace Totem.API.Controllers
 		}
 
 		[HttpGet("/user/{userId}/RefreshToken/{tokenId}")]
-		public async Task<IActionResult> SaveRefreshToken(string userId, Guid tokenId)
+		public async Task<IActionResult> SaveRefreshToken(Guid userId, Guid tokenId)
 		{ 
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
 			

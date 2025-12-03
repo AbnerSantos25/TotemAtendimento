@@ -11,6 +11,7 @@ using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.RefreshTokenAggregate.Events;
+using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.IdentityModels;
 using Totem.SharedKernel.Models;
 using Totem.SharedKernel.Services;
@@ -20,12 +21,12 @@ namespace Totem.Application.Services.IdentityServices
 	public class IdentityService : BaseService, IIdentityService, IIdentityIntegrationService
 	{
 		private readonly JwtSettings _jwtSettings;
-		private readonly SignInManager<IdentityUser> _signInManager;
-		private readonly UserManager<IdentityUser> _userManager;
+		private readonly SignInManager<User> _signInManager;
+		private readonly UserManager<User> _userManager;
 		private readonly IMediator _mediator;
 
 
-		public IdentityService(INotificator notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings, IMediator mediator) : base(notificador)
+		public IdentityService(INotificator notificador, UserManager<User> userManager, SignInManager<User> signInManager, IOptions<JwtSettings> jwtSettings, IMediator mediator) : base(notificador)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
@@ -33,13 +34,13 @@ namespace Totem.Application.Services.IdentityServices
 			_mediator = mediator;
 		}
 
-		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(IdentityUser user)
+		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(User user)
 		{
 			var roles = await _userManager.GetRolesAsync(user);
 
 			var claims = new List<Claim>
 			{
-				new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+				new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
 				new Claim(JwtRegisteredClaimNames.Email, user.Email),
 				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
 			};
@@ -65,35 +66,37 @@ namespace Totem.Application.Services.IdentityServices
 			return Successful<string>(encodedToken);
 		}
 
-		public async Task<(Result Result, JwtAndTokenView Data)> LoginUserAsync(LoginUserView loginUserView)
+		public async Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView)
 		{
 			var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
 			if (result.Succeeded)
 			{
 				var user = await _userManager.FindByEmailAsync(loginUserView.Email);
 				if (user == null)
-					return Unsuccessful<JwtAndTokenView>(Errors.UserNotFound);
+					return Unsuccessful<LoginDataView>(Errors.UserNotFound);
 
 				var newRefreshToken = Guid.NewGuid();
 				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
 
 				var jwt = await GenerateJwtTokenAsync(user);
-				return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken });
+				var userView = new UserView { Id = user.Id, Email = user.Email, Name = user.FullName };
+
+				return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
 			}
 
 			if (result.IsLockedOut)
 			{
-				return Unsuccessful<JwtAndTokenView>(Errors.UserTemporarilyBlocked);
+				return Unsuccessful<LoginDataView>(Errors.UserTemporarilyBlocked);
 			}
 
-			return Unsuccessful<JwtAndTokenView>(Errors.IncorrectUsernamePassword);
+			return Unsuccessful<LoginDataView>(Errors.IncorrectUsernamePassword);
 		}
 
-		public async Task<(Result Result, JwtAndTokenView Data)> RegisterUserAsync(RegisterUserView registerUserView)
+		public async Task<(Result Result, LoginDataView Data)> RegisterUserAsync(RegisterUserView registerUserView)
 		{
-			var user = new IdentityUser
+			var user = new User
 			{
-				UserName = registerUserView.Email,
+				FullName = registerUserView.FullName,
 				Email = registerUserView.Email,
 				EmailConfirmed = true
 			};
@@ -108,14 +111,21 @@ namespace Totem.Application.Services.IdentityServices
 
 				var jwt = await GenerateJwtTokenAsync(user);
 
-				return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken });
+				var userView = new UserView
+				{
+					Id = user.Id,
+					Email = user.Email,
+					Name = user.FullName
+				};
+
+				return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
 			}
 
 			foreach (var error in result.Errors)
 			{
 				Notify(error.Description);
 			}
-			return Unsuccessful<JwtAndTokenView>();
+			return Unsuccessful<LoginDataView>();
 		}
 
 		public async Task<Result> InactiveUser(Guid userId)
@@ -186,7 +196,7 @@ namespace Totem.Application.Services.IdentityServices
 			return Successful();
 
 		}
-
+		 
 		public async Task<Result> AddUserToRoleAsync(Guid userId, EnumRoles role)
 		{
 			var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -233,8 +243,7 @@ namespace Totem.Application.Services.IdentityServices
 			return Successful();
 		}
 
-
-		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(string userId)
+		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(Guid userId)
 		{
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null)
@@ -246,7 +255,7 @@ namespace Totem.Application.Services.IdentityServices
 
 			return Successful(tokenResult.Data);
 		}
-		public async Task<bool> ExistsUser(string userId)
+		public async Task<bool> ExistsUser(Guid userId)
 		{
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null)

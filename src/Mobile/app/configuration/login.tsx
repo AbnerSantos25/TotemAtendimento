@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { UserRequest, UserView } from "./models/UserModels";
+import { UserRequest } from "./models/UserModels";
 import { BaseService } from "../../shared/services/baseService";
 import { SessionService } from "../../shared/services/sessionServices";
-import { AuthData, Status } from "../../shared/services/models/baseServiceModels";
+import { AuthData, Status } from "../../shared/models/baseServiceModels";
 import TemporaryComponent from "./temporaryComponent";
 import { RootSiblingParent } from 'react-native-root-siblings';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AGMessageType, AGShowMessage } from "../../shared/components/AGShowMessage";
+import { Redirect } from "expo-router";
+import AGButton from "../../shared/components/AGButton";
 
 export default function ConfigurationsScreen() {
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
@@ -26,7 +27,6 @@ export default function ConfigurationsScreen() {
       setStatus(storedStatus);
     }
   }, [10])
-
   const handleLogin = async () => {
     console.log("Tentando fazer login com:", loginRequest);
     const response = await BaseService.PostAsync<AuthData, UserRequest>("/totem/identity/login", loginRequest);
@@ -39,13 +39,12 @@ export default function ConfigurationsScreen() {
 
       setStatus(Status.loggedIn.toString())
 
-      await AsyncStorage.setItem("jwt", response.data.jwt);
-      await AsyncStorage.setItem("newToken", response.data.newToken);
     } else {
        AGShowMessage(response.error.message, AGMessageType.error);
        console.log(response.error.message);
     }
   };
+  
   return (
     <RootSiblingParent>
       <View style={{ width: "50%", flex: 1, alignSelf: "center", justifyContent: "center", gap: 30 }}>
@@ -65,6 +64,8 @@ export default function ConfigurationsScreen() {
           }
         </View>
         <TemporaryComponent/>
+        {/* botao para redirecionar para a tela de configuracoes */}
+        <AGButton title="Configurações" route="/configuration/configuracoes" />
       </View>
     </RootSiblingParent>
   );

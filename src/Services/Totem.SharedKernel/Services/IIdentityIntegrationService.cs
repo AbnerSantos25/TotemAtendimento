@@ -2,8 +2,8 @@
 {
 	public interface IIdentityIntegrationService 
 	{
-		Task<bool> ExistsUser(string userId);
-		Task<(Result Result, string Data)> GenerateJwtTokenAsync(string userId);
+		Task<bool> ExistsUser(Guid userId);
+		Task<(Result Result, string Data)> GenerateJwtTokenAsync(Guid userId);
 
 
 	}

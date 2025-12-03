@@ -28,18 +28,18 @@ namespace Totem.Application.Services.RefreshTokenServices
 			return Successful<RefreshTokenView>(refreshToken);
 		}
 
-		public async Task<(Result result, JwtAndTokenView data)> RefreshTokenAsync(string userId, Guid oldToken)
+		public async Task<(Result result, LoginDataView data)> RefreshTokenAsync(Guid userId, Guid oldToken)
 		{
 			var token = await _refreshTokenRepository.GetByTokenIdAsync(oldToken);
 			if (token == null || token.Revoked || token.ExpiryDate < DateTime.UtcNow)
-				return Unsuccessful<JwtAndTokenView>(Errors.InvalidRefreshToken);
+				return Unsuccessful<LoginDataView>(Errors.InvalidRefreshToken);
 
 			if (!await _identityIntegrationService.ExistsUser(userId))
-				return Unsuccessful<JwtAndTokenView>(Errors.UserNotFound);
+				return Unsuccessful<LoginDataView>(Errors.UserNotFound);
 
 			var newRefreshToken = await SaveRefreshTokenAsync(userId);
 			if (!newRefreshToken.result.Success)
-				return Unsuccessful<JwtAndTokenView>(newRefreshToken.result.GetNotifications());
+				return Unsuccessful<LoginDataView>(newRefreshToken.result.GetNotifications());
 
 			var jwt = await _identityIntegrationService.GenerateJwtTokenAsync(userId);
 
@@ -47,12 +47,12 @@ namespace Totem.Application.Services.RefreshTokenServices
 			_refreshTokenRepository.Update(token);
 
 			if (!await _refreshTokenRepository.UnitOfWork.CommitAsync())
-				return Unsuccessful<JwtAndTokenView>(Errors.ErrorSavingDatabase);
+				return Unsuccessful<LoginDataView>(Errors.ErrorSavingDatabase);
 
-			return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken.data });
+			return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken.data });
 		}
 
-		public async Task<(Result result, Guid data)> SaveRefreshTokenAsync(string userId)
+		public async Task<(Result result, Guid data)> SaveRefreshTokenAsync(Guid userId)
 		{
 			var token = Guid.NewGuid();
 			var refreshToken = new RefreshToken(token, userId, DateTime.UtcNow.AddMinutes(10), false);

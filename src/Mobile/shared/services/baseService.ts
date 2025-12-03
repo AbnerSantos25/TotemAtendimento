@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ApiError, ApiResponse, ServiceResult } from "./models/baseServiceModels";
+import { ApiError, ApiResponse, ServiceResult } from "../models/baseServiceModels";
 import { SessionService } from "./sessionServices";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;

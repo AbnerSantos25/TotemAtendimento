@@ -6,7 +6,7 @@ namespace Totem.Domain.Aggregates.RefreshTokenAggregate
 	public class RefreshToken : Entity, IAggregateRoot
 	{
 		public Guid Token { get; private set; }
-		public string UserId { get; private set; }
+		public Guid UserId { get; private set; }
 		public DateTime CreatedAt { get; private set; } 
 		public DateTime ExpiryDate { get; private set; }
 		public bool Revoked { get; private set; }
@@ -14,7 +14,7 @@ namespace Totem.Domain.Aggregates.RefreshTokenAggregate
 		protected RefreshToken()
 		{
 		}
-		public RefreshToken(Guid token, string userId, DateTime expiryDate, bool revoked)
+		public RefreshToken(Guid token, Guid userId, DateTime expiryDate, bool revoked)
 		{
 			Token = token;
 			UserId = userId;
