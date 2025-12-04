@@ -65,8 +65,7 @@ export default function ConfigurationsScreen() {
           }
         </View>
         <TemporaryComponent/>
-        {/* botao para redirecionar para a tela de configuracoes */}
-        <AGButton title="Configurações" route="/configuration/configuracoes" />
+        <AGButton title="Configurações" route="/configuration/configurationPage/configuration" />
       </View>
     </RootSiblingParent>
   );

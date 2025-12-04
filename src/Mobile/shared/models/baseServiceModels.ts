@@ -1,4 +1,4 @@
-import {UserView} from "./CommonModels"
+import {UserView} from "./commonModels"
 
 export interface ApiResponse<T> {
     success: boolean;

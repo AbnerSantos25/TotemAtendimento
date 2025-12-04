@@ -66,16 +66,11 @@ export class SessionService {
     }
   }
 
-  static async getUser(): Promise<UserView | null>{
+  static async getUserAsync(): Promise<UserView | null>{
     try {
       const jsonValue = await AsyncStorage.getItem(USER_DATA);
-      //TODO: Abner - Se existir, faz o parse de volta para Objeto, senão retorna null
-
       let userViewConverted = jsonValue != null ? JSON.parse(jsonValue) as UserView : null;
       return userViewConverted;
-
-      console.log(userViewConverted);
-
     } catch (error) {
       console.error("Erro ao resgatar usuário - ", error);
       return null;

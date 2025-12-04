@@ -107,8 +107,8 @@ export const BaseService = {
   GetAsync: async <TResponse>(endpoint: string): Promise<ServiceResult<TResponse>> => {
     const token = await SessionService.getJwtTokenAsync();
     const url = `${API_BASE_URL}${endpoint}`;
-console.log(url)
-console.log(token)
+    console.log(url)
+    console.log(token)
     try {
       const response = await fetch(url, {
         method: "GET",

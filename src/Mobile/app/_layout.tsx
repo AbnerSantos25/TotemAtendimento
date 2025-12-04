@@ -21,7 +21,7 @@ export default function RootLayout() {
       {/* <Stack.Screen name="login" options={{ title: 'Login', headerRight: () => <HeaderConfigButton /> }} /> */}
       <Stack.Screen name="preferencial" options={{ title: 'Preferencial' }} />
       <Stack.Screen name="retirada-exames" options={{ title: 'Retirada de Exames' }} />
-      <Stack.Screen name="configuration/configuracoes" options={{ title: 'Configurações', presentation: 'modal'}}/>
+      <Stack.Screen name="/configuration/configurationPage/configuration" options={{ title: 'Configurações', presentation: 'modal'}}/>
     </Stack>
   );
 }
