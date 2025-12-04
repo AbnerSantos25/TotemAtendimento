@@ -12,6 +12,7 @@ import AGButton from "../../shared/components/AGButton";
 
 export default function ConfigurationsScreen() {
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
+    FullName: "",
     email: "",
     password: "",
   });

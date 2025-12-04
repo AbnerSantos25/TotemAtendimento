@@ -97,6 +97,7 @@ namespace Totem.Application.Services.IdentityServices
 			var user = new User
 			{
 				FullName = registerUserView.FullName,
+				UserName = registerUserView.Email,
 				Email = registerUserView.Email,
 				EmailConfirmed = true
 			};
