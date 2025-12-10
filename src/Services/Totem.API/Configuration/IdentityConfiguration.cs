@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Totem.Common.API.Configurations;
 using Totem.Common.Extension;
 using Totem.Infra.Data.IdentityData;
 
@@ -17,7 +15,7 @@ namespace Totem.API.Configuration
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddErrorDescriber<IdentityCustomMenssages>()
             .AddRoles<IdentityRole>()
-			.AddDefaultTokenProviders();
+            .AddDefaultTokenProviders();
 
             //JWT
 
