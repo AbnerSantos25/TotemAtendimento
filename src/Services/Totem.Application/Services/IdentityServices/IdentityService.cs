@@ -17,242 +17,243 @@ using Totem.SharedKernel.Services;
 
 namespace Totem.Application.Services.IdentityServices
 {
-	public class IdentityService : BaseService, IIdentityService, IIdentityIntegrationService
-	{
-		private readonly JwtSettings _jwtSettings;
-		private readonly SignInManager<IdentityUser> _signInManager;
-		private readonly UserManager<IdentityUser> _userManager;
-		private readonly IMediator _mediator;
+    public class IdentityService : BaseService, IIdentityService, IIdentityIntegrationService
+    {
+        private readonly JwtSettings _jwtSettings;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IMediator _mediator;
 
 
-		public IdentityService(INotificator notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings, IMediator mediator) : base(notificador)
-		{
-			_userManager = userManager;
-			_signInManager = signInManager;
-			_jwtSettings = jwtSettings.Value;
-			_mediator = mediator;
-		}
+        public IdentityService(INotificator notificador, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<JwtSettings> jwtSettings, IMediator mediator) : base(notificador)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _jwtSettings = jwtSettings.Value;
+            _mediator = mediator;
+        }
 
-		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(IdentityUser user)
-		{
-			var roles = await _userManager.GetRolesAsync(user);
+        public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(IdentityUser user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
 
-			var claims = new List<Claim>
-			{
-				new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-				new Claim(JwtRegisteredClaimNames.Email, user.Email),
-				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-			};
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
-			foreach (var role in roles)
-			{
-				claims.Add(new Claim(ClaimTypes.Role, role));
-			}
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
-			var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
-			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-			var token = new JwtSecurityToken(
-				issuer: _jwtSettings.Issuer,
-				audience: _jwtSettings.ValidAt,
-				claims: claims,
+            var token = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.ValidAt,
+                claims: claims,
 				expires: DateTime.UtcNow.AddHours(_jwtSettings.ExpirationTime),
-				signingCredentials: creds
-			);
+                signingCredentials: creds
+            );
 
-			var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
+            var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-			return Successful<string>(encodedToken);
-		}
+            return Successful<string>(encodedToken);
+        }
 
-		public async Task<(Result Result, JwtAndTokenView Data)> LoginUserAsync(LoginUserView loginUserView)
-		{
-			var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
-			if (result.Succeeded)
-			{
-				var user = await _userManager.FindByEmailAsync(loginUserView.Email);
-				if (user == null)
-					return Unsuccessful<JwtAndTokenView>(Errors.UserNotFound);
+        public async Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView)
+        {
+            var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByEmailAsync(loginUserView.Email);
+                if (user == null)
+                    return Unsuccessful<LoginDataView>(Errors.UserNotFound);
 
-				var newRefreshToken = Guid.NewGuid();
-				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
+                var newRefreshToken = Guid.NewGuid();
+                await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
 
-				var jwt = await GenerateJwtTokenAsync(user);
-				return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken });
-			}
+                var jwt = await GenerateJwtTokenAsync(user);
+                var userView = new UserView { Id = Guid.Parse(user.Id), Email = user.Email, Name = user.UserName };
 
-			if (result.IsLockedOut)
-			{
-				return Unsuccessful<JwtAndTokenView>(Errors.UserTemporarilyBlocked);
-			}
+                return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
+            }
 
-			return Unsuccessful<JwtAndTokenView>(Errors.IncorrectUsernamePassword);
-		}
+            if (result.IsLockedOut)
+            {
+                return Unsuccessful<LoginDataView>(Errors.UserTemporarilyBlocked);
+            }
 
-		public async Task<(Result Result, JwtAndTokenView Data)> RegisterUserAsync(RegisterUserView registerUserView)
-		{
-			var user = new IdentityUser
-			{
-				UserName = registerUserView.Email,
-				Email = registerUserView.Email,
-				EmailConfirmed = true
-			};
+            return Unsuccessful<LoginDataView>(Errors.IncorrectUsernamePassword);
+        }
+        public async Task<(Result Result, LoginDataView Data)> RegisterUserAsync(RegisterUserView registerUserView)
+        {
+            var user = new IdentityUser
+            {
+                UserName = registerUserView.Email,
+                Email = registerUserView.Email,
+                EmailConfirmed = true
+            };
 
-			var result = await _userManager.CreateAsync(user, registerUserView.Password);
-			if (result.Succeeded)
-			{
-				await _signInManager.SignInAsync(user, false);
+            var result = await _userManager.CreateAsync(user, registerUserView.Password);
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, false);
 
-				var newRefreshToken = Guid.NewGuid();
-				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
+                var newRefreshToken = Guid.NewGuid();
+                await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
 
-				var jwt = await GenerateJwtTokenAsync(user);
+                var jwt = await GenerateJwtTokenAsync(user);
 
-				return Successful(new JwtAndTokenView { JWT = jwt.Data, NewToken = newRefreshToken });
-			}
+                return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken });
+            }
 
-			foreach (var error in result.Errors)
-			{
-				Notify(error.Description);
-			}
-			return Unsuccessful<JwtAndTokenView>();
-		}
+            foreach (var error in result.Errors)
+            {
+                Notify(error.Description);
+            }
+            return Unsuccessful<LoginDataView>();
+        }
 
-		public async Task<Result> InactiveUser(Guid userId)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> InactiveUser(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			await _userManager.SetTwoFactorEnabledAsync(user, true);
-			await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
 
-			return Successful();
-		}
+            return Successful();
+        }
 
-		public async Task<Result> ActiveUser(Guid userId)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> ActiveUser(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			await _userManager.SetTwoFactorEnabledAsync(user, true);
-			await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
 
-			return Successful();
-		}
+            return Successful();
+        }
 
-		public async Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request)
-		{
-			var user = await _userManager.FindByIdAsync(id.ToString());
+        public async Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
-			if (!result.Succeeded)
-			{
-				foreach (var error in result.Errors)
-					Notify(error.Description);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
 
-				return Unsuccessful();
-			}
+                return Unsuccessful();
+            }
 
-			return Successful();
-		}
+            return Successful();
+        }
 
-		public async Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request)
-		{
-			var user = await _userManager.FindByIdAsync(id.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
-			if (!passwordValid)
-				return Unsuccessful(Errors.IncorrectUsernamePassword);
+            var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            if (!passwordValid)
+                return Unsuccessful(Errors.IncorrectUsernamePassword);
 
-			user.Email = request.NewEmail;
+            user.Email = request.NewEmail;
 
-			var result = await _userManager.UpdateAsync(user);
-			if (!result.Succeeded)
-			{
-				foreach (var error in result.Errors)
-					Notify(error.Description);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
 
-				return Unsuccessful();
-			}
+                return Unsuccessful();
+            }
 
-			return Successful();
+            return Successful();
 
-		}
+        }
 
-		public async Task<Result> AddUserToRoleAsync(Guid userId, EnumRoles role)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> AddUserToRoleAsync(Guid userId, EnumRoles role)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			var roles = await _userManager.GetRolesAsync(user);
-			if (roles.Contains(role.ToString()))
-				return Unsuccessful(Errors.UserAlreadyHasRole);
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains(role.ToString()))
+                return Unsuccessful(Errors.UserAlreadyHasRole);
 
-			var result = await _userManager.AddToRoleAsync(user, role.ToString());
+            var result = await _userManager.AddToRoleAsync(user, role.ToString());
 
-			if (!result.Succeeded)
-			{
-				foreach (var error in result.Errors)
-					Notify(error.Description);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
 
-				return Unsuccessful();
-			}
+                return Unsuccessful();
+            }
 
-			return Successful();
-		}
+            return Successful();
+        }
 
-		public async Task<Result> RemoveUserFromRoleAsync(Guid userId, EnumRoles role)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> RemoveUserFromRoleAsync(Guid userId, EnumRoles role)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			var roles = await _userManager.GetRolesAsync(user);
-			if (!roles.Contains(role.ToString()))
-				return Unsuccessful(Errors.UserAlreadyHasRole);
+            var roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains(role.ToString()))
+                return Unsuccessful(Errors.UserAlreadyHasRole);
 
-			var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
+            var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
 
-			if (!result.Succeeded)
-			{
-				foreach (var error in result.Errors)
-					Notify(error.Description);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
 
-				return Unsuccessful();
-			}
+                return Unsuccessful();
+            }
 
-			return Successful();
-		}
+            return Successful();
+        }
 
 
-		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(string userId)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return Unsuccessful<string>(Errors.UserNotFound);
+        public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful<string>(Errors.UserNotFound);
 
-			var tokenResult = await GenerateJwtTokenAsync(user);
-			if (!tokenResult.Result.Success)
-				return Unsuccessful<string>();
+            var tokenResult = await GenerateJwtTokenAsync(user);
+            if (!tokenResult.Result.Success)
+                return Unsuccessful<string>();
 
-			return Successful(tokenResult.Data);
-		}
-		public async Task<bool> ExistsUser(string userId)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return false;
+            return Successful(tokenResult.Data);
+        }
+        public async Task<bool> ExistsUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return false;
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 }

@@ -11,8 +11,3 @@ export interface UserRequest{
   password?: string;
   profileImageUrl?: string;
 }
-
-export interface AuthData {
-  jwt: string;
-  newToken: string;
-}

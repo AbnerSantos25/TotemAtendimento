@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System.Text.RegularExpressions;
 using Totem.Application.Events.Notifications;
 
 namespace Totem.API.RealTime

@@ -6,68 +6,68 @@ using Totem.Domain.Models.QueueModels;
 
 namespace Totem.API.Controllers
 {
-	[Route("api/totem/[controller]")]
-	public class QueueController : MainController
-	{
-		private readonly IQueueServices _queueServices;
-		public QueueController(INotificator notificator, IQueueServices queueServices) : base(notificator)
-		{
-			_queueServices = queueServices;
-		}
+    [Route("api/totem/[controller]")]
+    public class QueueController : MainController
+    {
+        private readonly IQueueServices _queueServices;
+        public QueueController(INotificator notificator, IQueueServices queueServices) : base(notificator)
+        {
+            _queueServices = queueServices;
+        }
 
-		[HttpGet("{id}")]
-		public async Task<IActionResult> GetQueueById(Guid id)
-		{
-			if (!ModelState.IsValid)
-				return CustomResponse(ModelState);
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetQueueById(Guid id)
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
 
-			return CustomResponse(await _queueServices.GetByIdAsync(id));
-		}
+            return CustomResponse(await _queueServices.GetByIdAsync(id));
+        }
 
-		[HttpGet]
-		public async Task<IActionResult> GetListAsync()
-		{
-			if (!ModelState.IsValid)
-				return CustomResponse(ModelState);
+        [HttpGet]
+        public async Task<IActionResult> GetListAsync()
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
 
-			return CustomResponse(await _queueServices.GetListAsync());
-		}
+            return CustomResponse(await _queueServices.GetListAsync());
+        }
 
-		[HttpPost]
-		public async Task<IActionResult> AddAsync([FromBody] QueueRequest request)
-		{
-			if (!ModelState.IsValid)
-				return CustomResponse(ModelState);
+        [HttpPost]
+        public async Task<IActionResult> AddAsync([FromBody] QueueRequest request)
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
 
-			return CustomResponse(await _queueServices.AddAsync(request));
-		}
+            return CustomResponse(await _queueServices.AddAsync(request));
+        }
 
-		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] QueueRequest request)
-		{
-			if (!ModelState.IsValid)
-				return CustomResponse(ModelState);
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] QueueRequest request)
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
 
-			return CustomResponse(await _queueServices.UpdateAsync(id, request));
-		}
+            return CustomResponse(await _queueServices.UpdateAsync(id, request));
+        }
 
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-				return CustomResponse(ModelState);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
 
-			return CustomResponse(await _queueServices.DeleteAsync(id));
-		}
+            return CustomResponse(await _queueServices.DeleteAsync(id));
+        }
 
-		[HttpPatch("{id}/toggleQueueStatus")]
-		public async Task<IActionResult> ToggleStatusQueue([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-				return CustomResponse(ModelState);
+        [HttpPatch("{id}/toggleQueueStatus")]
+        public async Task<IActionResult> ToggleStatusQueue([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
 
-			return CustomResponse(await _queueServices.ToggleStatusQueue(id));
+            return CustomResponse(await _queueServices.ToggleStatusQueue(id));
 
-		}
-	}
+        }
+    }
 }

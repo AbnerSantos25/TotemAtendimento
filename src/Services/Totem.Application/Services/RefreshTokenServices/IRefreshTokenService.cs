@@ -8,6 +8,6 @@ namespace Totem.Application.Services.RefreshTokenServices
 	{
 		Task<(Result result, Guid data)> SaveRefreshTokenAsync(string user);
 		Task<(Result result, IRefreshTokenView data)> GetByTokenAsync(Guid token);
-		Task <(Result result, JwtAndTokenView data)> RefreshTokenAsync(string userId, Guid tokenId);
+		Task <(Result result, LoginDataView data)> RefreshTokenAsync(string userId, Guid tokenId);
 	}
 }

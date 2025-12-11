@@ -36,32 +36,32 @@ namespace Totem.API.Controllers
 
         [HttpPut("user/{id}/update-password")]
         public async Task<ActionResult> UpdatePassword([FromRoute] Guid id, [FromBody] UpdatePasswordRequest request)
-		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-			return CustomResponse(await _identityService.UpdatePasswordAsync(id, request));
-		}
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            return CustomResponse(await _identityService.UpdatePasswordAsync(id, request));
+        }
 
         [HttpPut("user/{id}/update-email")]
-		public async Task<ActionResult> UpdateEmail([FromRoute] Guid id, [FromBody] UpdateEmailRequest request)
+        public async Task<ActionResult> UpdateEmail([FromRoute] Guid id, [FromBody] UpdateEmailRequest request)
         {
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-			return CustomResponse(await _identityService.UpdateEmailAsync(id, request));
-		}
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            return CustomResponse(await _identityService.UpdateEmailAsync(id, request));
+        }
 
 
-		[HttpPatch("user/{id}/inactivate")]
+        [HttpPatch("user/{id}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             return CustomResponse(await _identityService.InactiveUser(id));
-		}
-		[HttpPatch("user/{id}/active")]
-		public async Task<ActionResult> ActiveUser([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
+        }
+        [HttpPatch("user/{id}/active")]
+        public async Task<ActionResult> ActiveUser([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-			return CustomResponse(await _identityService.ActiveUser(id));
-		}
-	}
+            return CustomResponse(await _identityService.ActiveUser(id));
+        }
+    }
 }
