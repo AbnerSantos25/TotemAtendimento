@@ -19,34 +19,4 @@ export const ConfigurationService = {
     }
     throw response.error.message;
   },
-
-  GetLoggedUserAsync: async (): Promise<ServiceResult<UserView>> => {
-    try {
-      const user = await SessionService.getUserAsync();
-
-      if (user) {
-        return { 
-          success: true, 
-          data: user 
-        };
-      } else {
-        return { 
-          success: false, 
-          error: {
-            statusCode: 404,
-            message: "Nenhum usuário logado encontrado localmente.",
-          } 
-        };
-      }
-    } catch (error) {
-      return { 
-        success: false, 
-        error: {
-          statusCode: 500,
-          message: "Erro ao recuperar dados do usuário.",
-          // body: JSON.stringify(error)
-        } 
-      };
-    }
-  },
 }
