@@ -1,11 +1,7 @@
-using MediatR;
 using Totem.API.Configuration;
 using Totem.API.RealTime;
 using Totem.Application.Configurations;
-using Totem.Application.Events;
-using Totem.Application.Events.Notifications;
 using Totem.Common.API.Configurations;
-using Totem.Domain.Aggregates.PasswordAggregate.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 

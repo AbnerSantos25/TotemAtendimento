@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 
 export default function MainStyles(){
@@ -7,5 +7,41 @@ export default function MainStyles(){
             flex: 1,
         },
     });
+}
+
+export function FormStyles(){
+    return StyleSheet.create({
+  inputGroup: {
+    marginBottom: 25,
+  },
+  label: {
+    fontSize: 20,
+    color: '#E0E0E0', 
+    marginBottom: 10,
+    fontWeight: '400',
+  },
+  input: {
+    backgroundColor: 'rgba(20, 20, 20, 0.6)',
+    borderRadius: 12,
+    fontSize: 18,
+    color: 'white',
+    paddingVertical: Platform.OS === 'ios' ? 15 : 10,
+    paddingHorizontal: 15,
+    borderWidth: 0, 
+  },
+
+  primaryButtonContainer: {
+    backgroundColor: '#6a1b9a', 
+    borderRadius: 12,
+    paddingVertical: 15,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+});
 }
 
