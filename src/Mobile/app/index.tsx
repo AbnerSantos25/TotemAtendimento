@@ -10,33 +10,6 @@ import { Redirect } from "expo-router";
 
 
 export default function HomeScreen() {
-  const [user, setUser] = useState<UserView | null>(null);
-  const [loading, setLoading] = useState(Boolean);
-  
-    useEffect(() => {
-      const loadUserData = async () => {
-        const userResponse = await ConfigurationService.GetLoggedUserAsync();
-        if (userResponse.success) {
-          setUser(userResponse.data)
-          setLoading(false);
-          
-          AGShowMessage(userResponse.data.name);
-          console.log(userResponse.data.name);
-          console.log(loading);
-        } else {
-          AGShowMessage(userResponse.error.message, AGMessageType.error);
-          console.log("não esta logado");
-        }
-      };
-  
-      loadUserData();
-    }, []);
-
-  if (user == null) {
-    console.log("usuario: ", user);
-    return <View><Text>redirecionar para o login</Text></View>;
-  }
-
   return (
     <>
       <ImageBackground

@@ -32,23 +32,23 @@ export default function configuration() {
   }
   //#endregion
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      const userResponse = await ConfigurationService.GetLoggedUserAsync();
-      if (userResponse.success) {
-        setUser(userResponse.data)
-        setLoading(false);
-      } else {
-        AGShowMessage(userResponse.error.message, AGMessageType.error);
-      }
-    };
+  // useEffect(() => {
+  //   const loadUserData = async () => {
+  //     const userResponse = await ConfigurationService.GetLoggedUserAsync();
+  //     if (userResponse.success) {
+  //       setUser(userResponse.data)
+  //       setLoading(false);
+  //     } else {
+  //       AGShowMessage(userResponse.error.message, AGMessageType.error);
+  //     }
+  //   };
 
-    loadUserData();
-  });
+  //   loadUserData();
+  // });
 
-  if (loading) {
-    return <ActivityIndicator size="large" />;
-  }
+  // if (loading) {
+  //   return <ActivityIndicator size="large" />;
+  // }
 
   return (
     <ImageBackground
