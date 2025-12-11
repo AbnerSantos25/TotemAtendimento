@@ -1,15 +1,15 @@
-import {UserView} from "./commonModels"
+import { UserView } from "./commonModels"
 
 export interface ApiResponse<T> {
-    success: boolean;
-    data: T;
-    errors?: string[];
+  success: boolean;
+  data: T;
+  errors?: string[];
 }
 export interface ApiError {
-    statusCode: number;
-    message: string;
-    body?: string;
-    validationErrors?: Record<string, string[]>;
+  statusCode: number;
+  message: string;
+  body?: string;
+  validationErrors?: Record<string, string[]>;
 }
 
 export interface AuthData {
@@ -18,9 +18,9 @@ export interface AuthData {
   userView: UserView
 }
 
-export enum Status{
-  loggedIn =1,
-  loggedOut 
+export enum Status {
+  loggedIn = 1,
+  loggedOut
 }
 
 export type ServiceResult<T> = { success: true; data: T } | { success: false; error: ApiError };

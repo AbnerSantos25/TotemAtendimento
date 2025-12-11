@@ -45,26 +45,26 @@ namespace Totem.Application.Services.IdentityServices
 				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
 			};
 
-			foreach (var role in roles)
-			{
-				claims.Add(new Claim(ClaimTypes.Role, role));
-			}
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
-			var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
-			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-			var token = new JwtSecurityToken(
-				issuer: _jwtSettings.Issuer,
-				audience: _jwtSettings.ValidAt,
-				claims: claims,
+            var token = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.ValidAt,
+                claims: claims,
 				expires: DateTime.UtcNow.AddHours(_jwtSettings.ExpirationTime),
-				signingCredentials: creds
-			);
+                signingCredentials: creds
+            );
 
-			var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
+            var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-			return Successful<string>(encodedToken);
-		}
+            return Successful<string>(encodedToken);
+        }
 
 		public async Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView)
 		{
@@ -75,8 +75,8 @@ namespace Totem.Application.Services.IdentityServices
 				if (user == null)
 					return Unsuccessful<LoginDataView>(Errors.UserNotFound);
 
-				var newRefreshToken = Guid.NewGuid();
-				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
+                var newRefreshToken = Guid.NewGuid();
+                await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
 
 				var jwt = await GenerateJwtTokenAsync(user);
 				var userView = new UserView { Id = user.Id, Email = user.Email, Name = user.FullName };
@@ -102,15 +102,15 @@ namespace Totem.Application.Services.IdentityServices
 				EmailConfirmed = true
 			};
 
-			var result = await _userManager.CreateAsync(user, registerUserView.Password);
-			if (result.Succeeded)
-			{
-				await _signInManager.SignInAsync(user, false);
+            var result = await _userManager.CreateAsync(user, registerUserView.Password);
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, false);
 
-				var newRefreshToken = Guid.NewGuid();
-				await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
+                var newRefreshToken = Guid.NewGuid();
+                await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
 
-				var jwt = await GenerateJwtTokenAsync(user);
+                var jwt = await GenerateJwtTokenAsync(user);
 
 				var userView = new UserView
 				{
@@ -129,72 +129,72 @@ namespace Totem.Application.Services.IdentityServices
 			return Unsuccessful<LoginDataView>();
 		}
 
-		public async Task<Result> InactiveUser(Guid userId)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> InactiveUser(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			await _userManager.SetTwoFactorEnabledAsync(user, true);
-			await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
 
-			return Successful();
-		}
+            return Successful();
+        }
 
-		public async Task<Result> ActiveUser(Guid userId)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> ActiveUser(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			await _userManager.SetTwoFactorEnabledAsync(user, true);
-			await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
 
-			return Successful();
-		}
+            return Successful();
+        }
 
-		public async Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request)
-		{
-			var user = await _userManager.FindByIdAsync(id.ToString());
+        public async Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
-			if (!result.Succeeded)
-			{
-				foreach (var error in result.Errors)
-					Notify(error.Description);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
 
-				return Unsuccessful();
-			}
+                return Unsuccessful();
+            }
 
-			return Successful();
-		}
+            return Successful();
+        }
 
-		public async Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request)
-		{
-			var user = await _userManager.FindByIdAsync(id.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
-			if (!passwordValid)
-				return Unsuccessful(Errors.IncorrectUsernamePassword);
+            var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            if (!passwordValid)
+                return Unsuccessful(Errors.IncorrectUsernamePassword);
 
-			user.Email = request.NewEmail;
+            user.Email = request.NewEmail;
 
-			var result = await _userManager.UpdateAsync(user);
-			if (!result.Succeeded)
-			{
-				foreach (var error in result.Errors)
-					Notify(error.Description);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
 
-				return Unsuccessful();
-			}
+                return Unsuccessful();
+            }
 
-			return Successful();
+            return Successful();
 
 		}
 		 
@@ -204,45 +204,45 @@ namespace Totem.Application.Services.IdentityServices
 			if (user == null)
 				return Unsuccessful(Errors.UserNotFound);
 
-			var roles = await _userManager.GetRolesAsync(user);
-			if (roles.Contains(role.ToString()))
-				return Unsuccessful(Errors.UserAlreadyHasRole);
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains(role.ToString()))
+                return Unsuccessful(Errors.UserAlreadyHasRole);
 
-			var result = await _userManager.AddToRoleAsync(user, role.ToString());
+            var result = await _userManager.AddToRoleAsync(user, role.ToString());
 
-			if (!result.Succeeded)
-			{
-				foreach (var error in result.Errors)
-					Notify(error.Description);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
 
-				return Unsuccessful();
-			}
+                return Unsuccessful();
+            }
 
-			return Successful();
-		}
+            return Successful();
+        }
 
-		public async Task<Result> RemoveUserFromRoleAsync(Guid userId, EnumRoles role)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
+        public async Task<Result> RemoveUserFromRoleAsync(Guid userId, EnumRoles role)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
 
-			var roles = await _userManager.GetRolesAsync(user);
-			if (!roles.Contains(role.ToString()))
-				return Unsuccessful(Errors.UserAlreadyHasRole);
+            var roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains(role.ToString()))
+                return Unsuccessful(Errors.UserAlreadyHasRole);
 
-			var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
+            var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
 
-			if (!result.Succeeded)
-			{
-				foreach (var error in result.Errors)
-					Notify(error.Description);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
 
-				return Unsuccessful();
-			}
+                return Unsuccessful();
+            }
 
-			return Successful();
-		}
+            return Successful();
+        }
 
 		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(Guid userId)
 		{
@@ -250,9 +250,9 @@ namespace Totem.Application.Services.IdentityServices
 			if (user == null)
 				return Unsuccessful<string>(Errors.UserNotFound);
 
-			var tokenResult = await GenerateJwtTokenAsync(user);
-			if (!tokenResult.Result.Success)
-				return Unsuccessful<string>();
+            var tokenResult = await GenerateJwtTokenAsync(user);
+            if (!tokenResult.Result.Success)
+                return Unsuccessful<string>();
 
 			return Successful(tokenResult.Data);
 		}
@@ -262,7 +262,7 @@ namespace Totem.Application.Services.IdentityServices
 			if (user == null)
 				return false;
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 }

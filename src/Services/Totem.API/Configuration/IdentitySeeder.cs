@@ -9,7 +9,7 @@ namespace Totem.API.Configuration
 		{
 			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
-			var roles = Enum.GetNames(typeof(EnumRoles));
+            var roles = Enum.GetNames(typeof(EnumRoles));
 
 			foreach (var role in roles)
 			{

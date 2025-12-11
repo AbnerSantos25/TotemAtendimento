@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthData, Status } from "../models/baseServiceModels";
+import { BaseService } from "./baseService";
 import { UserView } from "../models/commonModels";
 
 const JWT_KEY = "jwt";
@@ -49,8 +50,7 @@ export class SessionService {
   static async getStatusAsync(): Promise<string | null> {
     try {
       return await AsyncStorage.getItem(STATUS_KEY);
-    } catch (error)
-    {
+    } catch (error) {
       console.error("Erro ao buscar status", error);
       return null;
     }
@@ -60,20 +60,41 @@ export class SessionService {
     try {
       await AsyncStorage.removeItem(JWT_KEY);
       await AsyncStorage.removeItem(REFRESH_TOKEN_KEY);
+      await AsyncStorage.removeItem(USER_DATA);
       await this.saveStatusAsync(Status.loggedOut);
     } catch (error) {
       console.error("Erro ao limpar sessão", error);
     }
   }
+  
 
-  static async getUserAsync(): Promise<UserView | null>{
-    try {
-      const jsonValue = await AsyncStorage.getItem(USER_DATA);
-      let userViewConverted = jsonValue != null ? JSON.parse(jsonValue) as UserView : null;
-      return userViewConverted;
+  static async tryRefreshTokenAsync(isRefreshing: boolean): Promise<boolean> {
+    try { 
+      if (!isRefreshing) {
+
+        var userData = await AsyncStorage.getItem(USER_DATA);
+        var tokenId = await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
+
+        var user = JSON.parse(userData!) as UserView;
+
+        const response = await BaseService.GetAsync<AuthData>(`/totem/RefreshToken/user/${user.id}/token/${tokenId}`, false);
+
+        if (!response.success) {
+          console.error("Falha no refresh Token")
+          return false;
+        }
+
+        await SessionService.saveAuthDataAsync(response.data);
+        return true;
+
+      }
+
+      console.error("Cai no Loop Prevention, do Refresh Token")
+      return false;
+
     } catch (error) {
-      console.error("Erro ao resgatar usuário - ", error);
-      return null;
+      console.error("Catch Exception:", error);
+      return false
     }
   }
 }
