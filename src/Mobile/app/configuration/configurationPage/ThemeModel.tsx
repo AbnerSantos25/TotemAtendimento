@@ -7,6 +7,7 @@ import {
   StyleSheet 
 } from 'react-native';
 import { SelectableOption } from '../../../shared/components/SelectableOption';
+import { AGModal } from '../../../shared/components/AGModel';
 
 export type ThemeType = 'light' | 'dark' | 'system';
 
@@ -19,51 +20,35 @@ interface ThemeModalProps {
 
 export function ThemeModal({ visible, onClose, onSelectTheme, currentTheme }: ThemeModalProps) {
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        {/* Fundo clicável para fechar */}
-        <Pressable style={styles.backdrop} onPress={onClose} />
+    <AGModal visible={visible}
+        onClose={onClose}
+        title="Escolha o Tema"
+        subtitle="Defina a aparência do aplicativo">
 
-        {/* O Dialog */}
-        <View style={styles.dialogContainer}>
-          <Text style={styles.dialogTitle}>Escolha o Tema</Text>
-          <Text style={styles.dialogSubtitle}>Defina a aparência do aplicativo</Text>
-
-          {/* Lista de Opções usando o Componente Reutilizável */}
-          <View style={styles.optionsContainer}>
-            <SelectableOption
-              label="Claro"
-              icon="sunny-outline"
-              isSelected={currentTheme === 'light'}
-              onPress={() => onSelectTheme('light')}
-            />
-            
-            <SelectableOption
-              label="Escuro"
-              icon="moon-outline"
-              isSelected={currentTheme === 'dark'}
-              onPress={() => onSelectTheme('dark')}
-            />
-            
-            <SelectableOption
-              label="Sistema"
-              icon="phone-portrait-outline"
-              isSelected={currentTheme === 'system'}
-              onPress={() => onSelectTheme('system')}
-            />
-          </View>
-
-          <Pressable style={styles.cancelButton} onPress={onClose}>
-            <Text style={styles.cancelText}>Cancelar</Text>
-          </Pressable>
+        {/* Lista de Opções usando o Componente Reutilizável */}
+        <View style={styles.optionsContainer}>
+        <SelectableOption
+            label="Claro"
+            icon="sunny-outline"
+            isSelected={currentTheme === 'light'}
+            onPress={() => onSelectTheme('light')}
+        />
+        
+        <SelectableOption
+            label="Escuro"
+            icon="moon-outline"
+            isSelected={currentTheme === 'dark'}
+            onPress={() => onSelectTheme('dark')}
+        />
+        
+        <SelectableOption
+            label="Sistema"
+            icon="phone-portrait-outline"
+            isSelected={currentTheme === 'system'}
+            onPress={() => onSelectTheme('system')}
+        />
         </View>
-      </View>
-    </Modal>
+    </AGModal>
   );
 }
 

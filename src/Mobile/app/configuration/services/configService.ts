@@ -6,7 +6,6 @@ import { UserView } from '../../../shared/models/commonModels';
 import { ServiceResult } from '../../../shared/models/baseServiceModels';
 
 
-
 export const ConfigurationService = {
 
   async UpdateUserEmailAsync(request: UserRequest): Promise<UserView> {
@@ -50,5 +49,4 @@ export const ConfigurationService = {
       };
     }
   },
-
 }

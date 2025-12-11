@@ -7,8 +7,9 @@ import { AuthData, Status } from "../../shared/models/baseServiceModels";
 import TemporaryComponent from "./temporaryComponent";
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { AGMessageType, AGShowMessage } from "../../shared/components/AGShowMessage";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import AGButton from "../../shared/components/AGButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ConfigurationsScreen() {
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
@@ -17,7 +18,6 @@ export default function ConfigurationsScreen() {
     password: "",
   });
   const [status, setStatus] = useState<string | null>(null);
-
   const handleInputChange = (field: keyof UserRequest, value: string) => {
     setLoginRequest({ ...loginRequest, [field]: value });
   };
@@ -28,18 +28,16 @@ export default function ConfigurationsScreen() {
       setStatus(storedStatus);
     }
   }, [10])
+
   const handleLogin = async () => {
     console.log("Tentando fazer login com:", loginRequest);
     const response = await BaseService.PostAsync<AuthData, UserRequest>("/totem/identity/login", loginRequest);
 
     if (response.success) {
       await SessionService.saveAuthDataAsync(response.data);
-
        AGShowMessage("Login feito com sucesso!", AGMessageType.success);
-       console.log("Success - ResponseData", response.data);
-
-      setStatus(Status.loggedIn.toString())
-
+       setStatus(Status.loggedIn.toString())
+       router.push("/");
     } else {
        AGShowMessage(response.error.message, AGMessageType.error);
        console.log(response.error.message);
@@ -48,7 +46,7 @@ export default function ConfigurationsScreen() {
   
   return (
     <RootSiblingParent>
-      <View style={{ width: "50%", flex: 1, alignSelf: "center", justifyContent: "center", gap: 30 }}>
+      <View style={{ width: "90%", flex: 1, alignSelf: "center", justifyContent: "center", gap: 30 }}>
         <View >
         <Text style={formStyles.label}>E-mail:</Text>
         <TextInput value={loginRequest.email} onChangeText={(txt) => handleInputChange("email", txt)} style={formStyles.input} />
@@ -65,7 +63,7 @@ export default function ConfigurationsScreen() {
           }
         </View>
         <TemporaryComponent/>
-        <AGButton title="Configurações" route="/configuration/configurationPage/configuration" />
+      {/* <AGButton route="/" title="Inicio"></AGButton> */}
       </View>
     </RootSiblingParent>
   );

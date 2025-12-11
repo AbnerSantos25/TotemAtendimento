@@ -32,7 +32,6 @@ export default function configuration() {
   }
   //#endregion
 
-
   useEffect(() => {
     const loadUserData = async () => {
       const userResponse = await ConfigurationService.GetLoggedUserAsync();

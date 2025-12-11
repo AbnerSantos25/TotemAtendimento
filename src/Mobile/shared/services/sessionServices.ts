@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthData, Status } from "../models/baseServiceModels";
-import { UserView } from "../models/CommonModels";
+import { UserView } from "../models/commonModels";
 
 const JWT_KEY = "jwt";
 const REFRESH_TOKEN_KEY = "newToken";

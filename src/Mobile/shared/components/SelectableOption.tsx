@@ -36,7 +36,6 @@ export function SelectableOption({ label, icon, isSelected, onPress }: Selectabl
         </Text>
       </View>
 
-      {/* Ícone de Check visual aparece apenas se estiver selecionado */}
       {isSelected && (
         <Ionicons name="checkmark-circle" size={22} color="#6830c0" />
       )}
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
   },
   selected: {
     backgroundColor: '#252525',
-    borderColor: '#6830c0', // Borda roxa de destaque
+    borderColor: '#6830c0',
   },
   content: {
     flexDirection: 'row',
