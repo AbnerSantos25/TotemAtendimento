@@ -8,7 +8,7 @@ export default function HeaderConfigButton() {
 
   return (
     <Pressable
-      onPress={() => router.push('/configuration/configuracoes')}
+      onPress={() => router.push('/configuration/configurationPage/configuration')}
       style={{ marginRight: 15 }}
     >
       <FontAwesome

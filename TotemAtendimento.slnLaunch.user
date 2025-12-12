@@ -3,9 +3,8 @@
     "Name": "Novo Perfil",
     "Projects": [
       {
-        "Path": "src\\Totem.API\\Totem.API.csproj",
-        "Action": "Start",
-        "DebugTarget": "https"
+        "Path": "src\\Services\\Totem.API\\Totem.API.csproj",
+        "Action": "Start"
       }
     ]
   }

@@ -9,6 +9,7 @@ import { FormStyles } from "../../shared/styles/mainStyles";
 
 export default function ConfigurationsScreen() {
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
+    FullName: "",
     email: "",
     password: "",
   });

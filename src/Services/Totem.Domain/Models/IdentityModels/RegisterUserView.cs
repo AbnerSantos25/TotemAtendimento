@@ -14,5 +14,8 @@ namespace Totem.Domain.Models.IdentityModels
 
         [Compare("Password", ErrorMessage = "As senhas não conferem.")]
         public string ConfirmPassword { get; set; }
-    }
+        [Required]
+        [StringLength(200, ErrorMessage = "O Nome deve ter entre {2} e {1} caracteres.", MinimumLength = 3)]
+		public string FullName { get; set; }
+	}
 }

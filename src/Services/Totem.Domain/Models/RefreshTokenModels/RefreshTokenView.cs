@@ -7,7 +7,7 @@ namespace Totem.Domain.Models.RefreshTokenModels
 	public class RefreshTokenView : IRefreshTokenView
 	{
 		public Guid Token { get; set; }
-		public string UserId { get ;set ;}
+		public Guid UserId { get ;set ;}
 		public DateTime CreatedAt { get ;set ;}
 		public DateTime ExpiryDate { get ;set ;}
 		public bool Revoked { get ;set ;}
