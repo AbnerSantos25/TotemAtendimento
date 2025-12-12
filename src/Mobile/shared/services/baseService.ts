@@ -183,7 +183,7 @@ export const BaseService = {
     return BaseService._request<TResponse>('GET', endpoint, null, { requiresAuth });
   },
 
-  PostAsync: async <TResponse, TRequest>(endpoint: string, body: TRequest, requiresAuth: boolean = true): Promise<ServiceResult<TResponse>> => {
+  PostAsync: async <TResponse, TRequest>(endpoint: string, body: TRequest, requiresAuth: boolean = false): Promise<ServiceResult<TResponse>> => {
     return BaseService._request<TResponse>('POST', endpoint, body, { requiresAuth });
   },
 
