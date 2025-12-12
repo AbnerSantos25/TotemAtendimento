@@ -1,23 +1,46 @@
-import { StyleSheet, ImageBackground, View } from "react-native";
+import { StyleSheet, ImageBackground, View, Text, Pressable, ActivityIndicator } from "react-native";
 import BackgroundImage from "../assets/images/background.png";
 import AGButton from "../shared/components/AGButton";
+import { useEffect, useState } from "react";
+import { UserView } from "../shared/models/commonModels";
+import { ConfigurationService } from "./configuration/services/configService";
+import { AGMessageType, AGShowMessage, showSuccess } from "../shared/components/AGShowMessage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect } from "expo-router";
 
 
 export default function HomeScreen() {
   return (
-    <Redirect href={"/configuration/login"}/>
-    // <ImageBackground
-    //   source={BackgroundImage}
-    //   resizeMode="cover"
-    //   style={styles.backgroundImage}
-    // >
-    //   <View style={styles.container}>
-    //     <AGButton title="Atendimento" route="/atendimento"  width={"100%"}/>
-    //     <AGButton title="Preferencial" route="/preferencial"  width={"100%"}/>
-    //     <AGButton title="Retirada de Exames" route="/retirada-exames" width={"90%"} />
-    //   </View>
-    // </ImageBackground>
+    <>
+      <ImageBackground
+            source={BackgroundImage}
+            resizeMode="cover"
+            style={styles.backgroundImage}
+          >
+            <View style={styles.container}>
+              <Pressable
+                onPress={async () => {
+                  // 1. PRIMEIRO: A AÇÃO REAL (Apagar os dados)
+                  // Sem essa linha, o botão é apenas um "placebo", não faz nada técnico.
+                  var user =  await AsyncStorage.getItem("userView");
+                  console.log(user);
+                  await AsyncStorage.clear(); 
+                  console.log("Depois de excluir -> ",user);
+                  // 2. DEPOIS: O FEEDBACK VISUAL (Avisar o usuário)
+                  AGShowMessage("Usuário removido do cache!", AGMessageType.success);
+                }}
+              >
+                <Text style={{color:"white", backgroundColor: "green", padding:20}}>
+                  Sair
+                </Text>
+              </Pressable>
+              <AGButton title="Atendimento" route="/atendimento"  width={"100%"}/>
+              <AGButton title="Preferencial" route="/preferencial"  width={"100%"}/>
+              <AGButton title="Retirada de Exames" route="/retirada-exames" width={"90%"} />
+            </View>
+      </ImageBackground>
+    </>
+    
   );
 }
 

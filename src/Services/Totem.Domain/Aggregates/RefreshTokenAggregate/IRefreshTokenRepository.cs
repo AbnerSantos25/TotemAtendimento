@@ -7,7 +7,7 @@ namespace Totem.Domain.Aggregates.RefreshTokenAggregate
 		void Add(RefreshToken refreshToken);
 		Task<RefreshToken> GetByTokenIdAsync(Guid token);
 		void Remove(RefreshToken refreshToken);
-		Task<List<RefreshToken>> GetByUserIdAsync(string userId);
+		Task<List<RefreshToken>> GetByUserIdAsync(Guid userId);
 		void Update(RefreshToken refreshToken);
 	}
 }

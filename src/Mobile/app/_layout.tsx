@@ -18,9 +18,10 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen name="atendimento" options={{ title: 'Atendimento' }} />
+      <Stack.Screen name="/configuration/login" options={{ title: 'Login' }} />
       <Stack.Screen name="preferencial" options={{ title: 'Preferencial' }} />
       <Stack.Screen name="retirada-exames" options={{ title: 'Retirada de Exames' }} />
-      <Stack.Screen name="configuration/configuracoes" options={{ title: 'Configurações', presentation: 'modal'}}/>
+      <Stack.Screen name="/configuration/configurationPage/configuration" options={{ title: 'Configurações', presentation: 'modal'}}/>
     </Stack>
   );
 }

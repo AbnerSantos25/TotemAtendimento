@@ -6,7 +6,7 @@ export interface UserView {
 }
 
 export interface UserRequest{
-  name?: string;
+  FullName: string;
   email?: string;
   password?: string;
   profileImageUrl?: string;

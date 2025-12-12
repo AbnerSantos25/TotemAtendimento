@@ -22,6 +22,14 @@ export class SessionService {
     }
   }
 
+  static async saveUserAsync(user: UserView): Promise<void> {
+    try {
+      await AsyncStorage.setItem("userData", JSON.stringify(user));
+    } catch (error) {
+      console.error("Erro ao salvar dados do usuário", error);
+    }
+  }
+
   static async saveStatusAsync(status: Status): Promise<void> {
     try {
       await AsyncStorage.setItem(STATUS_KEY, status.toString());
