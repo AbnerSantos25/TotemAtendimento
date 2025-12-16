@@ -66,7 +66,6 @@ export class SessionService {
       console.error("Erro ao limpar sessão", error);
     }
   }
-  
 
   static async tryRefreshTokenAsync(isRefreshing: boolean): Promise<boolean> {
     try { 
@@ -97,4 +96,15 @@ export class SessionService {
       return false
     }
   }
+
+  static async getUserAsync(): Promise<UserView | null>{
+   try {
+     const jsonValue = await AsyncStorage.getItem(USER_DATA);
+     let userViewConverted = jsonValue != null ? JSON.parse(jsonValue) as UserView : null;
+     return userViewConverted;
+   } catch (error) {
+     console.error("Erro ao resgatar usuário - ", error);
+     return null;
+   }
+ }
 }
