@@ -107,7 +107,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 		{
 			var serviceLocation = await _repository.GetByIdAsync(serviceLocationId);
 			if (serviceLocation == null)
-				return Unsuccessful<IPasswordView>(Errors.NotFound); //Globalizazr com o erro passando o serviceLocation 
+				return Unsuccessful<IPasswordView>(Errors.NotFound);
 
 			var response = await _passwordIntegrationService.ServiceLocationWaitingPasswordAsync(request.QueueId, serviceLocationId, request.Name);
 			if(!response.result.Success)

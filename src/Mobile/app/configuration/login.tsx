@@ -12,7 +12,7 @@ import {
   Keyboard
 } from "react-native";
 import { useRouter } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient"; // Assumindo que queres o mesmo fundo
+import { LinearGradient } from "expo-linear-gradient";
 
 import { UserRequest } from "./models/UserModels";
 import { AGMessageType, AGShowMessage } from "../../shared/components/AGShowMessage";
@@ -20,10 +20,9 @@ import { useAuth } from '../../shared/contexts/AuthContext';
 import { AuthData } from "../../shared/models/baseServiceModels";
 import { BaseService } from "../../shared/services/baseService";
 
-// Imports dos teus serviços e componentes
 
 export default function LoginScreen() {
-  const { signIn } = useAuth(); // Pegamos a função de login global
+  const { signIn } = useAuth();
   const router = useRouter();
   
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +37,7 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
-    // Validação básica
+  
     if (!loginRequest.email || !loginRequest.password) {
       AGShowMessage("Por favor, preencha todos os campos.", AGMessageType.error);
       return;
@@ -46,25 +45,25 @@ export default function LoginScreen() {
     setIsLoading(true);
 
     try {
-      // 1. Faz a requisição na API
-      // Nota: Ajusta o endpoint se necessário ("/totem/identity/login")
+    
+    
       const response = await BaseService.PostAsync<AuthData, UserRequest>(
         "/totem/identity/login", 
         loginRequest
       );
 
       if (response.success) {
-        // 2. SUCESSO NA API -> Atualiza o Contexto
-        // Isso salva no storage e atualiza o estado global 'user'
+      
+      
         await signIn(response.data);        
         AGShowMessage("Bem-vindo de volta!", AGMessageType.success);
 
-        // 3. Redirecionamento
-        // Se viemos de algum lugar, voltamos. Senão, vamos para a Home.
+      
+      
         GobackHome();
 
       } else {
-        // Erro da API (ex: senha errada)
+      
         AGShowMessage(response.error.message, AGMessageType.error);
       }
     } catch (error) {
@@ -100,7 +99,6 @@ export default function LoginScreen() {
             <Text style={styles.title}>Acesso ao Sistema</Text>
             <Text style={styles.subtitle}>Entre com as suas credenciais</Text>
 
-            {/* Campo E-mail */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>E-mail</Text>
               <TextInput 
@@ -114,7 +112,6 @@ export default function LoginScreen() {
               />
             </View>
 
-            {/* Campo Senha */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Senha</Text>
               <TextInput 
@@ -127,7 +124,6 @@ export default function LoginScreen() {
               />
             </View>
 
-            {/* Botão de Entrar */}
             <Pressable 
               style={({ pressed }) => [
                 styles.button,
@@ -143,7 +139,6 @@ export default function LoginScreen() {
               )}
             </Pressable>
 
-            {/* Botão Voltar (Opcional) */}
             <Pressable onPress={() => GobackHome()} style={styles.backButton}>
               <Text style={styles.backButtonText}>Voltar</Text>
             </Pressable>
@@ -169,7 +164,7 @@ const styles = StyleSheet.create({
     width: '85%',
     maxWidth: 400,
     padding: 24,
-    backgroundColor: 'rgba(30, 30, 30, 0.9)', // Fundo semi-transparente
+    backgroundColor: 'rgba(30, 30, 30, 0.9)',
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#333',
@@ -206,7 +201,7 @@ const styles = StyleSheet.create({
     borderColor: '#444',
   },
   button: {
-    backgroundColor: '#6830c0', // Cor primária (Roxo)
+    backgroundColor: '#6830c0',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',

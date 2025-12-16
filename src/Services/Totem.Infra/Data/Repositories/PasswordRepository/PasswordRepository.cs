@@ -50,7 +50,7 @@ namespace Totem.Infra.Data.Repositories.PasswordRepository
 		{
 			return await _context.Passwords
 				.Include(x => x.ServiceLocation)
-				.Where(p => p.QueueId == queueId && p.ServiceLocationId == null)
+				.Where(p => p.QueueId == queueId && p.ServiceLocationId == null && p.Preferential == true)
 				.OrderBy(p => p.CreatedAt)
 				.FirstOrDefaultAsync();
 		}

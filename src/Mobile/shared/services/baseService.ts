@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ApiError, ApiResponse, ServiceResult } from "../models/baseServiceModels";
 import { SessionService } from "./sessionServices";
 import { jwtDecode } from "jwt-decode";
@@ -124,7 +123,6 @@ export const BaseService = {
       let response = await fetch(url, requestInit);
 
       if (response.status === 401 && options.requiresAuth) {
-        // Reativo    
         const refreshSuccess = await SessionService.tryRefreshTokenAsync(false);
 
         if (refreshSuccess) {
