@@ -10,9 +10,10 @@ import {
 
 interface AGButtonProps {
   title: string;
-  route: string;
+  route?: string;
   width?: DimensionValue;
   height?: DimensionValue;
+  onPress?: () => void;
 }
 
 export default function AGButton({
@@ -20,6 +21,7 @@ export default function AGButton({
   route,
   width = "90%",
   height,
+  onPress,
 }: AGButtonProps) {
   const [pressed, setPressed] = useState(false);
   const router = useRouter();
@@ -27,7 +29,11 @@ export default function AGButton({
   const handlePressWithAnimation = () => {
     setPressed(true);
     setTimeout(() => {
-      router.push(route);
+      if (onPress) {
+        onPress();
+      } else if (route) {
+        router.push(route);
+      }
       setPressed(false);
     }, 500);
   };
@@ -35,7 +41,7 @@ export default function AGButton({
   return (
     <TouchableHighlight
       onPress={handlePressWithAnimation}
-      style={[buttonStyles.buttonContainer, { width }]} // ✅ agora o tipo é aceito
+      style={[buttonStyles.buttonContainer, { width }]}
       underlayColor="transparent"
     >
       <LinearGradient
