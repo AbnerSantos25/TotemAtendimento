@@ -3,13 +3,32 @@ using Totem.Common.Domain.Entity;
 
 namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 {
+	public record HexColor
+	{
+		public string Value { get; }
+
+		public HexColor(string value)
+		{
+			if (string.IsNullOrWhiteSpace(value) || !value.StartsWith("#") || value.Length > 7)
+				throw new ArgumentException("Cor inválida.");
+
+			Value = value;
+		}
+
+		public override string ToString()
+		{
+			return Value;
+		}
+	}
+
 	public class ServiceType : Entity, IAggregateRoot
 	{
 		public string Title { get; private set; }
 		public string? Icon { get; private set; }
-		public string Color { get; private set; }
+		public HexColor Color { get; private set; }
 		public string TicketPrefix { get; private set; }
 		public Guid TargetQueueId { get; private set; }
+		public bool IsActive { get; private set; }
 
 		protected ServiceType(){}
 
@@ -17,7 +36,7 @@ namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 		{
 			Title = title;
 			Icon = icon;
-			Color = color;
+			Color = new HexColor(color);
 			TicketPrefix = ticketPrefix;
 			TargetQueueId = targetQueueId;
 		}
@@ -26,8 +45,13 @@ namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 		{
 			Title = title;
 			Icon = icon;
-			Color = color;
+			Color = new HexColor(color);
 			TargetQueueId = targetQueueId;
+		}
+
+		public void ToggleStatus()
+		{
+			IsActive = !IsActive;
 		}
 	}
 }

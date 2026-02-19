@@ -19,7 +19,7 @@ namespace Totem.Domain.Models.ServiceTypeModels
 				ServiceTypeId = entity.Id,
 				Title = entity.Title,
 				Icon = entity.Icon,
-				Color = entity.Color,
+				Color = entity.Color.ToString(),
 				TicketPrefix = entity.TicketPrefix,
 				TargetQueueId = entity.TargetQueueId,
 			};

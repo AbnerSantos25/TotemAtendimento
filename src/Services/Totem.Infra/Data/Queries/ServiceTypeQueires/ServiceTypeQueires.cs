@@ -14,6 +14,22 @@ namespace Totem.Infra.Data.Queries.ServiceTypeQueires
 			_dbContext = dbContext;
 		}
 
+		public async Task<List<ServiceTypeSummary>> GetActiveServicesAsync()
+		{
+			var list = await _dbContext.ServiceTypes.Where(x => x.IsActive).Select(x => new ServiceTypeSummary
+			{
+				ServiceTypeId = x.Id,
+				Title = x.Title,
+				Icon = x.Icon,
+				Color = x.Color.ToString(),
+				TicketPrefix = x.TicketPrefix,
+				TargetQueueId = x.TargetQueueId,
+				IsActive = x.IsActive,
+			}).ToListAsync();
+
+			return list;
+		}
+
 		public async Task<ServiceTypeView> GetByIdAsync(Guid id)
 		{
 			var view =  await _dbContext.ServiceTypes.SingleOrDefaultAsync(x => x.Id == id);
@@ -27,9 +43,10 @@ namespace Totem.Infra.Data.Queries.ServiceTypeQueires
 				ServiceTypeId = x.Id,
 				Title = x.Title,
 				Icon = x.Icon,
-				Color = x.Color,
+				Color = x.Color.ToString(),
 				TicketPrefix = x.TicketPrefix,
 				TargetQueueId = x.TargetQueueId,
+				IsActive = x.IsActive,
 			}).ToListAsync();
 		}
 	}

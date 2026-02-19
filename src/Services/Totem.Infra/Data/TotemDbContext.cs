@@ -4,7 +4,6 @@ using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Aggregates.ServiceTypeAggregate;
-using Totem.Infra.Data.IdentityData;
 using Totem.Infra.Data.Mappings;
 
 namespace Totem.Infra.Data

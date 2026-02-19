@@ -13,7 +13,13 @@ namespace Totem.Infra.Data.Mappings
 			builder.HasIndex(s => s.TicketPrefix).IsUnique();
 
 			builder.Property(s => s.Color)
-				   .HasMaxLength(7);
+				   .HasConversion(
+					   hexColor => hexColor.Value,
+					   stringValue => new HexColor(stringValue)
+				   )
+				   .HasColumnName("Color")
+				   .HasColumnType("varchar(7)")
+				   .IsRequired();
 		}
 	}
 }

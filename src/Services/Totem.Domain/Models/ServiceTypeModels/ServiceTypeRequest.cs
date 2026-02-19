@@ -9,6 +9,7 @@ namespace Totem.Domain.Models.ServiceTypeModels
 		public string? Icon { get; set; }
 		public string? Color { get; set; }
 		public string TicketPrefix { get; set; }
+
 		[RequiredValidation]
 		public Guid TargetQueueId { get; set; }
 	}

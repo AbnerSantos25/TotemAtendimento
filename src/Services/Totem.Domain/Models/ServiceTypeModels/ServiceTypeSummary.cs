@@ -10,6 +10,7 @@ namespace Totem.Domain.Models.ServiceTypeModels
 		public string Color { get; set; }
 		public string TicketPrefix { get; set; }
 		public Guid TargetQueueId { get; set; }
+		public bool IsActive { get; set; }
 
 		public static implicit operator ServiceTypeSummary(ServiceType entity)
 		{
@@ -19,9 +20,10 @@ namespace Totem.Domain.Models.ServiceTypeModels
 				ServiceTypeId = entity.Id,
 				Title = entity.Title,
 				Icon = entity.Icon,
-				Color = entity.Color,
+				Color = entity.Color.ToString(),
 				TicketPrefix = entity.TicketPrefix,
 				TargetQueueId = entity.TargetQueueId,
+				IsActive = entity.IsActive
 			};
 		}
 	}
