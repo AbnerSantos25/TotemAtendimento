@@ -1,19 +1,19 @@
 import { StyleSheet, Text, View, Dimensions, Image, ImageBackground, Pressable, ActivityIndicator } from "react-native";
-import BackgroundImage from "../../../assets/images/background.png";
 import ConfigButton from "../../../shared/components/ConfigButton";
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from "react";
-import { UserView } from "../../../shared/models/commonModels";
-import { ConfigurationService } from "../services/configService";
+import { useState } from "react";
 import { AGMessageType, AGShowMessage } from "../../../shared/components/AGShowMessage";
 import { ThemeModal, ThemeType } from "./ThemeModel";
+import { ButtonStyles } from "../../../shared/styles/mainStyles";
+import { useAuth } from "../../../shared/contexts/AuthContext";
+import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 export default function configuration() {
-  const [user, setUser] = useState<UserView | null>(null);
-  const [loading, setLoading] = useState(true);
+  const {user, isLoading, signOut} = useAuth();
 
   //#region ThemeModel
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,33 +30,24 @@ export default function configuration() {
       case 'system': return 'Sistema';
     }
   }
-  //#endregion
 
-  // useEffect(() => {
-  //   const loadUserData = async () => {
-  //     const userResponse = await ConfigurationService.GetLoggedUserAsync();
-  //     if (userResponse.success) {
-  //       setUser(userResponse.data)
-  //       setLoading(false);
-  //     } else {
-  //       AGShowMessage(userResponse.error.message, AGMessageType.error);
-  //     }
-  //   };
-
-  //   loadUserData();
-  // });
-
-  // if (loading) {
-  //   return <ActivityIndicator size="large" />;
-  // }
+    const handleLogout = async () => {
+      try {
+        await signOut(); 
+          AGShowMessage("Você saiu com sucesso!", AGMessageType.success);
+          router.replace('/');
+      } catch (error) {
+          AGShowMessage("Erro ao Sair!", AGMessageType.success);
+      }
+    };
 
   return (
-    <ImageBackground
-      source={BackgroundImage}
-      resizeMode="cover"
-      style={ConfigStyle.backgroundImage}
-    >
-      <View style={[ConfigStyle.MainContainer]}>
+      <>
+        <LinearGradient
+        colors={['#000000', '#121018','#2a1a4a', '#4a1a2a']}
+        style={StyleSheet.absoluteFill}
+        />
+        <View style={[ConfigStyle.MainContainer]}>
         <View style={{ flex: 1, alignItems: 'center' }}>
           <View id="UserInfo" style={[ConfigStyle.UserInfo]}>
             <Pressable onPress={() => {
@@ -101,6 +92,16 @@ export default function configuration() {
               <ConfigButton title="Políticas de Privacidade" route="/" iconName="shield-half-outline"></ConfigButton>
             </View>
           </View>
+          <View style={{margin:10}}>
+              <Pressable
+                style={({ pressed }) => [ButtonStyles.logoutButton,
+                  pressed && { opacity: 0.8 }
+                ]}
+                onPress={handleLogout}
+              >
+                <Text style={ButtonStyles.logoutText}>Sair da Conta</Text>
+              </Pressable>
+          </View>
         </View>
 
           <ThemeModal 
@@ -110,7 +111,7 @@ export default function configuration() {
             currentTheme={currentTheme}
           />
       </View>
-    </ImageBackground>
+      </>
   );
 }
 
@@ -118,7 +119,6 @@ const ConfigStyle = StyleSheet.create({
   MainContainer: {
     width: screenWidth,
     height: screenHeight,
-    // backgroundColor: "#363636ff",
     flex: 1,
   },
   DivConfig: {

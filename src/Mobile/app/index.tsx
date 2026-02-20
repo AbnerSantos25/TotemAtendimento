@@ -79,18 +79,19 @@ export default function HomeScreen() {
       await signOut();
       AGShowMessage("Você saiu com sucesso!", AGMessageType.success);
     } catch (error) {
-      console.error("Erro ao sair", error);
+        AGShowMessage("Erro ao Sair!", AGMessageType.success);
     }
   };
 
   return (
     <>
+      <LinearGradient
+        colors={['#000000', '#121018','#2a1a4a', '#4a1a2a']}
+        style={StyleSheet.absoluteFill}
+      />
+
       <StatusBar barStyle="light-content" />
-      <ImageBackground
-        source={BackgroundImage}
-        resizeMode="cover"
-        style={GlobalStyles.backgroundImage}
-      >
+      
         <View style={GlobalStyles.centeredContainer}>
 
           <View style={styles.header}>
@@ -120,7 +121,7 @@ export default function HomeScreen() {
           </View>
 
         </View>
-      </ImageBackground>
+     
 
       <ConfirmDialog
         visible={dialogVisible}

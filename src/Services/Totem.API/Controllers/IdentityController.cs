@@ -17,7 +17,6 @@ namespace Totem.API.Controllers
             _identityService = identityService;
         }
 
-        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterUserView registerUser)
         {
