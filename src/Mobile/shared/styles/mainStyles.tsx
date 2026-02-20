@@ -103,20 +103,4 @@ export const FormStyles = StyleSheet.create({
   },
 });
 
-export const ButtonStyles = StyleSheet.create({
-    logoutButton: {
-        backgroundColor: "rgba(211, 47, 47, 0.2)", // Vermelho translúcido
-        borderWidth: 1,
-        borderColor: "#d32f2f",
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-        borderRadius: 20,
-        marginBottom: 30,
-    },
-    logoutText: {
-        color: "#ff8a80",
-        fontWeight: "600",
-        fontSize: 14,
-    },
-});
 
