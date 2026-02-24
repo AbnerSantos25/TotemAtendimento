@@ -160,6 +160,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Tipo de serviço não encontrado..
+        /// </summary>
+        public static string ServiceTypeNotFound {
+            get {
+                return ResourceManager.GetString("ServiceTypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário já possui esta função..
         /// </summary>
         public static string UserAlreadyHasRole {

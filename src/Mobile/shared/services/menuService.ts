@@ -5,24 +5,36 @@ import { ServiceResult } from "../models/baseServiceModels";
 export const MenuService = {
 
     getAvailableMenus: async (): Promise<MenuQueue[]> => {
-        // TODO<Gabriel> Por enquanto simulação, timeout, e retorno dados estaticos. Substituir por uma requisição, para obter os dados da entidade de Menu, quando esta existir.
-        await new Promise(resolve => setTimeout(resolve, 500));
+        try {
+            // Faz a requisição GET para a rota de serviços ativos criada na controller
+            // Nota: Certifique-se de que o método GetAsync está implementado no seu BaseService
+            const response = await BaseService.GetAsync<any[]>("/totem/servicetype/active");
+            console.log("Resposta da API de Menus:", response);
+            
 
-        return [
-            {
-                name: "Atendimento Geral",
-                queueId: "5cd16e0e-e818-4fc9-a206-6957afdf4167",
-                preferential: true
-            },
-            {
-                name: "Retirada de Exames",
-                queueId: "b8dd2fec-7b5b-4ace-96c3-054901a6829f",
-                preferential: false
+            if (response.success && response.data) {
+                // Mapeia o DTO que vem do Backend (ServiceTypeSummary) para o modelo do Frontend (MenuQueue)
+                return response.data.map(item => ({
+                    title: item.title,               // Mapeia o Title do C# para o name do Front
+                    icon: item.icon,                 // Mapeia o ícone do C# para o ícone do Front
+                    ticketPrefix: item.ticketPrefix, // Mapeia o prefixo do ticket
+                    queueId: item.targetQueueId,    // Mapeia a Fila Alvo
+                    preferential: false, // Assumindo que você tem essa flag na API
+                    color: item.color               // Bônus: pega a cor dinâmica configurada no painel!
+                }));
             }
-        ];
+
+
+            console.warn("Nenhum menu retornado pela API ou erro na requisição.");
+            return [];
+        } catch (error) {
+            console.error("Erro de rede ao buscar menus do Totem:", error);
+            return [];
+        }
     },
 
     generatePassword: async (request: QueueRequest): Promise<ServiceResult<any>> => {
+        console.log("Enviando requisição para gerar senha:", request);
         return await BaseService.PostAsync<any, QueueRequest>("/totem/Password", request, true);
     }
 };
