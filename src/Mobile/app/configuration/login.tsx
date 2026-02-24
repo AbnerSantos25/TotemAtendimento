@@ -88,7 +88,7 @@ export default function LoginScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <LinearGradient
-          colors={['#121212', '#2a1a4a', '#4a1a2a']}
+          colors={['#000000', '#121018','#2a1a4a', '#4a1a2a']}
           style={StyleSheet.absoluteFill}
         />
 

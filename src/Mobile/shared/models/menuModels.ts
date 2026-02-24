@@ -1,5 +1,8 @@
 export interface MenuQueue {
-  name: string;
+  title : string;
+  icon : string;
+  color?: string;
+  ticketPrefix: string;
   queueId: string;
   preferential: boolean;
 }

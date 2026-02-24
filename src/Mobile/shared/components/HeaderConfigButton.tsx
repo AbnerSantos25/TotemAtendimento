@@ -1,4 +1,3 @@
-// Exemplo: src/shared/components/HeaderConfigButton.tsx
 import { Pressable } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
