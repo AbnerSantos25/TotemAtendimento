@@ -15,7 +15,7 @@ using Totem.Domain.Aggregates.ServiceTypeAggregate;
 using Totem.Infra.Data.Queries.PasswordQueries;
 using Totem.Infra.Data.Queries.QueueQueries;
 using Totem.Infra.Data.Queries.ServiceLocationQueries;
-using Totem.Infra.Data.Queries.ServiceTypeQueires;
+using Totem.Infra.Data.Queries.ServiceTypeQueries;
 using Totem.Infra.Data.Repositories.PasswordRepository;
 using Totem.Infra.Data.Repositories.QueueRepository;
 using Totem.Infra.Data.Repositories.RefrashTokenRepository;
@@ -58,7 +58,7 @@ namespace Totem.Application.Configurations
 			services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 			services.AddScoped<IServiceTypeService, ServiceTypeService>();
-			services.AddScoped<IServiceTypeQueires, ServiceTypeQueires>();
+			services.AddScoped<IServiceTypeQueries, ServiceTypeQueries>();
 			services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
 
 		}

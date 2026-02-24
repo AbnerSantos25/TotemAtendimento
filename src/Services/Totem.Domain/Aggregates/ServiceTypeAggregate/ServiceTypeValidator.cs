@@ -10,12 +10,6 @@ namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 				.NotEmpty()
 				.MaximumLength(100);
 
-			RuleFor(x => x.Color)
-				.NotEmpty();
-
-			RuleFor(x => x.Color.Value)
-				.NotEmpty().MaximumLength(7);
-
 			RuleFor(x => x.TicketPrefix)
 				.NotEmpty()
 				.MaximumLength(3);

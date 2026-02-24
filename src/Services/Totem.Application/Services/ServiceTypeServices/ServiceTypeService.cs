@@ -9,10 +9,10 @@ namespace Totem.Application.Services.ServiceTypeServices
 {
 	public class ServiceTypeService : BaseService, IServiceTypeService
 	{
-		private readonly IServiceTypeQueires _queries;
+		private readonly IServiceTypeQueries _queries;
 		private readonly IServiceTypeRepository _repository;
 
-		public ServiceTypeService(INotificator notificator, IServiceTypeQueires serviceTypeQueires, IServiceTypeRepository serviceTypeRepository) : base(notificator)
+		public ServiceTypeService(INotificator notificator, IServiceTypeQueries serviceTypeQueires, IServiceTypeRepository serviceTypeRepository) : base(notificator)
 		{
 			_queries = serviceTypeQueires;
 			_repository = serviceTypeRepository;
