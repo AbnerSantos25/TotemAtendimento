@@ -1,5 +1,6 @@
 ﻿using Totem.Common.Domain;
 using Totem.Common.Domain.Entity;
+using Totem.Common.ValueObject;
 
 namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 {

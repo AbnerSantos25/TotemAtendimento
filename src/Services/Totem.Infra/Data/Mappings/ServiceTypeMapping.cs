@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Totem.Common.ValueObject;
 using Totem.Domain.Aggregates.ServiceTypeAggregate;
 
 namespace Totem.Infra.Data.Mappings
@@ -13,10 +14,10 @@ namespace Totem.Infra.Data.Mappings
 			builder.HasIndex(s => s.TicketPrefix).IsUnique();
 
 			builder.Property(s => s.Color)
-				   .HasConversion(
-					   hexColor => hexColor.Value,
-					   stringValue => new HexColor(stringValue)
-				   )
+					.HasConversion(
+							hexColor => hexColor != null ? hexColor.Value : null,
+							stringValue => stringValue != null ? new HexColor(stringValue) : null
+					)
 				   .HasColumnName("Color")
 				   .HasColumnType("varchar(7)");
 		}

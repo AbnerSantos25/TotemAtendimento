@@ -1,4 +1,4 @@
-﻿namespace Totem.Domain.Aggregates.ServiceTypeAggregate
+﻿namespace Totem.Common.ValueObject
 {
 	public record HexColor
 	{
@@ -15,6 +15,12 @@
 		public override string ToString()
 		{
 			return Value;
+		}
+
+		public HexColor? CreateColor(string? color)
+		{
+			if (color is null) return null;
+			return new HexColor(color);
 		}
 	}
 }
