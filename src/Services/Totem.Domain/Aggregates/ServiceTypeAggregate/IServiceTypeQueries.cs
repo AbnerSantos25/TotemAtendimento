@@ -2,7 +2,7 @@
 
 namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 {
-	public interface IServiceTypeQueires
+	public interface IServiceTypeQueries
 	{
 		Task<List<ServiceTypeSummary>> GetActiveServicesAsync();
 		Task<ServiceTypeView> GetByIdAsync(Guid id);

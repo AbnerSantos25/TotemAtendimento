@@ -18,8 +18,7 @@ namespace Totem.Infra.Data.Mappings
 					   stringValue => new HexColor(stringValue)
 				   )
 				   .HasColumnName("Color")
-				   .HasColumnType("varchar(7)")
-				   .IsRequired();
+				   .HasColumnType("varchar(7)");
 		}
 	}
 }

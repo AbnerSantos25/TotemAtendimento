@@ -1,15 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Totem.Common.Domain.Entity;
 using Totem.Domain.Aggregates.ServiceTypeAggregate;
 using Totem.Domain.Models.ServiceTypeModels;
 
-namespace Totem.Infra.Data.Queries.ServiceTypeQueires
+namespace Totem.Infra.Data.Queries.ServiceTypeQueries
 {
-	public class ServiceTypeQueires : IServiceTypeQueires
+	public class ServiceTypeQueries : IServiceTypeQueries
 	{
 		private readonly TotemDbContext _dbContext;
 
-		public ServiceTypeQueires(TotemDbContext dbContext)
+		public ServiceTypeQueries(TotemDbContext dbContext)
 		{
 			_dbContext = dbContext;
 		}
