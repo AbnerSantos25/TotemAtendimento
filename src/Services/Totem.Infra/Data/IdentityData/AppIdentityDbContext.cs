@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Totem.Common.Data;
+using Totem.Common.Domain.Entity;
 using Totem.Domain.Aggregates.RefreshTokenAggregate;
 using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Infra.Data.IdentityData.Mappings;
@@ -57,6 +58,19 @@ namespace Totem.Infra.Data.IdentityData
 			modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable($"{prefix}UserLogins");
 			modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable($"{prefix}UserTokens");
 			modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable($"{prefix}UserRoles");
+
+			foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+			{
+				if (typeof(Entity).IsAssignableFrom(entityType.ClrType))
+				{
+					var idProperty = entityType.FindProperty("Id");
+
+					if (idProperty != null)
+					{
+						idProperty.SetColumnName(entityType.ClrType.Name + "Id");
+					}
+				}
+			}
 
 			modelBuilder.ApplyConfiguration(new RefreshTokenMapping());
 			modelBuilder.ApplyConfiguration(new SysUserMappings());

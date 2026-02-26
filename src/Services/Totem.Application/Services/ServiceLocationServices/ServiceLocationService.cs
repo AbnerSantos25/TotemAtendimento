@@ -15,14 +15,12 @@ namespace Totem.Application.Services.ServiceLocationServices
 	{
 		private readonly IServiceLocationRepository _repository;
 		private readonly IServiceLocationQueries _queries;
-		private readonly IMediator _mediator;
 		private readonly IPasswordIntegrationService _passwordIntegrationService;
 
-		public ServiceLocationService(INotificator notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, IMediator mediator, IPasswordIntegrationService passwordIntegrationService) : base(notificador)
+		public ServiceLocationService(INotificator notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, IPasswordIntegrationService passwordIntegrationService) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;
-			_mediator = mediator;
 			_passwordIntegrationService = passwordIntegrationService;
 		}
 
