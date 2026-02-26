@@ -150,6 +150,9 @@
   <data name="RegisterAlreadyExists" xml:space="preserve">
     <value>Registro  já existe.</value>
   </data>
+  <data name="ServiceTypeNotFound" xml:space="preserve">
+    <value>Tipo de serviço não encontrado.</value>
+  </data>
   <data name="UserAlreadyHasRole" xml:space="preserve">
     <value>Usuário já possui esta função.</value>
   </data>

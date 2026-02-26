@@ -5,18 +5,22 @@ using Totem.Application.Services.PasswordServices;
 using Totem.Application.Services.QueueServices;
 using Totem.Application.Services.RefreshTokenServices;
 using Totem.Application.Services.ServiceLocationServices;
+using Totem.Application.Services.ServiceTypeServices;
 using Totem.Common.Domain.Notification;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.RefreshTokenAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
+using Totem.Domain.Aggregates.ServiceTypeAggregate;
 using Totem.Infra.Data.Queries.PasswordQueries;
 using Totem.Infra.Data.Queries.QueueQueries;
 using Totem.Infra.Data.Queries.ServiceLocationQueries;
+using Totem.Infra.Data.Queries.ServiceTypeQueries;
 using Totem.Infra.Data.Repositories.PasswordRepository;
 using Totem.Infra.Data.Repositories.QueueRepository;
 using Totem.Infra.Data.Repositories.RefrashTokenRepository;
 using Totem.Infra.Data.Repositories.ServiceLocationRepository;
+using Totem.Infra.Data.Repositories.ServiceTypeRepository;
 using Totem.SharedKernel.Services;
 
 namespace Totem.Application.Configurations
@@ -52,6 +56,10 @@ namespace Totem.Application.Configurations
 			services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
 			services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+			services.AddScoped<IServiceTypeService, ServiceTypeService>();
+			services.AddScoped<IServiceTypeQueries, ServiceTypeQueries>();
+			services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
 
 		}
 	}

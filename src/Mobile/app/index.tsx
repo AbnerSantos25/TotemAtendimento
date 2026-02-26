@@ -11,6 +11,7 @@ import ConfirmDialog from '../shared/components/ConfirmDialog';
 import { MenuQueue, QueueRequest } from '../shared/models/menuModels';
 import { MenuService } from '../shared/services/menuService';
 import { GlobalStyles, TextStyles, ButtonStyles } from '../shared/styles/mainStyles';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function HomeScreen() {
   const { user, isLoading, signOut } = useAuth();
@@ -48,9 +49,9 @@ export default function HomeScreen() {
   }
 
   const handleMenuClick = async (menu: MenuQueue) => {
-    if (menu.preferential) {
-      setSelectedMenu(menu);
+    if (true) {
       setDialogVisible(true);
+      setSelectedMenu(menu);
     } else {
       await processQueueRequest(menu, false);
     }
@@ -80,49 +81,31 @@ export default function HomeScreen() {
       await signOut();
       AGShowMessage(GetLocalized(Messages.LoggedOutSuccess), AGMessageType.success);
     } catch (error) {
-      console.error("Erro ao sair", error);
+        AGShowMessage("Erro ao Sair!", AGMessageType.success);
     }
   };
 
   return (
     <>
+      <LinearGradient
+        colors={['#000000', '#121018','#2a1a4a', '#4a1a2a']}
+        style={StyleSheet.absoluteFill}
+      />
+
       <StatusBar barStyle="light-content" />
-      <ImageBackground
-        source={BackgroundImage}
-        resizeMode="cover"
-        style={GlobalStyles.backgroundImage}
-      >
         <View style={GlobalStyles.centeredContainer}>
-
-          <View style={styles.header}>
-            <Text style={TextStyles.welcomeLabel}>{GetLocalized(Messages.Welcome)}</Text>
-            <Text style={TextStyles.userName}>{user.name}</Text>
-            <Text style={TextStyles.userEmail}>{user.email}</Text>
-          </View>
-
-          <Pressable
-            style={({ pressed }) => [
-              ButtonStyles.logoutButton,
-              pressed && { opacity: 0.8 }
-            ]}
-            onPress={handleLogout}>
-            <Text style={ButtonStyles.logoutText}>{GetLocalized(Messages.Logout)}</Text>
-          </Pressable>
-
           <View style={GlobalStyles.buttonsContainer}>
             {menus.map((menu) => (
               <AGButton
                 key={menu.queueId}
-                title={menu.name}
+                title={menu.title}
                 width="100%"
                 onPress={() => handleMenuClick(menu)}
               />
             ))}
           </View>
-
         </View>
-      </ImageBackground>
-
+     
       <ConfirmDialog
         visible={dialogVisible}
         title={GetLocalized(Messages.TypeOfService)}
