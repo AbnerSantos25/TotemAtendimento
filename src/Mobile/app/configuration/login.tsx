@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  StyleSheet, 
-  Pressable, 
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
@@ -13,19 +13,20 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient"; // Assumindo que queres o mesmo fundo
+import { GetLocalized } from "../../shared/localization/i18n";
+import { Errors, Labels, Messages } from "../../shared/localization/keys";
 
 import { UserRequest } from "./models/UserModels";
 import { AGMessageType, AGShowMessage } from "../../shared/components/AGShowMessage";
 import { useAuth } from '../../shared/contexts/AuthContext';
 import { AuthData } from "../../shared/models/baseServiceModels";
 import { BaseService } from "../../shared/services/baseService";
-
 // Imports dos teus serviços e componentes
 
 export default function LoginScreen() {
   const { signIn } = useAuth(); // Pegamos a função de login global
   const router = useRouter();
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [loginRequest, setLoginRequest] = useState<UserRequest>({
     FullName: "",
@@ -39,25 +40,23 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     // Validação básica
-    if (!loginRequest.email || !loginRequest.password) {
-      AGShowMessage("Por favor, preencha todos os campos.", AGMessageType.error);
-      return;
-    }
+    AGShowMessage(GetLocalized(Errors.ErrorSavingDatabase), AGMessageType.error);
+
     setIsLoading(true);
 
     try {
       // 1. Faz a requisição na API
       // Nota: Ajusta o endpoint se necessário ("/totem/identity/login")
       const response = await BaseService.PostAsync<AuthData, UserRequest>(
-        "/totem/identity/login", 
+        "/totem/identity/login",
         loginRequest
       );
 
       if (response.success) {
         // 2. SUCESSO NA API -> Atualiza o Contexto
         // Isso salva no storage e atualiza o estado global 'user'
-        await signIn(response.data);        
-        AGShowMessage("Bem-vindo de volta!", AGMessageType.success);
+        await signIn(response.data);
+        AGShowMessage(GetLocalized(Messages.WelcomeBack), AGMessageType.success);
 
         // 3. Redirecionamento
         // Se viemos de algum lugar, voltamos. Senão, vamos para a Home.
@@ -69,19 +68,19 @@ export default function LoginScreen() {
       }
     } catch (error) {
       console.error("Erro no login:", error);
-      AGShowMessage("Ocorreu um erro inesperado. Tente novamente.", AGMessageType.error);
+      AGShowMessage(GetLocalized(Errors.UnexpectedError), AGMessageType.error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const GobackHome = () => {
-     if (router.canGoBack()) {
+    if (router.canGoBack()) {
       console.log("Voltando para a tela anterior");
-        router.back();
-      } else {
-        router.replace('/');
-      }
+      router.back();
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
@@ -92,18 +91,18 @@ export default function LoginScreen() {
           style={StyleSheet.absoluteFill}
         />
 
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardView}
         >
           <View style={styles.formContainer}>
-            <Text style={styles.title}>Acesso ao Sistema</Text>
-            <Text style={styles.subtitle}>Entre com as suas credenciais</Text>
+            <Text style={styles.title}>{GetLocalized(Labels.SystemAccess)}</Text>
+            <Text style={styles.subtitle}>{GetLocalized(Labels.EnterCredentials)}</Text>
 
             {/* Campo E-mail */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>E-mail</Text>
-              <TextInput 
+              <Text style={styles.label}>{GetLocalized(Labels.Email)}</Text>
+              <TextInput
                 value={loginRequest.email}
                 onChangeText={(txt) => handleInputChange("email", txt)}
                 style={styles.input}
@@ -116,8 +115,8 @@ export default function LoginScreen() {
 
             {/* Campo Senha */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Senha</Text>
-              <TextInput 
+              <Text style={styles.label}>{GetLocalized(Labels.Password)}</Text>
+              <TextInput
                 value={loginRequest.password}
                 onChangeText={(txt) => handleInputChange("password", txt)}
                 style={styles.input}
@@ -128,7 +127,7 @@ export default function LoginScreen() {
             </View>
 
             {/* Botão de Entrar */}
-            <Pressable 
+            <Pressable
               style={({ pressed }) => [
                 styles.button,
                 pressed && styles.buttonPressed
@@ -139,13 +138,13 @@ export default function LoginScreen() {
               {isLoading ? (
                 <ActivityIndicator color="#FFF" />
               ) : (
-                <Text style={styles.buttonText}>Entrar</Text>
+                <Text style={styles.buttonText}>{GetLocalized(Labels.EnterButton)}</Text>
               )}
             </Pressable>
 
             {/* Botão Voltar (Opcional) */}
             <Pressable onPress={() => GobackHome()} style={styles.backButton}>
-              <Text style={styles.backButtonText}>Voltar</Text>
+              <Text style={styles.backButtonText}>{GetLocalized(Labels.GoBackButton)}</Text>
             </Pressable>
 
           </View>
