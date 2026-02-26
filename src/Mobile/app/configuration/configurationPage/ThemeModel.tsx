@@ -1,13 +1,15 @@
 import React from 'react';
-import { 
-  Modal, 
-  View, 
-  Text, 
-  Pressable, 
-  StyleSheet 
+import {
+  Modal,
+  View,
+  Text,
+  Pressable,
+  StyleSheet
 } from 'react-native';
 import { SelectableOption } from '../../../shared/components/SelectableOption';
 import { AGModal } from '../../../shared/components/AGModel';
+import { GetLocalized } from '../../../shared/localization/i18n';
+import { Labels } from '../../../shared/localization/keys';
 
 export type ThemeType = 'light' | 'dark' | 'system';
 
@@ -21,33 +23,33 @@ interface ThemeModalProps {
 export function ThemeModal({ visible, onClose, onSelectTheme, currentTheme }: ThemeModalProps) {
   return (
     <AGModal visible={visible}
-        onClose={onClose}
-        title="Escolha o Tema"
-        subtitle="Defina a aparência do aplicativo">
+      onClose={onClose}
+      title={GetLocalized(Labels.ThemeSelectionTitle)}
+      subtitle={GetLocalized(Labels.ThemeSelectionSubtitle)}>
 
-        {/* Lista de Opções usando o Componente Reutilizável */}
-        <View style={styles.optionsContainer}>
+      {/* Lista de Opções usando o Componente Reutilizável */}
+      <View style={styles.optionsContainer}>
         <SelectableOption
-            label="Claro"
-            icon="sunny-outline"
-            isSelected={currentTheme === 'light'}
-            onPress={() => onSelectTheme('light')}
+          label={GetLocalized(Labels.ThemeLight)}
+          icon="sunny-outline"
+          isSelected={currentTheme === 'light'}
+          onPress={() => onSelectTheme('light')}
         />
-        
+
         <SelectableOption
-            label="Escuro"
-            icon="moon-outline"
-            isSelected={currentTheme === 'dark'}
-            onPress={() => onSelectTheme('dark')}
+          label={GetLocalized(Labels.ThemeDark)}
+          icon="moon-outline"
+          isSelected={currentTheme === 'dark'}
+          onPress={() => onSelectTheme('dark')}
         />
-        
+
         <SelectableOption
-            label="Sistema"
-            icon="phone-portrait-outline"
-            isSelected={currentTheme === 'system'}
-            onPress={() => onSelectTheme('system')}
+          label={GetLocalized(Labels.ThemeSystem)}
+          icon="phone-portrait-outline"
+          isSelected={currentTheme === 'system'}
+          onPress={() => onSelectTheme('system')}
         />
-        </View>
+      </View>
     </AGModal>
   );
 }

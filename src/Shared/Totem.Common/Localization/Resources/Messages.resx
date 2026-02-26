@@ -138,13 +138,40 @@
   <data name="InactivatedUser" xml:space="preserve">
     <value>Usuario inativado.</value>
   </data>
-  <data name="InactivatedUser" xml:space="preserve">
-    <value>Usuario inativado.</value>
-  </data>
   <data name="NoPasswordsInQueue" xml:space="preserve">
     <value>Não há senhas na fila. Aguarde.</value>
   </data>
   <data name="UnableCreateServiceLocation" xml:space="preserve">
     <value>Não foi possível criar o Local de Atendimento</value>
+  </data>
+  <data name="LoadingSystem" xml:space="preserve">
+    <value>Carregando sistema...</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Bem-vindo,</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Sair da Conta</value>
+  </data>
+  <data name="LoggedOutSuccess" xml:space="preserve">
+    <value>Você saiu com sucesso!</value>
+  </data>
+  <data name="PasswordGeneratedFor" xml:space="preserve">
+    <value>Senha gerada para:</value>
+  </data>
+  <data name="TypeOfService" xml:space="preserve">
+    <value>Tipo de Atendimento</value>
+  </data>
+  <data name="ChooseServiceType" xml:space="preserve">
+    <value>Escolha o tipo de atendimento desejado:</value>
+  </data>
+  <data name="Common" xml:space="preserve">
+    <value>Comum</value>
+  </data>
+  <data name="Preferential" xml:space="preserve">
+    <value>Preferencial</value>
+  </data>
+  <data name="WelcomeBack" xml:space="preserve">
+    <value>Bem-vindo de volta!</value>
   </data>
 </root>
