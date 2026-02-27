@@ -67,7 +67,7 @@ export default function HomeScreen() {
       const response = await MenuService.generatePassword(request);
 
       if (response.success) {
-        AGShowMessage(`${GetLocalized(Messages.PasswordGeneratedFor)} ${menu.name}`, AGMessageType.success);
+        AGShowMessage(`${GetLocalized(Messages.PasswordGeneratedFor)} ${menu.title}`, AGMessageType.success);
       } else {
         AGShowMessage(response.error.message, AGMessageType.error);
       }
@@ -81,31 +81,31 @@ export default function HomeScreen() {
       await signOut();
       AGShowMessage(GetLocalized(Messages.LoggedOutSuccess), AGMessageType.success);
     } catch (error) {
-        AGShowMessage("Erro ao Sair!", AGMessageType.success);
+      AGShowMessage("Erro ao Sair!", AGMessageType.success);
     }
   };
 
   return (
     <>
       <LinearGradient
-        colors={['#000000', '#121018','#2a1a4a', '#4a1a2a']}
+        colors={['#000000', '#121018', '#2a1a4a', '#4a1a2a']}
         style={StyleSheet.absoluteFill}
       />
 
       <StatusBar barStyle="light-content" />
-        <View style={GlobalStyles.centeredContainer}>
-          <View style={GlobalStyles.buttonsContainer}>
-            {menus.map((menu) => (
-              <AGButton
-                key={menu.queueId}
-                title={menu.title}
-                width="100%"
-                onPress={() => handleMenuClick(menu)}
-              />
-            ))}
-          </View>
+      <View style={GlobalStyles.centeredContainer}>
+        <View style={GlobalStyles.buttonsContainer}>
+          {menus.map((menu) => (
+            <AGButton
+              key={menu.queueId}
+              title={menu.title}
+              width="100%"
+              onPress={() => handleMenuClick(menu)}
+            />
+          ))}
         </View>
-     
+      </View>
+
       <ConfirmDialog
         visible={dialogVisible}
         title={GetLocalized(Messages.TypeOfService)}

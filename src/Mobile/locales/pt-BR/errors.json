@@ -1,0 +1,21 @@
+{
+  "ErrorSavingDatabase": "Erro ao Salvar no Banco de dados. ",
+  "IncorrectUsernamePassword": "Usuário ou senha incorretos.",
+  "InvalidRefreshToken": "Não foi possível atualizar sua permissão.",
+  "NameFieldRequired": "O campo Nome é obrigatório",
+  "NotFound": "Registro não encontrado.",
+  "PasswordCannotBeServed": "Uma senha sem local de atendimento, não pode ser atendida.",
+  "PasswordCannotBeTransfered": "Uma senha atendida não pode ser transferida.",
+  "PasswordNotFound": "Senha não encontrada.",
+  "PasswordRequestNull": "O campo senha não pode ser nulo",
+  "RefreshTokenNotFound": "Token de atualização não encontrado.",
+  "RegisterAlreadyExists": "Registro  já existe.",
+  "ServiceTypeNotFound": "Tipo de serviço não encontrado.",
+  "UserAlreadyHasRole": "Usuário já possui esta função.",
+  "UserNotFound": "Usuario não encontrado",
+  "UserTemporarilyBlocked": "Usuário temporariamente bloqueado por tentativas inválidas.",
+  "ErrorLoadingAvailableQueues": "Erro ao carregar filas disponíveis",
+  "UnexpectedErrorGeneratingPassword": "Erro inesperado ao gerar senha",
+  "FillAllFields": "Por favor, preencha todos os campos.",
+  "UnexpectedError": "Ocorreu um erro inesperado. Tente novamente."
+}

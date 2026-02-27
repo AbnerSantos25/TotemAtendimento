@@ -1,0 +1,21 @@
+{
+  "ActiveUser": "Usuário ativo.",
+  "AwaitingNextPassword": "Aguardando próxima senha da fila.",
+  "CallingNextPassword": "Chamando próxima senha da fila.",
+  "HistoryQueueChanged": "Senha {0} transferida da fila “{1}” para “{2}”",
+  "HistoryServed": "Senha {0} marcada como atendida",
+  "HistoryTransferred": "Senha {0} transferida de “{1}” para “{2}”",
+  "InactivatedUser": "Usuario inativado.",
+  "NoPasswordsInQueue": "Não há senhas na fila. Aguarde.",
+  "UnableCreateServiceLocation": "Não foi possível criar o Local de Atendimento",
+  "LoadingSystem": "Carregando sistema...",
+  "Welcome": "Bem-vindo,",
+  "Logout": "Sair da Conta",
+  "LoggedOutSuccess": "Você saiu com sucesso!",
+  "PasswordGeneratedFor": "Senha gerada para:",
+  "TypeOfService": "Tipo de Atendimento",
+  "ChooseServiceType": "Escolha o tipo de atendimento desejado:",
+  "Common": "Comum",
+  "Preferential": "Preferencial",
+  "WelcomeBack": "Bem-vindo de volta!"
+}
