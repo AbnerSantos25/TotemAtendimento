@@ -12,6 +12,7 @@ export const Errors = {
   PasswordRequestNull: "errors:PasswordRequestNull",
   RefreshTokenNotFound: "errors:RefreshTokenNotFound",
   RegisterAlreadyExists: "errors:RegisterAlreadyExists",
+  ServiceTypeNotFound: "errors:ServiceTypeNotFound",
   UserAlreadyHasRole: "errors:UserAlreadyHasRole",
   UserNotFound: "errors:UserNotFound",
   UserTemporarilyBlocked: "errors:UserTemporarilyBlocked",
