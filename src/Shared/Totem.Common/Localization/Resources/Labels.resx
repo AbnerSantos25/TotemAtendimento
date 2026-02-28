@@ -123,4 +123,76 @@
   <data name="ServiceLocator" xml:space="preserve">
     <value>Local de Atendimento</value>
   </data>
+  <data name="SystemAccess" xml:space="preserve">
+    <value>Acesso ao Sistema</value>
+  </data>
+  <data name="EnterCredentials" xml:space="preserve">
+    <value>Entre com as suas credenciais</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Senha</value>
+  </data>
+  <data name="EnterButton" xml:space="preserve">
+    <value>Entrar</value>
+  </data>
+  <data name="GoBackButton" xml:space="preserve">
+    <value>Voltar</value>
+  </data>
+  <data name="NavigationHome" xml:space="preserve">
+    <value>Início</value>
+  </data>
+  <data name="NavigationService" xml:space="preserve">
+    <value>Atendimento</value>
+  </data>
+  <data name="NavigationLogin" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="NavigationPreferential" xml:space="preserve">
+    <value>Preferencial</value>
+  </data>
+  <data name="NavigationExamRetrieval" xml:space="preserve">
+    <value>Retirada de Exames</value>
+  </data>
+  <data name="NavigationSettings" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="ThemeSelectionTitle" xml:space="preserve">
+    <value>Escolha o Tema</value>
+  </data>
+  <data name="ThemeSelectionSubtitle" xml:space="preserve">
+    <value>Defina a aparência do aplicativo</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Escuro</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>Sistema</value>
+  </data>
+  <data name="SettingsGeneral" xml:space="preserve">
+    <value>Configurações Gerais</value>
+  </data>
+  <data name="SettingsThemes" xml:space="preserve">
+    <value>Temas</value>
+  </data>
+  <data name="SettingsLanguages" xml:space="preserve">
+    <value>Idiomas</value>
+  </data>
+  <data name="SettingsInformation" xml:space="preserve">
+    <value>Informações</value>
+  </data>
+  <data name="SettingsAboutApp" xml:space="preserve">
+    <value>Sobre o Aplicativo</value>
+  </data>
+  <data name="SettingsTerms" xml:space="preserve">
+    <value>Termos &amp; Condições</value>
+  </data>
+  <data name="SettingsPrivacy" xml:space="preserve">
+    <value>Políticas de Privacidade</value>
+  </data>
 </root>

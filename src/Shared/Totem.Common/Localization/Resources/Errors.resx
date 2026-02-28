@@ -162,4 +162,16 @@
   <data name="UserTemporarilyBlocked" xml:space="preserve">
     <value>Usuário temporariamente bloqueado por tentativas inválidas.</value>
   </data>
+  <data name="ErrorLoadingAvailableQueues" xml:space="preserve">
+    <value>Erro ao carregar filas disponíveis</value>
+  </data>
+  <data name="UnexpectedErrorGeneratingPassword" xml:space="preserve">
+    <value>Erro inesperado ao gerar senha</value>
+  </data>
+  <data name="FillAllFields" xml:space="preserve">
+    <value>Por favor, preencha todos os campos.</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>Ocorreu um erro inesperado. Tente novamente.</value>
+  </data>
 </root>
