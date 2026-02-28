@@ -3,6 +3,8 @@ import { StyleSheet, ImageBackground, View, Text, Pressable, ActivityIndicator, 
 import { Redirect } from "expo-router";
 import BackgroundImage from "../assets/images/background.png";
 import { useAuth } from '../shared/contexts/AuthContext';
+import { GetLocalized } from '../shared/localization/i18n';
+import { Errors, Messages } from '../shared/localization/keys';
 import { AGMessageType, AGShowMessage } from '../shared/components/AGShowMessage';
 import AGButton from '../shared/components/AGButton';
 import ConfirmDialog from '../shared/components/ConfirmDialog';
@@ -24,8 +26,7 @@ export default function HomeScreen() {
       try {
         const availableMenus = await MenuService.getAvailableMenus();
         setMenus(availableMenus);
-      } catch (error) {
-        AGShowMessage("Erro ao carregar filas disponíveis", AGMessageType.error);
+        AGShowMessage(GetLocalized(Errors.ErrorLoadingAvailableQueues), AGMessageType.error);
       } finally {
         setLoadingMenus(false);
       }
@@ -38,7 +39,7 @@ export default function HomeScreen() {
     return (
       <View style={GlobalStyles.loadingContainer}>
         <ActivityIndicator size="large" color="#ffffff" />
-        <Text style={GlobalStyles.loadingText}>Carregando sistema...</Text>
+        <Text style={GlobalStyles.loadingText}>{GetLocalized(Messages.LoadingSystem)}</Text>
       </View>
     );
   }
@@ -66,51 +67,51 @@ export default function HomeScreen() {
       const response = await MenuService.generatePassword(request);
 
       if (response.success) {
-        AGShowMessage(`Senha gerada para: ${menu.title}`, AGMessageType.success);
+        AGShowMessage(`${GetLocalized(Messages.PasswordGeneratedFor)} ${menu.title}`, AGMessageType.success);
       } else {
         AGShowMessage(response.error.message, AGMessageType.error);
       }
     } catch (error) {
-      AGShowMessage("Erro inesperado ao gerar senha", AGMessageType.error);
+      AGShowMessage(GetLocalized(Errors.UnexpectedErrorGeneratingPassword), AGMessageType.error);
     }
   };
 
   const handleLogout = async () => {
     try {
       await signOut();
-      AGShowMessage("Você saiu com sucesso!", AGMessageType.success);
+      AGShowMessage(GetLocalized(Messages.LoggedOutSuccess), AGMessageType.success);
     } catch (error) {
-        AGShowMessage("Erro ao Sair!", AGMessageType.success);
+      AGShowMessage("Erro ao Sair!", AGMessageType.success);
     }
   };
 
   return (
     <>
       <LinearGradient
-        colors={['#000000', '#121018','#2a1a4a', '#4a1a2a']}
+        colors={['#000000', '#121018', '#2a1a4a', '#4a1a2a']}
         style={StyleSheet.absoluteFill}
       />
 
       <StatusBar barStyle="light-content" />
-        <View style={GlobalStyles.centeredContainer}>
-          <View style={GlobalStyles.buttonsContainer}>
-            {menus.map((menu) => (
-              <AGButton
-                key={menu.queueId}
-                title={menu.title}
-                width="100%"
-                onPress={() => handleMenuClick(menu)}
-              />
-            ))}
-          </View>
+      <View style={GlobalStyles.centeredContainer}>
+        <View style={GlobalStyles.buttonsContainer}>
+          {menus.map((menu) => (
+            <AGButton
+              key={menu.queueId}
+              title={menu.title}
+              width="100%"
+              onPress={() => handleMenuClick(menu)}
+            />
+          ))}
         </View>
-     
+      </View>
+
       <ConfirmDialog
         visible={dialogVisible}
-        title="Tipo de Atendimento"
-        description="Escolha o tipo de atendimento desejado:"
-        button1Text="Comum"
-        button2Text="Preferencial"
+        title={GetLocalized(Messages.TypeOfService)}
+        description={GetLocalized(Messages.ChooseServiceType)}
+        button1Text={GetLocalized(Messages.Common)}
+        button2Text={GetLocalized(Messages.Preferential)}
         onButton1Press={() => {
           if (selectedMenu) processQueueRequest(selectedMenu, false);
           setDialogVisible(false);

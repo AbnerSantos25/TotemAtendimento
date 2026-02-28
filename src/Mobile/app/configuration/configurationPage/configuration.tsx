@@ -8,6 +8,8 @@ import { ButtonStyles } from "../../../shared/styles/mainStyles";
 import { useAuth } from "../../../shared/contexts/AuthContext";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { GetLocalized } from "../../../shared/localization/i18n";
+import { Labels } from "../../../shared/localization/keys";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -25,9 +27,9 @@ export default function configuration() {
   };
   const getThemeLabel = (theme: ThemeType) => {
     switch (theme) {
-      case 'dark': return 'Escuro';
-      case 'light': return 'Claro';
-      case 'system': return 'Sistema';
+      case 'dark': return GetLocalized(Labels.ThemeDark);
+      case 'light': return GetLocalized(Labels.ThemeLight);
+      case 'system': return GetLocalized(Labels.ThemeSystem);
     }
   }
 
@@ -70,26 +72,26 @@ export default function configuration() {
           </View>
           <View id="Configurations" style={{ width: "90%", marginTop: 20, alignItems: 'center' }}>
             <View style={[ConfigStyle.DivConfig]}>
-              <Text style={[ConfigStyle.ManuTitle]}>Configurações Gerais</Text>
+              <Text style={[ConfigStyle.ManuTitle]}>{GetLocalized(Labels.SettingsGeneral)}</Text>
             </View>
             <View style={{ width: "90%", marginTop: 2, rowGap: 2 }}>
-             <ConfigButton 
-                iconName="color-palette-outline" 
-                title="Temas" 
+              <ConfigButton
+                iconName="color-palette-outline"
+                title={GetLocalized(Labels.SettingsThemes)}
                 value={getThemeLabel(currentTheme)}
-                onPress={() => setModalVisible(true)} 
+                onPress={() => setModalVisible(true)}
               />
-              <ConfigButton title="Idiomas" route="/" iconName="language-outline"></ConfigButton>
+              <ConfigButton title={GetLocalized(Labels.SettingsLanguages)} route="/" iconName="language-outline"></ConfigButton>
             </View>
           </View>
           <View id="Informações" style={{ width: "90%", marginTop: 20, alignItems: 'center' }}>
             <View style={[ConfigStyle.DivConfig]}>
-              <Text style={[ConfigStyle.ManuTitle]}>Informações</Text>
+              <Text style={[ConfigStyle.ManuTitle]}>{GetLocalized(Labels.SettingsInformation)}</Text>
             </View>
             <View style={{ width: "90%", marginTop: 2, rowGap: 2 }}>
-              <ConfigButton title="Sobre o Aplicativo" route="/" iconName="phone-portrait-outline"></ConfigButton>
-              <ConfigButton title="Termos & Condições" route="/" iconName="reader-outline"></ConfigButton>
-              <ConfigButton title="Políticas de Privacidade" route="/" iconName="shield-half-outline"></ConfigButton>
+              <ConfigButton title={GetLocalized(Labels.SettingsAboutApp)} route="/" iconName="phone-portrait-outline"></ConfigButton>
+              <ConfigButton title={GetLocalized(Labels.SettingsTerms)} route="/" iconName="reader-outline"></ConfigButton>
+              <ConfigButton title={GetLocalized(Labels.SettingsPrivacy)} route="/" iconName="shield-half-outline"></ConfigButton>
             </View>
           </View>
           <View style={{margin:10}}>
@@ -104,12 +106,12 @@ export default function configuration() {
           </View>
         </View>
 
-          <ThemeModal 
-            visible={modalVisible}
-            onClose={() => setModalVisible(false)}
-            onSelectTheme={handleThemeSelect}
-            currentTheme={currentTheme}
-          />
+        <ThemeModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onSelectTheme={handleThemeSelect}
+          currentTheme={currentTheme}
+        />
       </View>
       </>
   );
