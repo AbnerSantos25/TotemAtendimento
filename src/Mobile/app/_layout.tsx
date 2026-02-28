@@ -2,30 +2,30 @@ import { Stack } from 'expo-router';
 import HeaderConfigButton from '../shared/components/HeaderConfigButton';
 import { AuthProvider } from '../shared/contexts/AuthContext';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import '../shared/localization/i18n';
+import { GetLocalized } from '../shared/localization/i18n';
+import { Labels } from '../shared/localization/keys';
 
 export default function RootLayout() {
   return (
-  <RootSiblingParent>
-    <AuthProvider>
+    <RootSiblingParent>
+      <AuthProvider>
         <Stack screenOptions={{
           headerStyle: { backgroundColor: '#121212' },
           headerTintColor: '#fff',
           headerTitleStyle: { fontWeight: 'bold' },
           headerTitleAlign: 'center'
-            }}
-          >
+        }}
+        >
           <Stack.Screen
             name="index"
             options={{
-              title: 'Início',
+              title: GetLocalized(Labels.NavigationHome),
               headerRight: () => <HeaderConfigButton />,
             }}
           />
-          <Stack.Screen name="atendimento" options={{ title: 'Atendimento' }} />
-          <Stack.Screen name="configuration/login" options={{ title: 'Login' }} />
-          <Stack.Screen name="preferencial" options={{ title: 'Preferencial' }} />
-          <Stack.Screen name="retirada-exames" options={{ title: 'Retirada de Exames' }} />
-          <Stack.Screen name="configuration/configurationPage/configuration" options={{title: 'Configurações', presentation: 'modal'}}/>
+          <Stack.Screen name="configuration/login" options={{ title: GetLocalized(Labels.NavigationLogin) }} />
+          <Stack.Screen name="configuration/configurationPage/configuration" options={{ title: GetLocalized(Labels.NavigationSettings), presentation: 'modal' }} />
         </Stack>
       </AuthProvider>
     </RootSiblingParent>
