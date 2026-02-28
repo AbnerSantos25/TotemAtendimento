@@ -1,75 +1,165 @@
-import { Avatar } from './avatar'
-import {
-    Sidebar,
-    SidebarHeader,
-    SidebarBody,
-    SidebarFooter,
-    SidebarItem,
-    SidebarSection,
-    SidebarSpacer,
-} from './sidebar'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, SidebarProvider, SidebarRail, SidebarTrigger } from "@/components/ui/sidebar"
+import { TeamSwitcher } from "./team-switcher"
+import { AudioWaveform, BookOpen, Bot, Command, Frame, PieChart, SquareTerminal, Settings2, Map, GalleryVerticalEnd } from "lucide-react"
+import { NavMain } from "./NavMain"
+import { NavProjects } from "./NavProjects"
+import { NavUser } from "./NavUser"
 
-// Importação de ícones do Heroicons
-import {
-    HomeIcon,
-    ChartBarIcon,
-    Cog6ToothIcon,
-    ArrowRightOnRectangleIcon
-} from '@heroicons/react/20/solid'
 
-export function AppSidebar() {
+const data = {
+    user: {
+        name: "shadcn",
+        email: "m@example.com",
+        avatar: "/avatars/shadcn.jpg",
+    },
+    teams: [
+        {
+            name: "Acme Inc",
+            logo: GalleryVerticalEnd,
+            plan: "Enterprise",
+        },
+        {
+            name: "Acme Corp.",
+            logo: AudioWaveform,
+            plan: "Startup",
+        },
+        {
+            name: "Evil Corp.",
+            logo: Command,
+            plan: "Free",
+        },
+    ],
+    navMain: [
+        {
+            title: "Playground",
+            url: "#",
+            icon: SquareTerminal,
+            isActive: true,
+            items: [
+                {
+                    title: "History",
+                    url: "#",
+                },
+                {
+                    title: "Starred",
+                    url: "#",
+                },
+                {
+                    title: "Settings",
+                    url: "#",
+                },
+            ],
+        },
+        {
+            title: "Models",
+            url: "#",
+            icon: Bot,
+            items: [
+                {
+                    title: "Genesis",
+                    url: "#",
+                },
+                {
+                    title: "Explorer",
+                    url: "#",
+                },
+                {
+                    title: "Quantum",
+                    url: "#",
+                },
+            ],
+        },
+        {
+            title: "Documentation",
+            url: "#",
+            icon: BookOpen,
+            items: [
+                {
+                    title: "Introduction",
+                    url: "#",
+                },
+                {
+                    title: "Get Started",
+                    url: "#",
+                },
+                {
+                    title: "Tutorials",
+                    url: "#",
+                },
+                {
+                    title: "Changelog",
+                    url: "#",
+                },
+            ],
+        },
+        {
+            title: "Settings",
+            url: "#",
+            icon: Settings2,
+            items: [
+                {
+                    title: "General",
+                    url: "#",
+                },
+                {
+                    title: "Team",
+                    url: "#",
+                },
+                {
+                    title: "Billing",
+                    url: "#",
+                },
+                {
+                    title: "Limits",
+                    url: "#",
+                },
+            ],
+        },
+    ],
+    projects: [
+        {
+            name: "Design Engineering",
+            url: "#",
+            icon: Frame,
+        },
+        {
+            name: "Sales & Marketing",
+            url: "#",
+            icon: PieChart,
+        },
+        {
+            name: "Travel",
+            url: "#",
+            icon: Map,
+        },
+    ],
+}
+
+export function AppSidebar({
+    ...props
+}: React.ComponentProps<typeof Sidebar>) {
     return (
-        <Sidebar>
-            {/* CABEÇALHO (Sticky) - Ideal para Logos ou Pesquisa */}
-            <SidebarHeader>
-                <div className="flex items-center gap-3 mb-4 px-2">
-                    {/* Using a placeholder avatar image since we don't have logo.svg */}
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm ring-1 ring-white/10">
-                        <span className="font-semibold">M</span>
+        <SidebarProvider>
+            <Sidebar collapsible="icon" {...props}>
+                <SidebarHeader>
+                    <TeamSwitcher teams={data.teams} />
+                </SidebarHeader>
+                <SidebarContent>
+                    <NavMain items={data.navMain} />
+                    <NavProjects projects={data.projects} />
+                </SidebarContent>
+                <SidebarFooter>
+                    <NavUser user={data.user} />
+                </SidebarFooter>
+                <SidebarRail />
+            </Sidebar>
+            <SidebarInset>
+                <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+                    <div className="flex items-center gap-2 px-4">
+                        <SidebarTrigger className="-ml-1" />
                     </div>
-                    <span className="truncate text-sm font-semibold text-zinc-950 dark:text-white">A Minha App</span>
-                </div>
-            </SidebarHeader>
-
-            {/* CORPO - Área com scroll onde fica a navegação */}
-            <SidebarBody>
-                <SidebarSection>
-                    {/* Use a prop 'current' para indicar a página ativa */}
-                    <SidebarItem href="/" current>
-                        <HomeIcon />
-                        <span className="ml-3 truncate">Página Inicial</span>
-                    </SidebarItem>
-
-                    <SidebarItem href="/dashboard">
-                        <ChartBarIcon />
-                        <span className="ml-3 truncate">Estatísticas</span>
-                    </SidebarItem>
-                </SidebarSection>
-
-                {/* SidebarSpacer empurra o conteúdo seguinte para baixo, se necessário */}
-                <SidebarSpacer />
-
-                <SidebarSection>
-                    <SidebarItem href="/definicoes">
-                        <Cog6ToothIcon />
-                        <span className="ml-3 truncate">Definições</span>
-                    </SidebarItem>
-                </SidebarSection>
-            </SidebarBody>
-
-            {/* RODAPÉ (Sticky) - Ideal para o Perfil de Utilizador */}
-            <SidebarFooter>
-                <SidebarSection className="mb-0 border-t border-zinc-200 dark:border-zinc-800 pt-4">
-                    <SidebarItem href="/perfil">
-                        <Avatar src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" />
-                        <span className="ml-3 truncate font-medium">O Meu Perfil</span>
-                    </SidebarItem>
-                    <SidebarItem href="/logout">
-                        <ArrowRightOnRectangleIcon />
-                        <span className="ml-3 truncate">Sair</span>
-                    </SidebarItem>
-                </SidebarSection>
-            </SidebarFooter>
-        </Sidebar>
+                </header>
+            </SidebarInset>
+        </SidebarProvider>
     )
 }
