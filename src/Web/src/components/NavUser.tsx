@@ -9,7 +9,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Sparkles, BadgeCheck, CreditCard, Bell, LogOut, ChevronsUpDown } from "lucide-react"
+import { Sparkles, BadgeCheck, CreditCard, Bell, LogOut, ChevronsUpDown, Moon, Sun } from "lucide-react"
+import { useState, useEffect } from "react"
 
 function NavUser({
     user,
@@ -21,6 +22,18 @@ function NavUser({
     }
 }) {
     const { isMobile } = useSidebar()
+    const [isDark, setIsDark] = useState(false)
+
+    useEffect(() => {
+        setIsDark(document.documentElement.classList.contains('dark'))
+    }, [])
+
+    const toggleTheme = (e: React.MouseEvent) => {
+        e.preventDefault()
+        const root = document.documentElement
+        root.classList.toggle('dark')
+        setIsDark(root.classList.contains('dark'))
+    }
 
     return (
         <SidebarMenu>
@@ -82,6 +95,10 @@ function NavUser({
                             <DropdownMenuItem>
                                 <Bell />
                                 Notifications
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={toggleTheme}>
+                                {isDark ? <Sun /> : <Moon />}
+                                {isDark ? "Light Mode" : "Dark Mode"}
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

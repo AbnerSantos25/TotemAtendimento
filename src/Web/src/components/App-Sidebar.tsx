@@ -8,7 +8,7 @@ import {
     SidebarHeader,
     SidebarRail,
 } from "@/components/ui/sidebar"
-import { TeamSwitcher } from "./team-switcher"
+import { TeamSwitcher } from "./Team-switcher"
 import { NavMain } from "./NavMain"
 import { NavProjects } from "./NavProjects"
 import { NavUser } from "./NavUser"
