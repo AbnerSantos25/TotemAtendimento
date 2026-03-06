@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { UserView, AuthData } from '../models/baseServiceModels';
 import { session } from '../services/StorageService';
+import type { UserView, AuthData } from '@/models/AuthModels';
 
 interface AuthContextType {
     user: UserView | null;
@@ -53,6 +53,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const signIn = async (authData: AuthData): Promise<void> => {
         await session.saveAuthDataAsync(authData);
         setUser(authData.userView);
+        console.log("user", user);
     };
 
     const signOut = async (): Promise<void> => {
@@ -74,12 +75,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = (): AuthContextType => {
-    const context = useContext(AuthContext);
-
-    if (context === undefined) {
-        throw new Error("useAuth deve ser usado dentro de um AuthProvider");
-    }
-
-    return context;
-};
+export { AuthContext };

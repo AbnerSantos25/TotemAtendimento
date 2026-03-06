@@ -1,7 +1,8 @@
 import { jwtDecode } from "jwt-decode";
-import type { ApiError, ApiResponse, AuthData, ServiceResult } from "../models/baseServiceModels.js";
+import type { ApiError, ApiResponse, ServiceResult } from "../models/baseServiceModels.js";
 import { session } from "./StorageService";
 import type { IBaseService } from "./interfaces/IBaseService";
+import type { AuthData } from "../models/AuthModels";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

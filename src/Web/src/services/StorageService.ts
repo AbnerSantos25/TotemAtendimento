@@ -1,6 +1,6 @@
-import type { AuthData, UserView } from "../models/baseServiceModels";
-import { Status } from "../models/baseServiceModels";
-import type { IStorageService } from "./interfaces/IStorageService";
+import type { AuthData, UserView } from "@/models/AuthModels";
+import { Status } from "@/models/baseServiceModels";
+import type { IStorageService } from "@/services/interfaces/IStorageService";
 
 const JWT_KEY = "jwt";
 const REFRESH_TOKEN_KEY = "newToken";
