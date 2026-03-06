@@ -10,19 +10,6 @@ export interface ApiError {
     validationErrors?: Record<string, string[]>;
 }
 
-export interface AuthData {
-    jwt: string;
-    newToken: string;
-    userView: UserView
-}
-
-export interface UserView {
-    id: number;
-    name: string;
-    email: string;
-    profileImageUrl: string;
-}
-
 export const Status = {
     loggedIn: 1,
     loggedOut: 2
