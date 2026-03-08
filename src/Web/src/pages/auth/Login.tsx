@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { Navigate } from "react-router-dom"; // 1. IMPORTAMOS O COMPONENTE DE NAVEGAÇÃO
+import { Navigate } from "react-router-dom";
+import { toast } from "sonner"; // 1. Importe o disparador de alertas
 
 import { useAuth } from "@/hooks/useAuth";
 import { authService } from "@/services/AuthServices/AuthService";
@@ -11,46 +12,58 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function Login() {
-    // 2. PUXAMOS A VARIÁVEL 'user' DO CONTEXTO TAMBÉM
     const { signIn, isLoading, user } = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // REMOVIDO: const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        setErrorMsg(null);
 
         if (!email || !password) {
-            setErrorMsg("Por favor, preencha todos os campos.");
+            // 2. Usando o tipo WARNING (Amarelo)
+            toast.warning("Atenção", {
+                description: "Por favor, preencha todos os campos."
+            });
             return;
         }
 
         setIsSubmitting(true);
 
         try {
+            // toast.success("Login realizado!", {
+            //     description: "Bem-vindo de volta ao painel."
+
+            // });
+            // return;
             const result = await authService.loginAsync({ email, password });
-            console.log("result", result);
+
             if (result.success) {
+                // 3. Usando o tipo SUCCESS (Verde)
+                toast.success("Login realizado!", {
+                    description: "Bem-vindo de volta ao painel."
+                });
                 await signIn(result.data);
-                // Note que não precisamos colocar um redirect aqui dentro.
-                // Ao chamar signIn, o contexto atualiza a variável 'user' lá em cima, 
-                // e o React re-renderiza a tela, caindo no 'if' abaixo!
             } else {
-                setErrorMsg(result.error?.message || "Erro ao tentar fazer login.");
+                // 4. Usando o tipo ERROR (Vermelho)
+                toast.error("Falha na autenticação", {
+                    description: result.error?.message || "E-mail ou senha incorretos."
+                });
             }
         } catch (err) {
-            setErrorMsg("Ocorreu um erro inesperado. Tente novamente.");
+            // 5. Usando o tipo INFO ou ERROR genérico
+            toast.error("Erro no servidor", {
+                description: "Ocorreu um erro inesperado. Verifique sua conexão."
+            });
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    if (user) {
-        return <Navigate to="/dashboard" replace />;
-    }
+    if (user) return <Navigate to="/dashboard" replace />;
 
     if (isLoading) {
         return (
@@ -61,7 +74,7 @@ export function Login() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+        <div className="flex min-h-screen items-center justify-center bg-gray-950 p-4">
             <Card className="w-full max-w-md shadow-lg">
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold tracking-tight">Totem Atendimento</CardTitle>
@@ -72,11 +85,7 @@ export function Login() {
 
                 <form onSubmit={handleSubmit}>
                     <CardContent className="space-y-4">
-                        {errorMsg && (
-                            <div className="rounded-md bg-red-50 p-3 text-sm text-red-500">
-                                {errorMsg}
-                            </div>
-                        )}
+                        {/* REMOVIDO: A div de mensagem de erro antiga ficava aqui */}
 
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
@@ -104,12 +113,8 @@ export function Login() {
                         </div>
                     </CardContent>
 
-                    <CardFooter>
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            disabled={isSubmitting}
-                        >
+                    <CardFooter className="pt-3">
+                        <Button type="submit" className="w-full" disabled={isSubmitting}>
                             {isSubmitting ? "Autenticando..." : "Entrar"}
                         </Button>
                     </CardFooter>

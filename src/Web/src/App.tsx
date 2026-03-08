@@ -4,6 +4,7 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { Login } from "./pages/auth/Login";
 import { useAuth } from "./hooks/useAuth";
 import { Layout } from "./components/Layout";
+import { Toaster } from "sonner";
 // import { Layout } from "./components/Layout";
 
 function DashboardTemporario() {
@@ -43,6 +44,7 @@ export function App() {
 
         </Routes>
       </BrowserRouter>
+      <Toaster position="bottom-right" richColors={false} theme="system" closeButton invert={false} />
     </AuthProvider>
   );
 }

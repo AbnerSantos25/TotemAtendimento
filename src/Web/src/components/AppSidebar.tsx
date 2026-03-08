@@ -1,5 +1,5 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, SidebarProvider, SidebarRail, SidebarTrigger } from "@/components/ui/sidebar"
-import { TeamSwitcher } from "./team-switcher"
+import { TeamSwitcher } from "./Team-switcher"
 import { AudioWaveform, BookOpen, Bot, Command, Frame, PieChart, SquareTerminal, Settings2, Map, GalleryVerticalEnd } from "lucide-react"
 import { NavMain } from "./NavMain"
 import { NavProjects } from "./NavProjects"
