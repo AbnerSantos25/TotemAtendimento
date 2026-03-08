@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate } from "react-router-dom";
-import { toast } from "sonner"; // 1. Importe o disparador de alertas
+import { AGShowMessage } from "@/components/AGShowMessage";
 
 import { useAuth } from "@/hooks/useAuth";
 import { authService } from "@/services/AuthServices/AuthService";
@@ -18,14 +18,12 @@ export function Login() {
     const [password, setPassword] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // REMOVIDO: const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         if (!email || !password) {
-            // 2. Usando o tipo WARNING (Amarelo)
-            toast.warning("Atenção", {
+            AGShowMessage.warning({
+                title: "Atenção",
                 description: "Por favor, preencha todos os campos."
             });
             return;
@@ -34,28 +32,23 @@ export function Login() {
         setIsSubmitting(true);
 
         try {
-            // toast.success("Login realizado!", {
-            //     description: "Bem-vindo de volta ao painel."
-
-            // });
-            // return;
             const result = await authService.loginAsync({ email, password });
 
             if (result.success) {
-                // 3. Usando o tipo SUCCESS (Verde)
-                toast.success("Login realizado!", {
+                AGShowMessage.success({
+                    title: "Login realizado!",
                     description: "Bem-vindo de volta ao painel."
                 });
                 await signIn(result.data);
             } else {
-                // 4. Usando o tipo ERROR (Vermelho)
-                toast.error("Falha na autenticação", {
+                AGShowMessage.error({
+                    title: "Falha na autenticação",
                     description: result.error?.message || "E-mail ou senha incorretos."
                 });
             }
         } catch (err) {
-            // 5. Usando o tipo INFO ou ERROR genérico
-            toast.error("Erro no servidor", {
+            AGShowMessage.error({
+                title: "Erro no servidor",
                 description: "Ocorreu um erro inesperado. Verifique sua conexão."
             });
         } finally {
@@ -85,8 +78,6 @@ export function Login() {
 
                 <form onSubmit={handleSubmit}>
                     <CardContent className="space-y-4">
-                        {/* REMOVIDO: A div de mensagem de erro antiga ficava aqui */}
-
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
