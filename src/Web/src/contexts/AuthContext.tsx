@@ -1,8 +1,7 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { session } from '../services/StorageService';
 import type { UserView, AuthData } from '@/models/AuthModels';
-import { toast } from 'sonner';
 
 interface AuthContextType {
     user: UserView | null;
@@ -58,10 +57,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     const signOut = async (): Promise<void> => {
-        toast.success("Logout realizado!", {
-            description: "Você foi desconectado do sistema."
-        });
-        return;
         await session.clearSessionAsync();
         setUser(null);
     };

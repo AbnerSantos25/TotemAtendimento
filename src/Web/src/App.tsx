@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Reports } from "./pages/dashboard/Reports";
 import { AuthProvider } from "./contexts/AuthContext";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Login } from "./pages/auth/Login";
 import { useAuth } from "./hooks/useAuth";
 import { Layout } from "./components/Layout";
 import { Toaster } from "sonner";
-// import { Layout } from "./components/Layout";
 
 function DashboardTemporario() {
   const { user, signOut } = useAuth();
@@ -36,6 +36,7 @@ export function App() {
           <Route element={<PrivateRoute />}>
             <Route element={<Layout><Outlet /></Layout>}>
               <Route path="/dashboard" element={<DashboardTemporario />} />
+              <Route path="/relatorios" element={<Reports />} />
               <Route path="/configuracoes" element={<div>Tela de Configurações Futura</div>} />
             </Route>
           </Route>
