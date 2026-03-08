@@ -11,7 +11,7 @@ import {
 import { TeamSwitcher } from "./Team-switcher"
 import { NavMain } from "./NavMain"
 import { NavProjects } from "./NavProjects"
-import { NavUser } from "./NavUser"
+import { NavUser } from "./nav-user"
 import { useAuth } from "@/hooks/useAuth"
 
 const data = {
