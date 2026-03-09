@@ -1,5 +1,5 @@
 import * as React from "react"
-import { GalleryVerticalEnd, SquareTerminal, PieChart } from "lucide-react"
+import { GalleryVerticalEnd, SquareTerminal, PieChart, Home } from "lucide-react"
 
 import {
   Sidebar,
@@ -29,10 +29,16 @@ const data = {
   ],
   navMain: [
     {
+      title: "Inicio",
+      url: "/home",
+      icon: Home,
+      isActive: true,
+    },
+    {
       title: "Atendimentos",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
+      isActive: false,
       items: [
         { title: "Fila Atual", url: "#" },
         { title: "Histórico", url: "#" },

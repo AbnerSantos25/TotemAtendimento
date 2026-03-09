@@ -25,13 +25,13 @@ export function App() {
 
           <Route element={<PrivateRoute />}>
             <Route element={<Layout><Outlet /></Layout>}>
-              <Route path="/dashboard" element={<DashboardTemporario />} />
+              <Route path="/home" element={<DashboardTemporario />} />
               <Route path="/relatorios" element={<Reports />} />
               <Route path="/configuracoes" element={<div>Tela de Configurações Futura</div>} />
             </Route>
           </Route>
 
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/home" replace />} />
 
         </Routes>
       </BrowserRouter>
