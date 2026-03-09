@@ -22,7 +22,7 @@ function NavProjects({
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarGroupLabel>Projetos</SidebarGroupLabel>
             <SidebarMenu>
                 {projects.map((item) => (
                     <SidebarMenuItem key={item.name}>
@@ -36,7 +36,7 @@ function NavProjects({
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuAction showOnHover>
                                     <MoreHorizontal />
-                                    <span className="sr-only">More</span>
+                                    <span className="sr-only">Opções</span>
                                 </SidebarMenuAction>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
@@ -47,18 +47,18 @@ function NavProjects({
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem>
                                         <Folder className="text-muted-foreground" />
-                                        <span>View Project</span>
+                                        <span>Ver Projeto</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
                                         <Forward className="text-muted-foreground" />
-                                        <span>Share Project</span>
+                                        <span>Compartilhar</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem>
                                         <Trash2 className="text-muted-foreground" />
-                                        <span>Delete Project</span>
+                                        <span>Excluir</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                             </DropdownMenuContent>
@@ -68,7 +68,7 @@ function NavProjects({
                 <SidebarMenuItem>
                     <SidebarMenuButton className="text-sidebar-foreground/70">
                         <MoreHorizontal className="text-sidebar-foreground/70" />
-                        <span>More</span>
+                        <span>Mais</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>

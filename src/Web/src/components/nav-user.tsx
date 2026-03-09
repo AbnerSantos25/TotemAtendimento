@@ -82,26 +82,26 @@ function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
-                Upgrade to Pro
+                Assinar o Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
-                Account
+                Minha Conta
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
-                Billing
+                Faturamento
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
-                Notifications
+                Notificações
               </DropdownMenuItem>
               <DropdownMenuItem onClick={toggleTheme}>
                 {isDark ? <Sun /> : <Moon />}
-                {isDark ? "Light Mode" : "Dark Mode"}
+                {isDark ? "Modo Claro" : "Modo Escuro"}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
