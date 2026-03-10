@@ -1,4 +1,6 @@
 import { DataTable } from "@/components/data-table"
+import { ChartAreaInteractive } from "@/components/chart-area-interactive"
+import { SectionCards } from "@/components/section-cards"
 import tableData from "@/app/dashboard/data.json"
 
 export function Reports() {
@@ -11,8 +13,13 @@ export function Reports() {
                 </p>
             </div>
 
-            {/* Aqui usamos o DataTable importado do dashboard-01 junto com os dados de exemplo */}
-            <DataTable data={tableData} />
+            <div className="@container/main flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                <SectionCards />
+                <div className="px-0">
+                    <ChartAreaInteractive />
+                </div>
+                <DataTable data={tableData} />
+            </div>
         </div>
     )
 }

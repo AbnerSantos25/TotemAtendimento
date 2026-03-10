@@ -56,7 +56,7 @@ export function Login() {
         }
     };
 
-    if (user) return <Navigate to="/dashboard" replace />;
+    if (user) return <Navigate to="/home" replace />;
 
     if (isLoading) {
         return (
