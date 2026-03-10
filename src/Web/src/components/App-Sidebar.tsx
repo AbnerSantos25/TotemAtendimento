@@ -1,67 +1,80 @@
 import * as React from "react"
-import { GalleryVerticalEnd, SquareTerminal, PieChart } from "lucide-react"
+import { GalleryVerticalEnd, SquareTerminal, PieChart, Home } from "lucide-react"
 
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarRail,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
 } from "@/components/ui/sidebar"
 import { TeamSwitcher } from "./Team-switcher"
 import { NavMain } from "./NavMain"
 import { NavProjects } from "./NavProjects"
-import { NavUser } from "./NavUser"
+import { NavUser } from "./nav-user"
+import { useAuth } from "@/hooks/useAuth"
 
 const data = {
-    user: {
-        name: "Abner Santos",
-        email: "abner@totem.com",
-        avatar: "https://github.com/shadcn.png", // Temporário
+  user: {
+    name: "Abner Santos",
+    email: "abner@totem.com",
+    avatar: "https://github.com/shadcn.png", // Temporário
+  },
+  teams: [
+    {
+      name: "Totem Admin",
+      logo: GalleryVerticalEnd,
+      plan: "Produção",
     },
-    teams: [
-        {
-            name: "Totem Admin",
-            logo: GalleryVerticalEnd,
-            plan: "Produção",
-        },
-    ],
-    navMain: [
-        {
-            title: "Atendimentos",
-            url: "#",
-            icon: SquareTerminal,
-            isActive: true,
-            items: [
-                { title: "Fila Atual", url: "#" },
-                { title: "Histórico", url: "#" },
-            ],
-        },
-        // ... você pode adicionar mais menus aqui
-    ],
-    projects: [
-        {
-            name: "Relatórios",
-            url: "#",
-            icon: PieChart,
-        },
-    ],
+  ],
+  navMain: [
+    {
+      title: "Inicio",
+      url: "/home",
+      icon: Home,
+      isActive: true,
+    },
+    {
+      title: "Atendimentos",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: false,
+      items: [
+        { title: "Fila Atual", url: "#" },
+        { title: "Histórico", url: "#" },
+      ],
+    },
+    // ... você pode adicionar mais menus aqui
+  ],
+  projects: [
+    {
+      name: "Relatórios",
+      url: "/relatorios",
+      icon: PieChart,
+    },
+  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    return (
-        <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
-            </SidebarHeader>
-            <SidebarContent>
-                <NavMain items={data.navMain} />
-                <NavProjects projects={data.projects} />
-            </SidebarContent>
-            <SidebarFooter>
-                <NavUser user={data.user} />
-            </SidebarFooter>
-            <SidebarRail />
-        </Sidebar>
-    )
+  const { user } = useAuth()
+
+  return (
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader>
+        <TeamSwitcher teams={data.teams} />
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={{
+          name: user?.name || "Usuário",
+          email: user?.email || "",
+          avatar: user?.profileImageUrl || "https://github.com/shadcn.png"
+        }} />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  )
 }

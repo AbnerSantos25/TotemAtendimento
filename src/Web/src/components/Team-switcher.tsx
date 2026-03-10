@@ -67,7 +67,7 @@ function TeamSwitcher({
                     >
                         <DropdownMenuGroup>
                             <DropdownMenuLabel className="text-muted-foreground text-xs">
-                                Teams
+                                Equipes
                             </DropdownMenuLabel>
                             {teams.map((team, index) => (
                                 <DropdownMenuItem
@@ -90,7 +90,7 @@ function TeamSwitcher({
                                     <Plus className="size-4" />
                                 </div>
                                 <div className="text-muted-foreground font-medium">
-                                    Add team
+                                    Adicionar equipe
                                 </div>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
