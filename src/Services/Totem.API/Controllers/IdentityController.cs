@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Totem.Application.Services.IdentityServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
+using Totem.Common.Enumerations;
 using Totem.Domain.Models.IdentityModels;
 
 namespace Totem.API.Controllers
 {
     [Route("api/totem/[controller]")]
-    public class IdentityController : MainController
+	public class IdentityController : MainController
     {
 
         private readonly IIdentityService _identityService;
@@ -47,20 +48,32 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.UpdateEmailAsync(id, request));
         }
 
-
-        [HttpPatch("user/{id}/inactivate")]
+		[HttpPatch("user/{id}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             return CustomResponse(await _identityService.InactiveUser(id));
-        }
-        [HttpPatch("user/{id}/active")]
+		}
+
+		[HttpPatch("user/{id}/active")]
         public async Task<ActionResult> ActiveUser([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             return CustomResponse(await _identityService.ActiveUser(id));
         }
-    }
+
+		[Authorize(Roles = nameof(EnumRoles.Admin))]
+		[HttpPost("assign-role")]
+		public async Task<ActionResult> AssignRole([FromBody] AssignRoleRequest request)
+		{
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+			var result = await _identityService.AddUserToRoleAsync(request);
+
+			return CustomResponse(result);
+		}
+
+	}
 }

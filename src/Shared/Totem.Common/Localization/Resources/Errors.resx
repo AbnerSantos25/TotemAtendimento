@@ -174,4 +174,7 @@
   <data name="UnexpectedError" xml:space="preserve">
     <value>Ocorreu um erro inesperado. Tente novamente.</value>
   </data>
+  <data name="RefreshTokenExpired" xml:space="preserve">
+    <value>Sessão expirada. Faça login novamente.</value>
+  </data>
 </root>

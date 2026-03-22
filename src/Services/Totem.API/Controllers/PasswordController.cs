@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Totem.Application.Services.PasswordServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
+using Totem.Common.Enumerations;
 using Totem.Domain.Models.PasswordModels;
 
 namespace Totem.API.Controllers
@@ -24,9 +26,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _passwordService.GetByIdPasswordAsync(id));
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> GetPasswords()
+		public async Task<IActionResult> GetPasswords()
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 

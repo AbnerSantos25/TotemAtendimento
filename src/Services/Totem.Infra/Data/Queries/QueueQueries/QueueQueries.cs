@@ -30,7 +30,7 @@ namespace Totem.Infra.Data.Queries.QueueQueries
 				{
 					Id = x.Id,
 					Name = x.Name,
-					Active = x.Active
+					IsActive = x.IsActive
 				}).ToList();
 
 			return queueSummaries;

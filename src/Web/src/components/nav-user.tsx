@@ -21,8 +21,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Sparkles, BadgeCheck, CreditCard, Bell, LogOut, ChevronsUpDown, Moon, Sun } from "lucide-react"
+
+import { BadgeCheck, Bell, LogOut, ChevronsUpDown, Moon, Sun } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/useAuth"
 
@@ -94,19 +94,8 @@ function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Assinar o Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
                 <BadgeCheck />
                 Minha Conta
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Faturamento
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />

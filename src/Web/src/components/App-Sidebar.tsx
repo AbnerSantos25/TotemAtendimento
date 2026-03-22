@@ -1,5 +1,6 @@
 import * as React from "react"
-import { GalleryVerticalEnd, SquareTerminal, PieChart, Home } from "lucide-react"
+import { GalleryVerticalEnd, PieChart, Home, Settings, Megaphone } from "lucide-react"
+import { useLocation } from "react-router-dom"
 
 import {
   Sidebar,
@@ -32,18 +33,30 @@ const data = {
       title: "Inicio",
       url: "/home",
       icon: Home,
-      isActive: true,
+      isActive: false,
     },
     {
-      title: "Atendimentos",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Operação",
+      url: "/operacao",
+      icon: Megaphone,
       isActive: false,
       items: [
-        { title: "Fila Atual", url: "#" },
-        { title: "Histórico", url: "#" },
+        { title: "Meu Guichê", url: "/operacao/guiche" },
       ],
     },
+    {
+      title: "Gestão & Cadastros",
+      url: "/gestao",
+      icon: Settings,
+      isActive: false,
+      items: [
+        { title: "Filas", url: "/gestao/filas" },
+        { title: "Locais de Atendimento", url: "/gestao/locais" },
+        { title: "Tipos de Serviço", url: "/gestao/tipos-servico" },
+        { title: "Usuários", url: "/gestao/usuarios" },
+        { title: "Configurações", url: "/configurations", isActive: true },
+      ],
+    }
     // ... você pode adicionar mais menus aqui
   ],
   projects: [
@@ -57,6 +70,17 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth()
+  const location = useLocation()
+
+  const navMainWithActive = data.navMain.map((item) => ({
+    ...item,
+    isActive: location.pathname.startsWith(item.url) || item.isActive,
+  }))
+
+  const projectsWithActive = data.projects.map((item) => ({
+    ...item,
+    isActive: location.pathname.startsWith(item.url),
+  }))
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -64,8 +88,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={navMainWithActive} />
+        <NavProjects projects={projectsWithActive} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={{

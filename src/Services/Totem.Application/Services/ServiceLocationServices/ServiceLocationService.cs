@@ -24,23 +24,23 @@ namespace Totem.Application.Services.ServiceLocationServices
 			_passwordIntegrationService = passwordIntegrationService;
 		}
 
-		public async Task<Result> AddAsync(ServiceLocationRequest request)
+		public async Task<(Result result, Guid data)> AddAsync(ServiceLocationRequest request)
 		{
 			ServiceLocationValidator validator = new();
 			var ServiceLocation = new ServiceLocation(request.Name, request.Number);
 
 			if (!validator.Validate(ServiceLocation).IsValid)
-				return Unsuccessful();
+				return Unsuccessful<Guid>();
 
 			if (await _repository.ExistsAsync(request.Name, request.Number))
-				return Unsuccessful(Errors.RegisterAlreadyExists);
+				return Unsuccessful<Guid>(Errors.RegisterAlreadyExists);
 
 			_repository.Add(ServiceLocation);
 
 			if (!await _repository.UnitOfWork.CommitAsync())
-				return Unsuccessful(Errors.ErrorSavingDatabase);
+				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase);
 
-			return Successful();
+			return Successful(ServiceLocation.Id);
 		}
 
 		public async Task<Result> DeleteAsync(Guid Id)

@@ -16,6 +16,8 @@ namespace Totem.Application.Services.RefreshTokenServices
 		private readonly IIdentityIntegrationService _identityIntegrationService;
         private readonly UserManager<User> _userManager;
 
+        private static readonly TimeSpan RefreshGracePeriod = TimeSpan.FromHours(2);
+
         public RefreshTokenService(INotificator notificador, IRefreshTokenRepository refreshTokenRepository, IIdentityIntegrationService identityIntegrationService, UserManager<User> userManager) : base(notificador)
         {
             _refreshTokenRepository = refreshTokenRepository;
@@ -35,8 +37,15 @@ namespace Totem.Application.Services.RefreshTokenServices
 		public async Task<(Result result, LoginDataView data)> RefreshTokenAsync(Guid userId, Guid oldToken)
 		{
 			var token = await _refreshTokenRepository.GetByTokenIdAsync(oldToken);
-			if (token == null || token.Revoked || token.ExpiryDate < DateTime.UtcNow)
+			if (token == null || token.Revoked)
 				return Unsuccessful<LoginDataView>(Errors.InvalidRefreshToken);
+
+			if (token.ExpiryDate < DateTime.UtcNow)
+			{
+				var timeSinceExpiry = DateTime.UtcNow - token.ExpiryDate;
+				if (timeSinceExpiry > RefreshGracePeriod)
+					return Unsuccessful<LoginDataView>(Errors.RefreshTokenExpired);
+			}
 
 			if (!await _identityIntegrationService.ExistsUser(userId))
 				return Unsuccessful<LoginDataView>(Errors.UserNotFound);

@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Totem.Common.Domain.Notification;
-using Totem.Common.Services;
+using Totem.Common.Enumerations;
 
 namespace Totem.Common.API.Controller
 {
     [Authorize]
     [ApiController]
-    public abstract class MainController : ControllerBase
+    [Authorize(Roles = nameof(UserRole.Admin))]
+	public abstract class MainController : ControllerBase
     {
         private readonly INotificator _notificador;
 		protected MainController(INotificator notificador)

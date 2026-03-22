@@ -15,6 +15,7 @@ namespace Totem.API.Controllers
         {
             _refreshTokenService = refreshTokenService;
         }
+
         [AllowAnonymous]
         [HttpGet("user/{userId}/token/{tokenId}")]
         public async Task<IActionResult> SaveRefreshToken(Guid userId, Guid tokenId)

@@ -8,6 +8,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 function NavProjects({
     projects,
@@ -16,6 +17,7 @@ function NavProjects({
         name: string
         url: string
         icon: React.ElementType
+        isActive?: boolean
     }[]
 }) {
     const { isMobile } = useSidebar()
@@ -26,11 +28,11 @@ function NavProjects({
             <SidebarMenu>
                 {projects.map((item) => (
                     <SidebarMenuItem key={item.name}>
-                        <SidebarMenuButton asChild>
-                            <a href={item.url}>
+                        <SidebarMenuButton asChild isActive={item.isActive}>
+                            <Link to={item.url}>
                                 <item.icon />
                                 <span>{item.name}</span>
-                            </a>
+                            </Link>
                         </SidebarMenuButton>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>

@@ -23,15 +23,22 @@ namespace Totem.Application.Services.IdentityServices
 		private readonly JwtSettings _jwtSettings;
 		private readonly SignInManager<User> _signInManager;
 		private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 		private readonly IMediator _mediator;
 
 
-		public IdentityService(INotificator notificador, UserManager<User> userManager, SignInManager<User> signInManager, IOptions<JwtSettings> jwtSettings, IMediator mediator) : base(notificador)
+		public IdentityService(INotificator notificador,
+						 UserManager<User> userManager,
+						 SignInManager<User> signInManager,
+						 IOptions<JwtSettings> jwtSettings,
+						 IMediator mediator,
+						 RoleManager<IdentityRole<Guid>> roleManager) : base(notificador)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_jwtSettings = jwtSettings.Value;
 			_mediator = mediator;
+			_roleManager = roleManager;
 		}
 
 		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(User user)
@@ -198,17 +205,20 @@ namespace Totem.Application.Services.IdentityServices
 
 		}
 		 
-		public async Task<Result> AddUserToRoleAsync(Guid userId, EnumRoles role)
+		public async Task<Result> AddUserToRoleAsync(AssignRoleRequest request)
 		{
+            var userId = request.UserId;
+            var role = request.RoleName.ToString();
+
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null)
 				return Unsuccessful(Errors.UserNotFound);
 
             var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Contains(role.ToString()))
+            if (roles.Contains(role))
                 return Unsuccessful(Errors.UserAlreadyHasRole);
 
-            var result = await _userManager.AddToRoleAsync(user, role.ToString());
+            var result = await _userManager.AddToRoleAsync(user, role);
 
             if (!result.Succeeded)
             {
@@ -256,6 +266,7 @@ namespace Totem.Application.Services.IdentityServices
 
 			return Successful(tokenResult.Data);
 		}
+
 		public async Task<bool> ExistsUser(Guid userId)
 		{
 			var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -264,5 +275,5 @@ namespace Totem.Application.Services.IdentityServices
 
             return true;
         }
-    }
+	}
 }

@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { session } from '../services/StorageService';
 import type { UserView, AuthData } from '@/models/AuthModels';
+import { jwtDecode } from 'jwt-decode';
 
 interface AuthContextType {
     user: UserView | null;
@@ -30,8 +31,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 const token = await session.getJwtTokenAsync();
 
                 if (sessionUser && token) {
+                    const extractedRoles = extractRolesFromToken(token);
+
                     if (isMounted) {
-                        setUser(sessionUser);
+                        setUser({
+                            ...sessionUser,
+                            roles: extractedRoles
+                        });
                     }
                 }
             } catch (error) {
@@ -52,8 +58,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const signIn = async (authData: AuthData): Promise<void> => {
         await session.saveAuthDataAsync(authData);
-        setUser(authData.userView);
-        console.log("user", user);
+
+        const userRole = extractRolesFromToken(authData.jwt);
+
+        const completeUser: UserView = {
+            ...authData.userView,
+            roles: userRole
+        };
+
+        setUser(completeUser);
+        console.log("Usuário logado com a Role extraída do Token:", completeUser);
     };
 
     const signOut = async (): Promise<void> => {
@@ -71,6 +85,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         signOut,
         refreshUser,
     };
+
+    function extractRolesFromToken(token: string): string[] {
+        try {
+            const decoded: any = jwtDecode(token);
+
+            const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+
+            const decodedRoles = decoded[roleClaim];
+
+            if (!decodedRoles) return [];
+
+            return Array.isArray(decodedRoles) ? decodedRoles : [decodedRoles];
+
+        } catch (error) {
+            console.log("Erro ao decodificar token", error);
+            return [];
+        }
+    }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

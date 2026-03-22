@@ -5,6 +5,9 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { Login } from "./pages/auth/Login";
 import { Layout } from "./components/Layout";
 import { Toaster } from "sonner";
+import { Configuration } from "./pages/configuration/configuration";
+import { QueueConfiguration } from "./pages/configuration/QueueConfiguration";
+import { ServiceLocationConfiguration } from "@/pages/configuration/ServiceLocationConfiguration"; // Added this import
 
 function DashboardTemporario() {
 
@@ -27,7 +30,12 @@ export function App() {
             <Route element={<Layout><Outlet /></Layout>}>
               <Route path="/home" element={<DashboardTemporario />} />
               <Route path="/relatorios" element={<Reports />} />
-              <Route path="/configuracoes" element={<div>Tela de Configurações Futura</div>} />
+
+              <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
+                <Route path="/configurations" element={<Configuration />} />
+                <Route path="/gestao/filas" element={<QueueConfiguration />} />
+                <Route path="/gestao/locais" element={<ServiceLocationConfiguration />} />
+              </Route>
             </Route>
           </Route>
 

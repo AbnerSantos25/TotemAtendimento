@@ -14,7 +14,7 @@ namespace Totem.Domain.Models.QueueModels
             return new QueueView
             {
                 Name = queue.Name,
-                Active = queue.Active,
+                Active = queue.IsActive,
                 Passwords = queue.Passwords.Select(p => (PasswordView)p).ToList()
             };
         }
