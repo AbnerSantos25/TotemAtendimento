@@ -103,7 +103,7 @@ export class BaseService implements IBaseService {
     }
 
     private async _request<TResponse>(
-        method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+        method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
         endpoint: string,
         body: any = null,
         options: RequestOptions = { requiresAuth: true }
@@ -211,6 +211,10 @@ export class BaseService implements IBaseService {
 
     public async DeleteAsync<TResponse>(endpoint: string, requiresAuth: boolean = true): Promise<ServiceResult<TResponse>> {
         return this._request<TResponse>('DELETE', endpoint, null, { requiresAuth });
+    }
+
+    public async PatchAsync<TResponse, TRequest>(endpoint: string, body?: TRequest, requiresAuth: boolean = true): Promise<ServiceResult<TResponse>> {
+        return this._request<TResponse>('PATCH', endpoint, body ?? null, { requiresAuth });
     }
 }
 

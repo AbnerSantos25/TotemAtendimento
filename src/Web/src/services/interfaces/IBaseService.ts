@@ -8,4 +8,6 @@ export interface IBaseService {
     PutAsync<TResponse, TRequest>(endpoint: string, body: TRequest, requiresAuth?: boolean): Promise<ServiceResult<TResponse>>;
 
     DeleteAsync<TResponse>(endpoint: string, requiresAuth?: boolean): Promise<ServiceResult<TResponse>>;
+
+    PatchAsync<TResponse, TRequest>(endpoint: string, body?: TRequest, requiresAuth?: boolean): Promise<ServiceResult<TResponse>>;
 }

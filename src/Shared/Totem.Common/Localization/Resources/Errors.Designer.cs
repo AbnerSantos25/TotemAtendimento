@@ -142,6 +142,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Sessão expirada. Faça login novamente..
+        /// </summary>
+        public static string RefreshTokenExpired {
+            get {
+                return ResourceManager.GetString("RefreshTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Token de atualização não encontrado..
         /// </summary>
         public static string RefreshTokenNotFound {

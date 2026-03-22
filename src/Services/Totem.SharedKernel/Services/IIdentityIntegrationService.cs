@@ -4,7 +4,5 @@
 	{
 		Task<bool> ExistsUser(Guid userId);
 		Task<(Result Result, string Data)> GenerateJwtTokenAsync(Guid userId);
-
-
 	}
 }

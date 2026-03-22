@@ -21,4 +21,5 @@ export interface UserView {
     name: string;
     email: string;
     profileImageUrl?: string;
+    roles?: string[];
 }
