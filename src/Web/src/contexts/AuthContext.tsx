@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     }
                 }
             } catch (error) {
-                console.error("Falha ao inicializar o estado de autenticação:", error);
+                console.log("Falha ao inicializar o estado de autenticação:", error);
             } finally {
                 if (isMounted) {
                     setIsLoading(false);

@@ -220,7 +220,7 @@ namespace Totem.Application.Services.IdentityServices
 		public async Task<Result> AddUserToRoleAsync(AssignRoleRequest request)
 		{
             var userId = request.UserId;
-            var role = request.RoleName.ToString();
+            var role = request.Role.ToString();
 
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null)
@@ -243,7 +243,7 @@ namespace Totem.Application.Services.IdentityServices
             return Successful();
         }
 
-        public async Task<Result> RemoveUserFromRoleAsync(Guid userId, EnumRoles role)
+        public async Task<Result> RemoveUserFromRoleAsync(Guid userId, Role role)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)

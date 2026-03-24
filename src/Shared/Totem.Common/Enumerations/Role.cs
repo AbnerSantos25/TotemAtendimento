@@ -1,6 +1,6 @@
 ﻿namespace Totem.Common.Enumerations
 {
-	public enum EnumRoles
+	public enum Role
 	{
 		Admin = 1,
 		User,
