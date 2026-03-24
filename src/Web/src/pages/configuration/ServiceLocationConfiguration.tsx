@@ -21,7 +21,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Trash2, MapPin, Pencil } from "lucide-react";
+import { Plus, Trash2, MapPin, Pencil, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { EmptyState } from "@/components/EmptyState";
@@ -96,13 +96,13 @@ export function ServiceLocationConfiguration() {
             const response = await serviceLocationService.addAsync(dto);
             if (response.success && response.data) {
                 AGShowMessage.success({ title: "Sucesso", description: "Local criado com sucesso." });
-                
+
                 const novoLocal: ServiceLocationView = {
                     id: response.data,
                     name: dto.name,
                     number: dto.number
                 };
-                
+
                 setLocations(prev => [...prev, novoLocal]);
             } else if (!response.success && response.error) {
                 AGShowMessage.error({ title: "Erro na Criação", description: response.error.message || "Não foi possível criar o local." });
@@ -144,12 +144,23 @@ export function ServiceLocationConfiguration() {
                     <CardDescription>Gerencie seus pontos de atendimento físicos.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="mb-6 max-w-md">
+                    <div className="mb-6 max-w-md relative">
                         <Input
                             placeholder="Buscar local por nome..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pr-8"
                         />
+                        {searchTerm && (
+                            <button
+                                type="button"
+                                onClick={() => setSearchTerm("")}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 opacity-70 hover:opacity-100 focus:outline-none focus:bg-accent"
+                                title="Limpar busca"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        )}
                     </div>
 
                     <div className="rounded-md border">

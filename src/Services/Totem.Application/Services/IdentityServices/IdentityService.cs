@@ -73,6 +73,18 @@ namespace Totem.Application.Services.IdentityServices
             return Successful<string>(encodedToken);
         }
 
+        public async Task<(Result Result, List<UserSummary> data)> GetListUserAsync()
+        {
+            var users = _userManager.Users.Select(u => new UserSummary
+			{
+				Id = u.Id,
+				FullName = u.FullName,
+				Email = u.Email
+			}).ToList();
+
+            return Successful(users);
+		}
+
 		public async Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView)
 		{
 			var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);

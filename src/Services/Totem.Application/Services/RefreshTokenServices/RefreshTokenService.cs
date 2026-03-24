@@ -71,7 +71,7 @@ namespace Totem.Application.Services.RefreshTokenServices
 		public async Task<(Result result, Guid data)> SaveRefreshTokenAsync(Guid userId)
 		{
 			var token = Guid.NewGuid();
-			var refreshToken = new RefreshToken(token, userId, DateTime.UtcNow.AddMinutes(10), false);
+			var refreshToken = new RefreshToken(token, userId, DateTime.UtcNow.AddHours(1), false);
 
 			_refreshTokenRepository.Add(refreshToken);
 
