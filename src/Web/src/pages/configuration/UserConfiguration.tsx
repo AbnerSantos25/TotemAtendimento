@@ -48,7 +48,6 @@ const userSchema = z.object({
 
 type UserFormValues = z.infer<typeof userSchema>;
 
-
 export function UserConfiguration() {
     const [users, setUsers] = useState<UserSummary[]>([]);
     const [loading, setLoading] = useState(true);

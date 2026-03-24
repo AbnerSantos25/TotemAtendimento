@@ -9,6 +9,6 @@ namespace Totem.Domain.Models.IdentityModels
 		public string UserId { get; set; }
 
 		[Required(ErrorMessage = "O nome da Role (perfil) é obrigatório.")]
-		public EnumRoles RoleName { get; set; }
+		public Role Role { get; set; }
 	}
 }
