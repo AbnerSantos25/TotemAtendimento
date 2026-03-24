@@ -61,8 +61,9 @@ class StorageService implements IStorageService {
             localStorage.removeItem(REFRESH_TOKEN_KEY);
             localStorage.removeItem(USER_DATA);
             await this.saveStatusAsync(Status.loggedOut);
+            window.dispatchEvent(new Event('onSessionExpired'));
         } catch (error) {
-            console.error("Erro ao limpar sessão", error);
+            console.log("Erro ao limpar sessão", error);
         }
     }
 
@@ -72,7 +73,7 @@ class StorageService implements IStorageService {
             const userViewConverted = jsonValue != null ? JSON.parse(jsonValue) as UserView : null;
             return Promise.resolve(userViewConverted);
         } catch (error) {
-            console.error("Erro ao resgatar usuário - ", error);
+            console.log("Erro ao resgatar usuário - ", error);
             return Promise.resolve(null);
         }
     }

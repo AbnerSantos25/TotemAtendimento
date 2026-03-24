@@ -49,10 +49,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             }
         };
 
+        const handleSessionExpired = () => {
+            if (isMounted) {
+                console.log("Evento onSessionExpired recebido. Limpando AuthContext.");
+                setUser(null);
+            }
+        };
+
         loadSession();
+
+        window.addEventListener('onSessionExpired', handleSessionExpired);
 
         return () => {
             isMounted = false;
+            window.removeEventListener('onSessionExpired', handleSessionExpired);
         };
     }, []);
 

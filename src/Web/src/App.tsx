@@ -7,7 +7,8 @@ import { Layout } from "./components/Layout";
 import { Toaster } from "sonner";
 import { Configuration } from "./pages/configuration/configuration";
 import { QueueConfiguration } from "./pages/configuration/QueueConfiguration";
-import { ServiceLocationConfiguration } from "@/pages/configuration/ServiceLocationConfiguration"; // Added this import
+import { ServiceLocationConfiguration } from "@/pages/configuration/ServiceLocationConfiguration";
+import { UserConfiguration } from "@/pages/configuration/UserConfiguration";
 
 function DashboardTemporario() {
 
@@ -35,6 +36,7 @@ export function App() {
                 <Route path="/configurations" element={<Configuration />} />
                 <Route path="/gestao/filas" element={<QueueConfiguration />} />
                 <Route path="/gestao/locais" element={<ServiceLocationConfiguration />} />
+                <Route path="/gestao/usuarios" element={<UserConfiguration />} />
               </Route>
             </Route>
           </Route>

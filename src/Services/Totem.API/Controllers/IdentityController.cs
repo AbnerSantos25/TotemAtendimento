@@ -34,7 +34,14 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.LoginUserAsync(loginUser));
         }
 
-        [HttpPut("user/{id}/update-password")]
+        [HttpGet("users")]
+        public async Task<ActionResult> GetListUser()
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            return CustomResponse(await _identityService.GetListUserAsync());
+		}
+
+		[HttpPut("user/{id}/update-password")]
         public async Task<ActionResult> UpdatePassword([FromRoute] Guid id, [FromBody] UpdatePasswordRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);

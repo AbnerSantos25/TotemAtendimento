@@ -21,19 +21,33 @@ export class BaseService implements IBaseService {
 
         try {
             errorBodyText = await response.text();
+
+            if (response.status >= 500) {
+                return {
+                    statusCode: response.status,
+                    message: "Ocorreu um erro inesperado no servidor. Nossa equipe técnica já foi notificada.",
+                    body: errorBodyText,
+                    validationErrors: undefined
+                };
+            }
+
             try {
                 const errorJson = JSON.parse(errorBodyText);
 
                 if (errorJson.errors && typeof errorJson.errors === 'object' && !Array.isArray(errorJson.errors)) {
                     validationErrors = errorJson.errors;
-                    friendlyMessage = errorJson.title || "Erro.";
+                    friendlyMessage = errorJson.title || "Erro de validação.";
                 } else if (errorJson.errors && Array.isArray(errorJson.errors)) {
                     friendlyMessage = errorJson.errors.join(', ');
+                } else if (errorJson.title) {
+                    friendlyMessage = errorJson.title;
+                } else if (errorJson.detail) {
+                    friendlyMessage = errorJson.detail;
                 } else {
-                    friendlyMessage = errorBodyText;
+                    friendlyMessage = errorBodyText.length > 200 ? "Ocorreu um erro ao processar a requisição." : errorBodyText;
                 }
             } catch (jsonError) {
-                friendlyMessage = errorBodyText;
+                friendlyMessage = errorBodyText.length > 200 ? "Falha na comunicação com o servidor." : errorBodyText;
             }
         } catch (e) {
             errorBodyText = "Não foi possível ler o corpo do erro.";
@@ -98,6 +112,7 @@ export class BaseService implements IBaseService {
             return currentToken;
         } catch (e) {
             console.error("Exception no ensureTokenIsValid", e);
+            await session.clearSessionAsync();
             return null;
         }
     }
@@ -114,6 +129,7 @@ export class BaseService implements IBaseService {
             token = await session.getJwtTokenAsync();
 
             if (!token) {
+                await session.clearSessionAsync();
                 return { success: false, error: { message: "Usuário não autenticado.", statusCode: 401 } };
             }
 

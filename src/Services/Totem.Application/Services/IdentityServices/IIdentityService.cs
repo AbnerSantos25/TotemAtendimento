@@ -9,6 +9,7 @@ namespace Totem.Application.Services.IdentityServices
 	public interface IIdentityService
 	{
 		Task<(Result Result, string Data)> GenerateJwtTokenAsync(User user);
+		Task<(Result Result, List<UserSummary> data)> GetListUserAsync();
 		Task<(Result Result, LoginDataView Data)> RegisterUserAsync(RegisterUserView registerUserView);
 		Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request);
 		Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request);
