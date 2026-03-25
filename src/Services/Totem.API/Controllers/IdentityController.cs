@@ -72,7 +72,7 @@ namespace Totem.API.Controllers
         }
 
 		[Authorize(Roles = nameof(EnumRoles.Admin))]
-		[HttpPost("assign-role")]
+        [HttpPost("assign-role")]
 		public async Task<ActionResult> AssignRole([FromBody] AssignRoleRequest request)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -82,5 +82,13 @@ namespace Totem.API.Controllers
 			return CustomResponse(result);
 		}
 
-	}
+        [HttpPost("logout/{userId}")]
+        public async Task<ActionResult> Logout(Guid userId)
+        {
+            var result = await _identityService.LogoutAsync(userId);
+
+            return CustomResponse(result);
+        }
+
+    }
 }
