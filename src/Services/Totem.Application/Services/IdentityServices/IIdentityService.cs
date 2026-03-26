@@ -13,7 +13,10 @@ namespace Totem.Application.Services.IdentityServices
 		Task<(Result Result, LoginDataView Data)> RegisterUserAsync(RegisterUserView registerUserView);
 		Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request);
 		Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request);
+		
 		Task<Result> AddUserToRoleAsync(AssignRoleRequest request);
+		Task<Result> AddUserToRolesAsync(AssignRolesRequest request);
+
 		Task<Result> RemoveUserFromRoleAsync(Guid userId, Role role);
 		Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView);
 		Task<Result> InactiveUser(Guid id);
