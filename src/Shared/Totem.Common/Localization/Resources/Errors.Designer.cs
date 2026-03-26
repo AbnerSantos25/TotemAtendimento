@@ -160,6 +160,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A lista de permissões não pode estar vazia..
+        /// </summary>
+        public static string PermissionListCannotBeEmpty {
+            get {
+                return ResourceManager.GetString("PermissionListCannotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Sessão expirada. Faça login novamente..
         /// </summary>
         public static string RefreshTokenExpired {

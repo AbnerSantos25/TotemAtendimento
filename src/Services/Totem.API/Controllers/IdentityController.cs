@@ -82,5 +82,16 @@ namespace Totem.API.Controllers
 			return CustomResponse(result);
 		}
 
+        [Authorize(Roles = nameof(Role.Admin))]
+        [HttpPost("assign-roles")]
+        public async Task<ActionResult> AssignRoleList([FromBody] AssignRoleRequest request)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var result = await _identityService.AddUserToRolesAsync(request);
+
+            return CustomResponse(result);
+        }
+
 	}
 }

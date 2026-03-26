@@ -80,7 +80,8 @@ namespace Totem.Application.Services.IdentityServices
 				Id = u.Id,
 				FullName = u.FullName,
 				Email = u.Email,
-				IsActive = u.IsActive
+				IsActive = u.IsActive,
+                Roles = _userManager.GetRolesAsync(u).Result.ToList()
 
 			}).ToList();
 
@@ -267,7 +268,33 @@ namespace Totem.Application.Services.IdentityServices
             return Successful();
         }
 
-        public async Task<Result> RemoveUserFromRoleAsync(Guid userId, Role role)
+		public async Task<Result> AddUserToRolesAsync(AssignRolesRequest request)
+		{
+			var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+
+			if (user == null)
+				return Unsuccessful(Errors.UserNotFound);
+
+			var roles = await _userManager.GetRolesAsync(user);
+
+            var rolesToAdd = request.Roles.Select(r => r.ToString()).Except(roles).ToList();
+
+            if (!rolesToAdd.Any())
+                return Unsuccessful(Errors.PermissionListCannotBeEmpty);
+
+            var result = await _userManager.AddToRolesAsync(user, rolesToAdd);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
+                return Unsuccessful();
+			}
+
+            return Successful();
+		}
+
+		public async Task<Result> RemoveUserFromRoleAsync(Guid userId, Role role)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
@@ -311,5 +338,6 @@ namespace Totem.Application.Services.IdentityServices
 
             return true;
         }
+
 	}
 }
