@@ -7,6 +7,7 @@ namespace Totem.Domain.Models.IdentityModels
         public Guid Id { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
+        public bool IsActive { get; set; }
 
         public static implicit operator UserSummary(User user)
         {
@@ -14,7 +15,8 @@ namespace Totem.Domain.Models.IdentityModels
             {
                 Id = user.Id,
                 FullName = user.FullName,
-                Email = user.Email
+                Email = user.Email,
+                IsActive = user.IsActive
             };
 		}
 	}
