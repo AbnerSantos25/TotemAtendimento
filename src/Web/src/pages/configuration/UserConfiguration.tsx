@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { userService } from "@/services/UserService";
 import type { UserSummary } from "@/models/UserModels";
+import { Role, RoleLabels } from "@/models/UserModels";
 import {
     Table,
     TableBody,
@@ -28,7 +29,25 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Users, X } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Plus, Users, X, UserX, UserCheck, ShieldPlus } from "lucide-react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { EmptyState } from "@/components/EmptyState";
 import { TableSkeleton } from "@/components/TableSkeleton";
@@ -54,6 +73,16 @@ export function UserConfiguration() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+    const [userToInactivate, setUserToInactivate] = useState<UserSummary | null>(null);
+    const [isInactivating, setIsInactivating] = useState(false);
+
+    const [userToActivate, setUserToActivate] = useState<UserSummary | null>(null);
+    const [isActivating, setIsActivating] = useState(false);
+
+    const [userToAssignRole, setUserToAssignRole] = useState<UserSummary | null>(null);
+    const [selectedRole, setSelectedRole] = useState<string>("");
+    const [isAssigningRole, setIsAssigningRole] = useState(false);
 
     const form = useForm<UserFormValues>({
         resolver: zodResolver(userSchema),
@@ -104,10 +133,8 @@ export function UserConfiguration() {
         if (response.success) {
             AGShowMessage.success({ title: "Sucesso", description: "Usuário registrado com sucesso." });
             setIsAddDialogOpen(false);
-            // Recarrega a lista do backend (porque o auth service não devolve o ID na RegisterAction
             fetchUsers();
         } else if (!response.success && response.error) {
-            // Se houver validation errors no ModelState (ex: senha fora do padrao)
             let desc = response.error.message || "Não foi possível registrar o usuário.";
 
             if (response.error.validationErrors) {
@@ -119,6 +146,64 @@ export function UserConfiguration() {
 
             AGShowMessage.error({ title: "Falha no Registro", description: desc });
         }
+    };
+
+    const handleConfirmInactivate = async () => {
+        if (!userToInactivate) return;
+
+        setIsInactivating(true);
+        const response = await userService.inactivateUserAsync(userToInactivate.id);
+
+        if (response.success) {
+            AGShowMessage.success({ title: "Sucesso", description: `Usuário "${userToInactivate.fullName}" inativado com sucesso.` });
+            setUserToInactivate(null);
+            fetchUsers();
+        } else if (!response.success && response.error) {
+            AGShowMessage.error({ title: "Erro ao Inativar", description: response.error.message || "Não foi possível inativar o usuário." });
+        }
+
+        setIsInactivating(false);
+    };
+
+    const handleConfirmActivate = async () => {
+        if (!userToActivate) return;
+
+        setIsActivating(true);
+        const response = await userService.activateUserAsync(userToActivate.id);
+
+        if (response.success) {
+            AGShowMessage.success({ title: "Sucesso", description: `Usuário "${userToActivate.fullName}" ativado com sucesso.` });
+            setUserToActivate(null);
+            fetchUsers();
+        } else if (!response.success && response.error) {
+            AGShowMessage.error({ title: "Erro ao Ativar", description: response.error.message || "Não foi possível ativar o usuário." });
+        }
+
+        setIsActivating(false);
+    };
+
+    const openAssignRoleDialog = (user: UserSummary) => {
+        setSelectedRole("");
+        setUserToAssignRole(user);
+    };
+
+    const handleAssignRole = async () => {
+        if (!userToAssignRole || !selectedRole) return;
+
+        setIsAssigningRole(true);
+        const response = await userService.assignRoleAsync({
+            userId: userToAssignRole.id,
+            role: Number(selectedRole) as Role,
+        });
+
+        if (response.success) {
+            AGShowMessage.success({ title: "Sucesso", description: `Perfil atribuído a "${userToAssignRole.fullName}" com sucesso.` });
+            setUserToAssignRole(null);
+        } else if (!response.success && response.error) {
+            AGShowMessage.error({ title: "Erro ao Atribuir Perfil", description: response.error.message || "Não foi possível atribuir o perfil." });
+        }
+
+        setIsAssigningRole(false);
     };
 
     return (
@@ -164,14 +249,16 @@ export function UserConfiguration() {
                                 <TableRow>
                                     <TableHead>Nome Completo</TableHead>
                                     <TableHead>E-Mail de Acesso</TableHead>
+                                    <TableHead className="w-[100px]">Status</TableHead>
+                                    <TableHead className="w-[100px] text-right">Ações</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {loading ? (
-                                    <TableSkeleton columns={2} rows={5} />
+                                    <TableSkeleton columns={4} rows={5} />
                                 ) : filteredUsers.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={2} className="p-0">
+                                        <TableCell colSpan={4} className="p-0">
                                             <EmptyState
                                                 title="Nenhum usuário encontrado"
                                                 description="Cadastre novos usuários para habilitar o controle do Totem."
@@ -189,6 +276,45 @@ export function UserConfiguration() {
                                         <TableRow key={user.id}>
                                             <TableCell className="font-medium">{user.fullName}</TableCell>
                                             <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                                            <TableCell>
+                                                {user.isActive ? (
+                                                    <Badge variant="outline" className="border-green-500 text-green-600">Ativo</Badge>
+                                                ) : (
+                                                    <Badge variant="outline" className="border-red-400 text-red-500">Inativo</Badge>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    title="Atribuir perfil"
+                                                    className="text-muted-foreground hover:text-primary"
+                                                    onClick={() => openAssignRoleDialog(user)}
+                                                >
+                                                    <ShieldPlus className="h-4 w-4" />
+                                                </Button>
+                                                {user.isActive ? (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        title="Inativar usuário"
+                                                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                        onClick={() => setUserToInactivate(user)}
+                                                    >
+                                                        <UserX className="h-4 w-4" />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        title="Ativar usuário"
+                                                        className="text-green-600 hover:text-green-700 hover:bg-green-500/10"
+                                                        onClick={() => setUserToActivate(user)}
+                                                    >
+                                                        <UserCheck className="h-4 w-4" />
+                                                    </Button>
+                                                )}
+                                            </TableCell>
                                         </TableRow>
                                     ))
                                 )}
@@ -198,6 +324,7 @@ export function UserConfiguration() {
                 </CardContent>
             </Card>
 
+            {/* Dialog: Cadastrar Usuário */}
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
@@ -270,6 +397,84 @@ export function UserConfiguration() {
                             </DialogFooter>
                         </form>
                     </Form>
+                </DialogContent>
+            </Dialog>
+
+            {/* AlertDialog: Confirmar Inativação */}
+            <AlertDialog open={!!userToInactivate} onOpenChange={(open) => { if (!open) setUserToInactivate(null); }}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Inativar Usuário</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Tem certeza que deseja inativar o usuário <strong>{userToInactivate?.fullName}</strong>?
+                            Ele perderá o acesso ao sistema imediatamente.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isInactivating}>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmInactivate}
+                            disabled={isInactivating}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            {isInactivating ? "Inativando..." : "Inativar"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* AlertDialog: Confirmar Ativação */}
+            <AlertDialog open={!!userToActivate} onOpenChange={(open) => { if (!open) setUserToActivate(null); }}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Ativar Usuário</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Tem certeza que deseja ativar o usuário <strong>{userToActivate?.fullName}</strong>?
+                            Ele voltará a ter acesso ao sistema.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isActivating}>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmActivate}
+                            disabled={isActivating}
+                            className="bg-green-600 text-white hover:bg-green-700"
+                        >
+                            {isActivating ? "Ativando..." : "Ativar"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Dialog: Atribuir Perfil */}
+            <Dialog open={!!userToAssignRole} onOpenChange={(open) => { if (!open) setUserToAssignRole(null); }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Atribuir Perfil de Acesso</DialogTitle>
+                        <DialogDescription>
+                            Selecione o perfil que será atribuído a <strong>{userToAssignRole?.fullName}</strong>.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="py-4">
+                        <Select value={selectedRole} onValueChange={setSelectedRole} disabled={isAssigningRole}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecione um perfil..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {(Object.entries(RoleLabels) as [string, string][]).map(([value, label]) => (
+                                    <SelectItem key={value} value={value}>{label}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setUserToAssignRole(null)} disabled={isAssigningRole}>Cancelar</Button>
+                        <Button onClick={handleAssignRole} disabled={isAssigningRole || !selectedRole}>
+                            {isAssigningRole ? "Atribuindo..." : "Atribuir Perfil"}
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>

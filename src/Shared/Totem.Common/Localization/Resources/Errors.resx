@@ -177,4 +177,7 @@
   <data name="RefreshTokenExpired" xml:space="preserve">
     <value>Sessão expirada. Faça login novamente.</value>
   </data>
+  <data name="UserInactive" xml:space="preserve">
+    <value>Usuário Inativo.</value>
+  </data>
 </root>
