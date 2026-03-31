@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -180,6 +180,29 @@ namespace Totem.Application.Services.IdentityServices
                 return Unsuccessful(Errors.UserNotFound);
 
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    Notify(error.Description);
+
+                return Unsuccessful();
+            }
+
+            return Successful();
+        }
+
+        public async Task<Result> ChangePasswordAsync(Guid id, ChangePasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user == null)
+                return Unsuccessful(Errors.UserNotFound);
+
+            if (request.OldPassword.Equals(request.NewPassword))
+                return Unsuccessful(Errors.PasswordCannotBeEqual);
+
+            var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
 
             if (!result.Succeeded)
             {

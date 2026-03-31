@@ -9,6 +9,7 @@ import { Configuration } from "./pages/configuration/configuration";
 import { QueueConfiguration } from "./pages/configuration/QueueConfiguration";
 import { ServiceLocationConfiguration } from "@/pages/configuration/ServiceLocationConfiguration";
 import { UserConfiguration } from "@/pages/configuration/UserConfiguration";
+import { MyAccount } from "./pages/user/MyAccount";
 
 function DashboardTemporario() {
 
@@ -31,6 +32,7 @@ export function App() {
             <Route element={<Layout><Outlet /></Layout>}>
               <Route path="/home" element={<DashboardTemporario />} />
               <Route path="/relatorios" element={<Reports />} />
+              <Route path="/minha-conta" element={<MyAccount />} />
 
               <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
                 <Route path="/configurations" element={<Configuration />} />

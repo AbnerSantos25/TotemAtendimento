@@ -177,4 +177,13 @@
   <data name="RefreshTokenExpired" xml:space="preserve">
     <value>Sessão expirada. Faça login novamente.</value>
   </data>
+  <data name="PasswordCannotBeEqual" xml:space="preserve">
+    <value>A nova senha não pode ser igual à senha anterior.</value>
+  </data>
+  <data name="GenericValueCannotBeEqual" xml:space="preserve">
+    <value>O valor de '{0}' não pode ser igual ao de '{1}'.</value>
+  </data>
+  <data name="PropertyNotFound" xml:space="preserve">
+    <value>Propriedade '{0}' não encontrada.</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Totem.Application.Services.IdentityServices;
 using Totem.Common.API.Controller;
@@ -41,7 +41,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.GetListUserAsync());
 		}
 
-		[HttpPut("user/{id}/update-password")]
+        [HttpPut("user/{id}/update-password")]
         public async Task<ActionResult> UpdatePassword([FromRoute] Guid id, [FromBody] UpdatePasswordRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -80,6 +80,14 @@ namespace Totem.API.Controllers
 			var result = await _identityService.AddUserToRoleAsync(request);
 
 			return CustomResponse(result);
+		}
+
+		[HttpPost("user/{userId}/change-password")]
+		public async Task<ActionResult> ChangePassword([FromRoute] Guid userId, [FromBody] ChangePasswordRequest request)
+		{
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+			return CustomResponse(await _identityService.ChangePasswordAsync(userId, request));
 		}
 
 	}

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Totem.Common.Enumerations;
 using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.IdentityModels;
@@ -12,6 +12,7 @@ namespace Totem.Application.Services.IdentityServices
 		Task<(Result Result, List<UserSummary> data)> GetListUserAsync();
 		Task<(Result Result, LoginDataView Data)> RegisterUserAsync(RegisterUserView registerUserView);
 		Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request);
+		Task<Result> ChangePasswordAsync(Guid id, ChangePasswordRequest request);
 		Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request);
 		Task<Result> AddUserToRoleAsync(AssignRoleRequest request);
 		Task<Result> RemoveUserFromRoleAsync(Guid userId, EnumRoles role);
