@@ -23,15 +23,17 @@ namespace Totem.Domain.Aggregates.RefreshTokenAggregate
             Revoked = revoked;
         }
 
-        public void Revoke(Guid? replacedByToken)
+        public void Revoke(Guid? replacedByToken = null)
         {
             Revoked = true;
-            ReplacedByToken = replacedByToken;
+
+            if (replacedByToken.HasValue)
+                ReplaceByToken(replacedByToken.Value);
         }
 
-        public void Revoke()
+        public void ReplaceByToken(Guid replacedByToken)
         {
-            Revoked = true;
+            Revoke(replacedByToken);
         }
     }
 }
