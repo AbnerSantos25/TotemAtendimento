@@ -61,11 +61,29 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Erro ao carregar filas disponíveis.
+        /// </summary>
+        public static string ErrorLoadingAvailableQueues {
+            get {
+                return ResourceManager.GetString("ErrorLoadingAvailableQueues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Erro ao Salvar no Banco de dados. .
         /// </summary>
         public static string ErrorSavingDatabase {
             get {
                 return ResourceManager.GetString("ErrorSavingDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Por favor, preencha todos os campos..
+        /// </summary>
+        public static string FillAllFields {
+            get {
+                return ResourceManager.GetString("FillAllFields", resourceCulture);
             }
         }
         
@@ -142,6 +160,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A lista de permissões não pode estar vazia..
+        /// </summary>
+        public static string PermissionListCannotBeEmpty {
+            get {
+                return ResourceManager.GetString("PermissionListCannotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Sessão expirada. Faça login novamente..
         /// </summary>
         public static string RefreshTokenExpired {
@@ -178,11 +205,38 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Ocorreu um erro inesperado. Tente novamente..
+        /// </summary>
+        public static string UnexpectedError {
+            get {
+                return ResourceManager.GetString("UnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Erro inesperado ao gerar senha.
+        /// </summary>
+        public static string UnexpectedErrorGeneratingPassword {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorGeneratingPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário já possui esta função..
         /// </summary>
         public static string UserAlreadyHasRole {
             get {
                 return ResourceManager.GetString("UserAlreadyHasRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário Inativo..
+        /// </summary>
+        public static string UserInactive {
+            get {
+                return ResourceManager.GetString("UserInactive", resourceCulture);
             }
         }
         

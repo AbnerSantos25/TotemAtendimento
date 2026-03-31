@@ -11,7 +11,6 @@ export function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
     const { user, isLoading } = useAuth();
     const hasShownMessage = useRef(false);
 
-    // Adicionado console.log temporário para você ver no painel (F12) o que o C# devolveu
     if (!isLoading && user) {
         console.log("Usuário carregado na PrivateRoute:", user);
         console.log("Roles do usuário:", user.roles);

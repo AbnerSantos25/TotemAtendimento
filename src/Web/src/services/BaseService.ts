@@ -73,7 +73,7 @@ export class BaseService implements IBaseService {
                 const response = await this.GetAsync<AuthData>(`/totem/RefreshToken/user/${user.id}/token/${tokenId}`, false);
 
                 if (!response.success || !response.data) {
-                    console.error("Falha no refresh Token");
+                    console.log("Falha no refresh Token");
                     return false;
                 }
 
@@ -81,11 +81,10 @@ export class BaseService implements IBaseService {
                 return true;
             }
 
-            console.error("Cai no Loop Prevention, do Refresh Token");
             return false;
 
         } catch (error) {
-            console.error("Catch Exception:", error);
+            console.log("Catch Exception:");
             return false;
         }
     }
@@ -104,14 +103,12 @@ export class BaseService implements IBaseService {
                 if (success) {
                     return await session.getJwtTokenAsync();
                 } else {
-                    console.error("Falha ao renovar token proativamente.");
                     await session.clearSessionAsync();
                     return null;
                 }
             }
             return currentToken;
         } catch (e) {
-            console.error("Exception no ensureTokenIsValid", e);
             await session.clearSessionAsync();
             return null;
         }
