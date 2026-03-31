@@ -311,7 +311,8 @@ namespace Totem.Application.Services.IdentityServices
                     _refreshTokenRepository.Update(token);
                 }
 
-                await _refreshTokenRepository.UnitOfWork.CommitAsync();
+                if (!await _refreshTokenRepository.UnitOfWork.CommitAsync())
+                    return Unsuccessful(Errors.ErrorSavingDatabase);
             }
 
             return Successful();
