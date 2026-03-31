@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -252,6 +251,15 @@ namespace Totem.Infra.Migrations.AppIdentityDb
                 schema: "Identity",
                 table: "SysUserRoles",
                 column: "RoleId");
+
+            migrationBuilder.Sql(@"DECLARE @roleId uniqueidentifier, @userId uniqueidentifier;
+
+            SET @roleId = NEWID();
+            SET @userId = NEWID();
+
+            INSERT INTO [ProjetoTotem].[Identity].[SysRoles] Values(@roleId, 'Admin', 'ADMIN', null);
+            INSERT INTO [ProjetoTotem].[Identity].[SysUser] VALUES(@userId,'ADMIN','admin@admin.com','ADMIN@ADMIN.COM','admin@admin.com','ADMIN@ADMIN.COM',1,'AQAAAAIAAYagAAAAEFV/HgxcdffHZXm+TNzPEHF45Gycb+dQ2Wv9g+q9dKoG2HdjWt28gUp/8Ho8ztVLcQ==','EN3AQ5KF2GPYZ5CIIYQAPWKNTBKLMOXO','63d933e3-a89a-4d41-8764-99de519327f5',NULL,0,0,NULL,1,0,1);
+            INSERT INTO [ProjetoTotem].[Identity].[SysUserRoles] VALUES(@userId, @roleId);");
         }
 
         /// <inheritdoc />
