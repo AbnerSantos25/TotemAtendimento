@@ -17,7 +17,7 @@ class StorageService implements IStorageService {
 
             await this.saveStatusAsync(Status.loggedIn);
         } catch (error) {
-            console.error("Erro ao salvar dados de autenticação", error);
+            console.log("Erro ao salvar dados de autenticação", error);
         }
     }
 
@@ -25,7 +25,7 @@ class StorageService implements IStorageService {
         try {
             localStorage.setItem(USER_DATA, JSON.stringify(user));
         } catch (error) {
-            console.error("Erro ao salvar dados do usuário", error);
+            console.log("Erro ao salvar dados do usuário", error);
         }
     }
 
@@ -33,7 +33,7 @@ class StorageService implements IStorageService {
         try {
             localStorage.setItem(STATUS_KEY, status.toString());
         } catch (error) {
-            console.error("Erro ao salvar status", error);
+            console.log("Erro ao salvar status", error);
         }
     }
 
@@ -41,7 +41,7 @@ class StorageService implements IStorageService {
         try {
             return Promise.resolve(localStorage.getItem(JWT_KEY));
         } catch (error) {
-            console.error("Erro ao buscar JWT token", error);
+            console.log("Erro ao buscar JWT token", error);
             return Promise.resolve(null);
         }
     }
@@ -50,7 +50,7 @@ class StorageService implements IStorageService {
         try {
             return Promise.resolve(localStorage.getItem(STATUS_KEY));
         } catch (error) {
-            console.error("Erro ao buscar status", error);
+            console.log("Erro ao buscar status", error);
             return Promise.resolve(null);
         }
     }
