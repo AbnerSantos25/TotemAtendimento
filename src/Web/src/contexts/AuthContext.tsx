@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { session } from '../services/StorageService';
+import { authService } from '../services/AuthServices/AuthService';
 import type { UserView, AuthData } from '@/models/AuthModels';
 import { jwtDecode } from 'jwt-decode';
 
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     }
                 }
             } catch (error) {
-                console.error("Falha ao inicializar o estado de autenticação:", error);
+                console.log("Falha ao inicializar o estado de autenticação:", error);
             } finally {
                 if (isMounted) {
                     setIsLoading(false);
@@ -81,6 +82,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     const signOut = async (): Promise<void> => {
+        if (user) {
+            try {
+                await authService.logoutAsync(user.id);
+            } catch (error) {
+                console.error("Erro ao revogar token no logout:", error);
+            }
+        }
         await session.clearSessionAsync();
         setUser(null);
     };
