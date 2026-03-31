@@ -40,17 +40,12 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Plus, Users, X, UserX, UserCheck, ShieldPlus } from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { EmptyState } from "@/components/EmptyState";
 import { TableSkeleton } from "@/components/TableSkeleton";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label as UILabel } from "@/components/ui/label";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -81,7 +76,7 @@ export function UserConfiguration() {
     const [isActivating, setIsActivating] = useState(false);
 
     const [userToAssignRole, setUserToAssignRole] = useState<UserSummary | null>(null);
-    const [selectedRole, setSelectedRole] = useState<string>("");
+    const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
     const [isAssigningRole, setIsAssigningRole] = useState(false);
 
     const form = useForm<UserFormValues>({
@@ -183,27 +178,42 @@ export function UserConfiguration() {
     };
 
     const openAssignRoleDialog = (user: UserSummary) => {
-        setSelectedRole("");
+        // Inicializa com as roles que o usuário já possui
+        const currentRoles = (user.roles || []).map(rName => {
+            const entry = Object.entries(RoleLabels).find(([_, label]) => label === rName);
+            return entry ? Number(entry[0]) as Role : null;
+        }).filter((r): r is Role => r !== null);
+
+        setSelectedRoles(currentRoles);
         setUserToAssignRole(user);
     };
 
     const handleAssignRole = async () => {
-        if (!userToAssignRole || !selectedRole) return;
+        if (!userToAssignRole) return;
 
         setIsAssigningRole(true);
-        const response = await userService.assignRoleAsync({
+        const response = await userService.updateUserRolesAsync({
             userId: userToAssignRole.id,
-            role: Number(selectedRole) as Role,
+            roles: selectedRoles,
         });
 
         if (response.success) {
-            AGShowMessage.success({ title: "Sucesso", description: `Perfil atribuído a "${userToAssignRole.fullName}" com sucesso.` });
+            AGShowMessage.success({ title: "Sucesso", description: `Perfís atualizados para "${userToAssignRole.fullName}" com sucesso.` });
             setUserToAssignRole(null);
+            fetchUsers();
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro ao Atribuir Perfil", description: response.error.message || "Não foi possível atribuir o perfil." });
+            AGShowMessage.error({ title: "Erro ao Atribuir Perfis", description: response.error.message || "Não foi possível atribuir os perfis." });
         }
 
         setIsAssigningRole(false);
+    };
+
+    const toggleRole = (role: Role) => {
+        setSelectedRoles(prev =>
+            prev.includes(role)
+                ? prev.filter(r => r !== role)
+                : [...prev, role]
+        );
     };
 
     return (
@@ -249,16 +259,17 @@ export function UserConfiguration() {
                                 <TableRow>
                                     <TableHead>Nome Completo</TableHead>
                                     <TableHead>E-Mail de Acesso</TableHead>
+                                    <TableHead className="w-[150px]">Perfis</TableHead>
                                     <TableHead className="w-[100px]">Status</TableHead>
                                     <TableHead className="w-[100px] text-right">Ações</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {loading ? (
-                                    <TableSkeleton columns={4} rows={5} />
+                                    <TableSkeleton columns={5} rows={5} />
                                 ) : filteredUsers.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="p-0">
+                                        <TableCell colSpan={5} className="p-0">
                                             <EmptyState
                                                 title="Nenhum usuário encontrado"
                                                 description="Cadastre novos usuários para habilitar o controle do Totem."
@@ -276,6 +287,19 @@ export function UserConfiguration() {
                                         <TableRow key={user.id}>
                                             <TableCell className="font-medium">{user.fullName}</TableCell>
                                             <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                                            <TableCell>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {user.roles && user.roles.length > 0 ? (
+                                                        user.roles.map((role) => (
+                                                            <Badge key={role} variant="secondary" className="text-[10px] px-1.5 py-0">
+                                                                {role}
+                                                            </Badge>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-xs text-muted-foreground">Nenhum</span>
+                                                    )}
+                                                </div>
+                                            </TableCell>
                                             <TableCell>
                                                 {user.isActive ? (
                                                     <Badge variant="outline" className="border-green-500 text-green-600">Ativo</Badge>
@@ -450,29 +474,41 @@ export function UserConfiguration() {
             <Dialog open={!!userToAssignRole} onOpenChange={(open) => { if (!open) setUserToAssignRole(null); }}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Atribuir Perfil de Acesso</DialogTitle>
+                        <DialogTitle>Gerenciar Perfis de Acesso</DialogTitle>
                         <DialogDescription>
-                            Selecione o perfil que será atribuído a <strong>{userToAssignRole?.fullName}</strong>.
+                            Selecione os perfis que <strong>{userToAssignRole?.fullName}</strong> terá no sistema.
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="py-4">
-                        <Select value={selectedRole} onValueChange={setSelectedRole} disabled={isAssigningRole}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecione um perfil..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {(Object.entries(RoleLabels) as [string, string][]).map(([value, label]) => (
-                                    <SelectItem key={value} value={value}>{label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                    <div className="grid gap-4 py-4">
+                        {(Object.entries(RoleLabels) as [string, string][]).map(([value, label]) => {
+                            const roleId = Number(value) as Role;
+                            const id = `role-${roleId}`;
+                            return (
+                                <div key={roleId} className="flex items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm hover:bg-accent/50 transition-colors">
+                                    <Checkbox
+                                        id={id}
+                                        checked={selectedRoles.includes(roleId)}
+                                        onCheckedChange={() => toggleRole(roleId)}
+                                        disabled={isAssigningRole}
+                                    />
+                                    <div className="grid gap-1.5 leading-none">
+                                        <UILabel
+                                            htmlFor={id}
+                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                        >
+                                            {label}
+                                        </UILabel>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
 
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setUserToAssignRole(null)} disabled={isAssigningRole}>Cancelar</Button>
-                        <Button onClick={handleAssignRole} disabled={isAssigningRole || !selectedRole}>
-                            {isAssigningRole ? "Atribuindo..." : "Atribuir Perfil"}
+                        <Button onClick={handleAssignRole} disabled={isAssigningRole}>
+                            {isAssigningRole ? "Salvando..." : "Salvar Alterações"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

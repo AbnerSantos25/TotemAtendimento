@@ -9,6 +9,7 @@ namespace Totem.Domain.Models.IdentityModels
         public string Email { get; set; }
         public bool IsActive { get; set; }
         public List<string> Roles { get; set; }
+
         public static implicit operator UserSummary(User user)
         {
             return new UserSummary
@@ -17,7 +18,7 @@ namespace Totem.Domain.Models.IdentityModels
                 FullName = user.FullName,
                 Email = user.Email,
                 IsActive = user.IsActive
-            };
+			};
 		}
 	}
 }

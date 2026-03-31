@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -73,19 +74,25 @@ namespace Totem.Application.Services.IdentityServices
             return Successful<string>(encodedToken);
         }
 
-        public async Task<(Result Result, List<UserSummary> data)> GetListUserAsync()
-        {
-            var users = _userManager.Users.Select(u => new UserSummary
+		public async Task<(Result Result, List<UserSummary> data)> GetListUserAsync()
+		{
+			var userList = _userManager.Users.ToList();
+			var userSummaries = new List<UserSummary>();
+
+			foreach (var u in userList)
 			{
-				Id = u.Id,
-				FullName = u.FullName,
-				Email = u.Email,
-				IsActive = u.IsActive,
-                Roles = _userManager.GetRolesAsync(u).Result.ToList()
+				var roles = await _userManager.GetRolesAsync(u);
+				userSummaries.Add(new UserSummary
+				{
+					Id = u.Id,
+					FullName = u.FullName,
+					Email = u.Email,
+					IsActive = u.IsActive,
+					Roles = roles.ToList()
+				});
+			}
 
-			}).ToList();
-
-            return Successful(users);
+			return Successful(userSummaries);
 		}
 
 		public async Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView)
@@ -239,84 +246,49 @@ namespace Totem.Application.Services.IdentityServices
             return Successful();
 
 		}
-		 
-		public async Task<Result> AddUserToRoleAsync(AssignRoleRequest request)
-		{
-            var userId = request.UserId;
-            var role = request.Role.ToString();
 
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-
-			if (user == null)
-				return Unsuccessful(Errors.UserNotFound);
-
-            var roles = await _userManager.GetRolesAsync(user);
-
-            if (roles.Contains(role))
-                return Unsuccessful(Errors.UserAlreadyHasRole);
-
-            var result = await _userManager.AddToRoleAsync(user, role);
-
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                    Notify(error.Description);
-
-                return Unsuccessful();
-            }
-
-            return Successful();
-        }
-
-		public async Task<Result> AddUserToRolesAsync(AssignRolesRequest request)
+		public async Task<Result> UpdateUserRolesAsync(AssignRolesRequest request)
 		{
 			var user = await _userManager.FindByIdAsync(request.UserId.ToString());
 
 			if (user == null)
 				return Unsuccessful(Errors.UserNotFound);
 
-			var roles = await _userManager.GetRolesAsync(user);
+			var currentRoles = await _userManager.GetRolesAsync(user);
+			var requestedRoles = request.Roles.Select(r => r.ToString()).Distinct().ToList();
+			var rolesToAdd = requestedRoles.Except(currentRoles).ToList();
+			var rolesToRemove = currentRoles.Except(requestedRoles).ToList();
 
-            var rolesToAdd = request.Roles.Select(r => r.ToString()).Except(roles).ToList();
+			if (!rolesToAdd.Any() && !rolesToRemove.Any())
+				return Unsuccessful(Errors.PermissionListCannotBeEmpty);
 
-            if (!rolesToAdd.Any())
-                return Unsuccessful(Errors.PermissionListCannotBeEmpty);
-
-            var result = await _userManager.AddToRolesAsync(user, rolesToAdd);
-
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                    Notify(error.Description);
-                return Unsuccessful();
+			if (rolesToRemove.Any())
+			{
+				var removeResult = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+				if (!removeResult.Succeeded)
+				{
+					foreach (var error in removeResult.Errors)
+						Notify(error.Description);
+					return Unsuccessful();
+				}
 			}
 
-            return Successful();
+			if (rolesToAdd.Any())
+			{
+				var addResult = await _userManager.AddToRolesAsync(user, rolesToAdd);
+
+				if (!addResult.Succeeded)
+				{
+					foreach (var error in addResult.Errors)
+						Notify(error.Description);
+					return Unsuccessful();
+				}
+			}
+
+			return Successful();
 		}
 
-		public async Task<Result> RemoveUserFromRoleAsync(Guid userId, Role role)
-        {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
-                return Unsuccessful(Errors.UserNotFound);
-
-            var roles = await _userManager.GetRolesAsync(user);
-            if (!roles.Contains(role.ToString()))
-                return Unsuccessful(Errors.UserAlreadyHasRole);
-
-            var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
-
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                    Notify(error.Description);
-
-                return Unsuccessful();
-            }
-
-            return Successful();
-        }
-
+		
 		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(Guid userId)
 		{
 			var user = await _userManager.FindByIdAsync(userId.ToString());
