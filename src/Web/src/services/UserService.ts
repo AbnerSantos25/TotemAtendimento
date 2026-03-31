@@ -1,6 +1,6 @@
 import { api } from "./BaseService";
 import type { ServiceResult } from "../models/baseServiceModels";
-import type { UserSummary, RegisterUserRequest, AssignRoleRequest } from "../models/UserModels";
+import type { UserSummary, RegisterUserRequest, AssignRoleRequest, UpdateUserRolesRequest } from "../models/UserModels";
 
 export class UserService {
     private readonly basePath = "/totem/Identity";
@@ -30,6 +30,10 @@ export class UserService {
     // #region Perfis (Roles)
     public async assignRoleAsync(request: AssignRoleRequest): Promise<ServiceResult<void>> {
         return api.PostAsync<void, AssignRoleRequest>(`${this.basePath}/assign-role`, request, true);
+    }
+
+    public async updateUserRolesAsync(request: UpdateUserRolesRequest): Promise<ServiceResult<void>> {
+        return api.PostAsync<void, UpdateUserRolesRequest>(`${this.basePath}/assign-roles`, request, true);
     }
     // #endregion
 }

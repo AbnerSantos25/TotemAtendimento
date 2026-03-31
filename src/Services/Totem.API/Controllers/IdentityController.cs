@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Totem.Application.Services.IdentityServices;
 using Totem.Common.API.Controller;
@@ -71,24 +71,13 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.ActiveUser(id));
         }
 
-		[Authorize(Roles = nameof(Role.Admin))]
-		[HttpPost("assign-role")]
-		public async Task<ActionResult> AssignRole([FromBody] AssignRoleRequest request)
-		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-
-			var result = await _identityService.AddUserToRoleAsync(request);
-
-			return CustomResponse(result);
-		}
-
         [Authorize(Roles = nameof(Role.Admin))]
         [HttpPost("assign-roles")]
-        public async Task<ActionResult> AssignRoleList([FromBody] AssignRoleRequest request)
+        public async Task<ActionResult> UpdateUserRolesAsync([FromBody] AssignRolesRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _identityService.AddUserToRolesAsync(request);
+            var result = await _identityService.UpdateUserRolesAsync(request);
 
             return CustomResponse(result);
         }

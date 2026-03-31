@@ -3,6 +3,7 @@ export interface UserSummary {
     fullName: string;
     email: string;
     isActive: boolean;
+    roles: string[];
 }
 
 export interface RegisterUserRequest {
@@ -28,4 +29,9 @@ export const RoleLabels: Record<Role, string> = {
 export interface AssignRoleRequest {
     userId: string;
     role: Role;
+}
+
+export interface UpdateUserRolesRequest {
+    userId: string;
+    roles: Role[];
 }
