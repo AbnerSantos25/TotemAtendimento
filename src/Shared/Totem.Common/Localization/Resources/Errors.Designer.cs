@@ -185,7 +185,16 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("PropertyNotFound", resourceCulture);
             }
         }
-        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A lista de permissões não pode estar vazia..
+        /// </summary>
+        public static string PermissionListCannotBeEmpty
+        {
+            get
+            {
+                return ResourceManager.GetString("PermissionListCannotBeEmpty", resourceCulture);
+            }
+        }
         /// <summary>
         ///   Looks up a localized string similar to Sessão expirada. Faça login novamente..
         /// </summary>
@@ -250,7 +259,16 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Usuario não encontrado.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário Inativo..
+        /// </summary>
+        public static string UserInactive {
+            get {
+                return ResourceManager.GetString("UserInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuario não encontrado.
         /// </summary>
         public static string UserNotFound {
             get {

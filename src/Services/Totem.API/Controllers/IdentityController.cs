@@ -71,16 +71,16 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.ActiveUser(id));
         }
 
-		[Authorize(Roles = nameof(EnumRoles.Admin))]
-		[HttpPost("assign-role")]
-		public async Task<ActionResult> AssignRole([FromBody] AssignRoleRequest request)
-		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
+        [Authorize(Roles = nameof(Role.Admin))]
+        [HttpPost("assign-roles")]
+        public async Task<ActionResult> UpdateUserRolesAsync([FromBody] AssignRolesRequest request)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-			var result = await _identityService.AddUserToRoleAsync(request);
+            var result = await _identityService.UpdateUserRolesAsync(request);
 
-			return CustomResponse(result);
-		}
+            return CustomResponse(result);
+        }
 
 		[HttpPost("user/{userId}/change-password")]
 		public async Task<ActionResult> ChangePassword([FromRoute] Guid userId, [FromBody] ChangePasswordRequest request)
