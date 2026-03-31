@@ -11,6 +11,7 @@ using Totem.Common.Enumerations;
 using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
+using Totem.Domain.Aggregates.RefreshTokenAggregate;
 using Totem.Domain.Aggregates.RefreshTokenAggregate.Events;
 using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.IdentityModels;
@@ -19,39 +20,42 @@ using Totem.SharedKernel.Services;
 
 namespace Totem.Application.Services.IdentityServices
 {
-	public class IdentityService : BaseService, IIdentityService, IIdentityIntegrationService
-	{
-		private readonly JwtSettings _jwtSettings;
-		private readonly SignInManager<User> _signInManager;
-		private readonly UserManager<User> _userManager;
+    public class IdentityService : BaseService, IIdentityService, IIdentityIntegrationService
+    {
+        private readonly JwtSettings _jwtSettings;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-		private readonly IMediator _mediator;
+        private readonly IMediator _mediator;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
 
-		public IdentityService(INotificator notificador,
-						 UserManager<User> userManager,
-						 SignInManager<User> signInManager,
-						 IOptions<JwtSettings> jwtSettings,
-						 IMediator mediator,
-						 RoleManager<IdentityRole<Guid>> roleManager) : base(notificador)
-		{
-			_userManager = userManager;
-			_signInManager = signInManager;
-			_jwtSettings = jwtSettings.Value;
-			_mediator = mediator;
-			_roleManager = roleManager;
-		}
+        public IdentityService(INotificator notificador,
+                         UserManager<User> userManager,
+                         SignInManager<User> signInManager,
+                         IOptions<JwtSettings> jwtSettings,
+                         IMediator mediator,
+                         RoleManager<IdentityRole<Guid>> roleManager,
+                         IRefreshTokenRepository refreshTokenRepository) : base(notificador)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _jwtSettings = jwtSettings.Value;
+            _mediator = mediator;
+            _roleManager = roleManager;
+            _refreshTokenRepository = refreshTokenRepository;
+        }
 
-		public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(User user)
-		{
-			var roles = await _userManager.GetRolesAsync(user);
+        public async Task<(Result Result, string Data)> GenerateJwtTokenAsync(User user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
 
-			var claims = new List<Claim>
-			{
-				new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-				new Claim(JwtRegisteredClaimNames.Email, user.Email),
-				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-			};
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             foreach (var role in roles)
             {
@@ -65,7 +69,7 @@ namespace Totem.Application.Services.IdentityServices
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.ValidAt,
                 claims: claims,
-				expires: DateTime.UtcNow.AddHours(_jwtSettings.ExpirationTime),
+                expires: DateTime.UtcNow.AddHours(_jwtSettings.ExpirationTime),
                 signingCredentials: creds
             );
 
@@ -95,14 +99,14 @@ namespace Totem.Application.Services.IdentityServices
 			return Successful(userSummaries);
 		}
 
-		public async Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView)
-		{
-			var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
-			if (result.Succeeded)
-			{
-				var user = await _userManager.FindByEmailAsync(loginUserView.Email);
-				if (user == null)
-					return Unsuccessful<LoginDataView>(Errors.UserNotFound);
+        public async Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView)
+        {
+            var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByEmailAsync(loginUserView.Email);
+                if (user == null)
+                    return Unsuccessful<LoginDataView>(Errors.UserNotFound);
 
                 if(user.IsActive is false)
                     return Unsuccessful<LoginDataView>(Errors.UserInactive);
@@ -113,16 +117,16 @@ namespace Totem.Application.Services.IdentityServices
 				var jwt = await GenerateJwtTokenAsync(user);
 				var userView = new UserView { Id = user.Id, Email = user.Email, Name = user.FullName, IsActive = user.IsActive };
 
-				return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
-			}
+                return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
+            }
 
-			if (result.IsLockedOut)
-			{
-				return Unsuccessful<LoginDataView>(Errors.UserTemporarilyBlocked);
-			}
+            if (result.IsLockedOut)
+            {
+                return Unsuccessful<LoginDataView>(Errors.UserTemporarilyBlocked);
+            }
 
-			return Unsuccessful<LoginDataView>(Errors.IncorrectUsernamePassword);
-		}
+            return Unsuccessful<LoginDataView>(Errors.IncorrectUsernamePassword);
+        }
 
 		public async Task<(Result Result, LoginDataView Data)> RegisterUserAsync(RegisterUserView registerUserView)
 		{
@@ -147,15 +151,15 @@ namespace Totem.Application.Services.IdentityServices
 					IsActive = user.IsActive
 				};
 
-				return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
-			}
+                return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
+            }
 
-			foreach (var error in result.Errors)
-			{
-				Notify(error.Description);
-			}
-			return Unsuccessful<LoginDataView>();
-		}
+            foreach (var error in result.Errors)
+            {
+                Notify(error.Description);
+            }
+            return Unsuccessful<LoginDataView>();
+        }
 
         public async Task<Result> InactiveUser(Guid userId)
         {
@@ -299,17 +303,42 @@ namespace Totem.Application.Services.IdentityServices
             if (!tokenResult.Result.Success)
                 return Unsuccessful<string>();
 
-			return Successful(tokenResult.Data);
-		}
+            return Successful(tokenResult.Data);
+        }
 
-		public async Task<bool> ExistsUser(Guid userId)
-		{
-			var user = await _userManager.FindByIdAsync(userId.ToString());
-			if (user == null)
-				return false;
+        public async Task<bool> ExistsUser(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return false;
 
             return true;
         }
+                
+        public async Task<Result> LogoutAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null) return Unsuccessful(Errors.UserNotFound);
 
-	}
+            await _signInManager.SignOutAsync();
+
+            var activeTokens = await _refreshTokenRepository.GetByUserIdAsync(userId);
+
+            if (activeTokens != null && activeTokens.Any())
+            {
+                foreach (var token in activeTokens)
+                {
+                    token.Revoke();
+
+                    _refreshTokenRepository.Update(token);
+                }
+
+                if (!await _refreshTokenRepository.UnitOfWork.CommitAsync())
+                    return Unsuccessful(Errors.ErrorSavingDatabase);
+            }
+
+            return Successful();
+        }
+
+    }
 }

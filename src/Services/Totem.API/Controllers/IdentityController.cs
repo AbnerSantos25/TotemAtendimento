@@ -82,5 +82,13 @@ namespace Totem.API.Controllers
             return CustomResponse(result);
         }
 
-	}
+        [HttpPost("logout/{userId}")]
+        public async Task<ActionResult> Logout(Guid userId)
+        {
+            var result = await _identityService.LogoutAsync(userId);
+
+            return CustomResponse(result);
+        }
+
+    }
 }
