@@ -16,5 +16,6 @@ namespace Totem.Application.Services.IdentityServices
 		Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView);
 		Task<Result> InactiveUser(Guid id);
 		Task<Result> ActiveUser(Guid id);
-	}
+        Task<Result> LogoutAsync(Guid userId);
+    }
 }

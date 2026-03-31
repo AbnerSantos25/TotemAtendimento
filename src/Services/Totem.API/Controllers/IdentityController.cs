@@ -82,6 +82,15 @@ namespace Totem.API.Controllers
             return CustomResponse(result);
         }
 
+        [HttpPost("logout/{userId}")]
+        public async Task<ActionResult> Logout(Guid userId)
+        {
+            var result = await _identityService.LogoutAsync(userId);
+
+            return CustomResponse(result);
+        }
+
+    }
 		[HttpPost("user/{userId}/change-password")]
 		public async Task<ActionResult> ChangePassword([FromRoute] Guid userId, [FromBody] ChangePasswordRequest request)
 		{
