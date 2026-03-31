@@ -17,7 +17,7 @@ export const MyAccount = () => {
         <Card className="border-sidebar-border/50">
           <CardHeader className="flex flex-row items-center gap-4">
             <Avatar className="h-16 w-16 border-2 border-primary/20">
-              <AvatarImage src="" alt={user.name} />
+              <AvatarImage alt={user.name} />
               <AvatarFallback className="bg-primary/10 text-primary text-xl">
                 {user.name?.substring(0, 2).toUpperCase() || "US"}
               </AvatarFallback>
