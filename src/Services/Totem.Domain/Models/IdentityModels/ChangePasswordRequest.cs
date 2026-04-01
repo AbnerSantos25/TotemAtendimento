@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Totem.Common.Localization.Resources;
 using Totem.Common.Validation;
 
 namespace Totem.Domain.Models.IdentityModels
@@ -10,12 +11,12 @@ namespace Totem.Domain.Models.IdentityModels
 
 		[RequiredValidation]
 		[DataType(DataType.Password)]
-		[CannotEqual("OldPassword", ErrorMessage = "A nova senha não pode ser igual à senha anterior.")]
+		[CannotEqual("OldPassword", ErrorMessageResourceType = typeof(Errors), ErrorMessageResourceName = nameof(Errors.PasswordCannotBeEqual))]
 		public string NewPassword { get; set; }
 
 		[RequiredValidation]
 		[DataType(DataType.Password)]
-		[Compare("NewPassword", ErrorMessage = "A nova senha e a confirmação não conferem.")]
+		[Compare("NewPassword", ErrorMessageResourceType = typeof(Errors), ErrorMessageResourceName = nameof(Errors.PasswordConfirmationMismatch))]
 		public string ConfirmNewPassword { get; set; }
 	}
 }

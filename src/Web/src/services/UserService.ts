@@ -18,12 +18,12 @@ export class UserService {
     // #endregion
 
     // #region Status (Ativar / Inativar)
-    public async inactivateUserAsync(id: string): Promise<ServiceResult<void>> {
-        return api.PatchAsync<void, void>(`${this.basePath}/user/${id}/inactivate`, undefined);
+    public async inactivateUserAsync(userId: string): Promise<ServiceResult<void>> {
+        return api.PatchAsync<void, void>(`${this.basePath}/user/${userId}/inactivate`, undefined);
     }
 
-    public async activateUserAsync(id: string): Promise<ServiceResult<void>> {
-        return api.PatchAsync<void, void>(`${this.basePath}/user/${id}/active`, undefined);
+    public async activateUserAsync(userId: string): Promise<ServiceResult<void>> {
+        return api.PatchAsync<void, void>(`${this.basePath}/user/${userId}/active`, undefined);
     }
     // #endregion
 

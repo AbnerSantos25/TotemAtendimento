@@ -1,21 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Totem.Common.Localization.Resources;
 
 namespace Totem.Domain.Models.IdentityModels
 {
     public class RegisterUserView
     {
         [Required]
-        [StringLength(100, ErrorMessage = "O {0} deve ter entre {2} e {1} caracteres.", MinimumLength = 2)]
-        [EmailAddress(ErrorMessage = "O {0} está em um formato inválido.")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Errors), ErrorMessageResourceName = nameof(Errors.GenericFieldMustBeRange), MinimumLength = 2)]
+        [EmailAddress(ErrorMessageResourceType = typeof(Errors), ErrorMessageResourceName = nameof(Errors.InvalidFormat))]
         public string Email { get; set; }
+
         [Required]
-        [StringLength(100, ErrorMessage = "A senha deve ter entre {2} e {1} caracteres.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessageResourceType = typeof(Errors), ErrorMessageResourceName = nameof(Errors.PasswordLengthRange), MinimumLength = 6)]
         public string Password { get; set; }
 
-        [Compare("Password", ErrorMessage = "As senhas não conferem.")]
+        [Compare("Password", ErrorMessageResourceType = typeof(Errors), ErrorMessageResourceName = nameof(Errors.PasswordsMismatch))]
         public string ConfirmPassword { get; set; }
+
         [Required]
-        [StringLength(200, ErrorMessage = "O Nome deve ter entre {2} e {1} caracteres.", MinimumLength = 3)]
+        [StringLength(200, ErrorMessageResourceType = typeof(Errors), ErrorMessageResourceName = nameof(Errors.NameLengthRange), MinimumLength = 3)]
 		public string FullName { get; set; }
 	}
 }

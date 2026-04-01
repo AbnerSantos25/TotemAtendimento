@@ -61,6 +61,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to O e-mail de confirmação não confere com o novo e-mail..
+        /// </summary>
+        public static string EmailConfirmationMismatch {
+            get {
+                return ResourceManager.GetString("EmailConfirmationMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Erro ao carregar filas disponíveis.
         /// </summary>
         public static string ErrorLoadingAvailableQueues {
@@ -88,6 +97,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to O {0} deve ter entre {2} e {1} caracteres..
+        /// </summary>
+        public static string GenericFieldMustBeRange {
+            get {
+                return ResourceManager.GetString("GenericFieldMustBeRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to O valor de &apos;{0}&apos; não pode ser igual ao de &apos;{1}&apos;..
         /// </summary>
         public static string GenericValueCannotBeEqual {
@@ -106,6 +124,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to O {0} está em um formato inválido..
+        /// </summary>
+        public static string InvalidFormat {
+            get {
+                return ResourceManager.GetString("InvalidFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Não foi possível atualizar sua permissão..
         /// </summary>
         public static string InvalidRefreshToken {
@@ -115,11 +142,29 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to O Campo Nome deve ter entre {2} e {1} caracteres..
+        /// </summary>
+        public static string NameFieldLengthRange {
+            get {
+                return ResourceManager.GetString("NameFieldLengthRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to O campo Nome é obrigatório.
         /// </summary>
         public static string NameFieldRequired {
             get {
                 return ResourceManager.GetString("NameFieldRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O Nome deve ter entre {2} e {1} caracteres..
+        /// </summary>
+        public static string NameLengthRange {
+            get {
+                return ResourceManager.GetString("NameLengthRange", resourceCulture);
             }
         }
         
@@ -160,6 +205,24 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A nova senha e a confirmação não conferem..
+        /// </summary>
+        public static string PasswordConfirmationMismatch {
+            get {
+                return ResourceManager.GetString("PasswordConfirmationMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A senha deve ter entre {2} e {1} caracteres..
+        /// </summary>
+        public static string PasswordLengthRange {
+            get {
+                return ResourceManager.GetString("PasswordLengthRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Senha não encontrada..
         /// </summary>
         public static string PasswordNotFound {
@@ -178,6 +241,24 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to As senhas não conferem..
+        /// </summary>
+        public static string PasswordsMismatch {
+            get {
+                return ResourceManager.GetString("PasswordsMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A lista de permissões não pode estar vazia..
+        /// </summary>
+        public static string PermissionListCannotBeEmpty {
+            get {
+                return ResourceManager.GetString("PermissionListCannotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Propriedade &apos;{0}&apos; não encontrada..
         /// </summary>
         public static string PropertyNotFound {
@@ -185,16 +266,7 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("PropertyNotFound", resourceCulture);
             }
         }
-        /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a A lista de permissões não pode estar vazia..
-        /// </summary>
-        public static string PermissionListCannotBeEmpty
-        {
-            get
-            {
-                return ResourceManager.GetString("PermissionListCannotBeEmpty", resourceCulture);
-            }
-        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Sessão expirada. Faça login novamente..
         /// </summary>
@@ -259,6 +331,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Usuário Inativo..
+        /// </summary>
+        public static string UserInactive {
+            get {
+                return ResourceManager.GetString("UserInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Usuario não encontrado.
         /// </summary>
         public static string UserNotFound {
@@ -266,18 +347,7 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
             }
         }
-        /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário Inativo..
-        /// </summary>
-        public static string UserInactive
-        {
-            get
-            {
-                return ResourceManager.GetString("UserInactive", resourceCulture);
-            }
-        }
-
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Usuário temporariamente bloqueado por tentativas inválidas..
         /// </summary>

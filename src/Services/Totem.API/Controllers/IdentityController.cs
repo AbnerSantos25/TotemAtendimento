@@ -40,35 +40,28 @@ namespace Totem.API.Controllers
             if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _identityService.GetListUserAsync());
 		}
-
-        [HttpPut("user/{id}/update-password")]
-        public async Task<ActionResult> UpdatePassword([FromRoute] Guid id, [FromBody] UpdatePasswordRequest request)
+  
+        [HttpPut("user/{userId}/update-email")]
+        public async Task<ActionResult> UpdateEmail([FromRoute] Guid userId, [FromBody] UpdateEmailRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
-            return CustomResponse(await _identityService.UpdatePasswordAsync(id, request));
+            return CustomResponse(await _identityService.UpdateEmailAsync(userId, request));
         }
 
-        [HttpPut("user/{id}/update-email")]
-        public async Task<ActionResult> UpdateEmail([FromRoute] Guid id, [FromBody] UpdateEmailRequest request)
-        {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-            return CustomResponse(await _identityService.UpdateEmailAsync(id, request));
-        }
-
-		[HttpPatch("user/{id}/inactivate")]
-        public async Task<ActionResult> InactivateUser([FromRoute] Guid id)
+		[HttpPatch("user/{userId}/inactivate")]
+        public async Task<ActionResult> InactivateUser([FromRoute] Guid userId)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return CustomResponse(await _identityService.InactiveUser(id));
+            return CustomResponse(await _identityService.InactiveUser(userId));
 		}
 
-		[HttpPatch("user/{id}/active")]
-        public async Task<ActionResult> ActiveUser([FromRoute] Guid id)
+		[HttpPatch("user/{userId}/active")]
+        public async Task<ActionResult> ActiveUser([FromRoute] Guid userId)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return CustomResponse(await _identityService.ActiveUser(id));
+            return CustomResponse(await _identityService.ActiveUser(userId));
         }
 
         [Authorize(Roles = nameof(Role.Admin))]

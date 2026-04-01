@@ -206,29 +206,9 @@ namespace Totem.Application.Services.IdentityServices
             return Successful();
         }
 
-        public async Task<Result> UpdatePasswordAsync(Guid id, UpdatePasswordRequest request)
+        public async Task<Result> ChangePasswordAsync(Guid userId, ChangePasswordRequest request)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-
-            if (user == null)
-                return Unsuccessful(Errors.UserNotFound);
-
-            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
-
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                    Notify(error.Description);
-
-                return Unsuccessful();
-            }
-
-            return Successful();
-        }
-
-        public async Task<Result> ChangePasswordAsync(Guid id, ChangePasswordRequest request)
-        {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user == null)
                 return Unsuccessful(Errors.UserNotFound);
@@ -249,9 +229,9 @@ namespace Totem.Application.Services.IdentityServices
             return Successful();
         }
 
-        public async Task<Result> UpdateEmailAsync(Guid id, UpdateEmailRequest request)
+        public async Task<Result> UpdateEmailAsync(Guid userId, UpdateEmailRequest request)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 return Unsuccessful(Errors.UserNotFound);
 
