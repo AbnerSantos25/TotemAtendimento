@@ -180,8 +180,18 @@ export function UserConfiguration() {
     const openAssignRoleDialog = (user: UserSummary) => {
         // Inicializa com as roles que o usuário já possui
         const currentRoles = (user.roles || []).map(rName => {
-            const entry = Object.entries(RoleLabels).find(([_, label]) => label === rName);
-            return entry ? Number(entry[0]) as Role : null;
+            const entryByLabel = Object.entries(RoleLabels).find(([_, label]) => label === rName);
+            if (entryByLabel) return Number(entryByLabel[0]) as Role;
+
+            const numericId = Number(rName);
+            if (!isNaN(numericId) && Object.values(Role).includes(numericId as any)) {
+                return numericId as Role;
+            }
+
+            const entryByKey = Object.entries(Role).find(([key]) => key === rName);
+            if (entryByKey && typeof entryByKey[1] === "number") return entryByKey[1] as Role;
+
+            return null;
         }).filter((r): r is Role => r !== null);
 
         setSelectedRoles(currentRoles);
@@ -198,7 +208,7 @@ export function UserConfiguration() {
         });
 
         if (response.success) {
-            AGShowMessage.success({ title: "Sucesso", description: `Perfís atualizados para "${userToAssignRole.fullName}" com sucesso.` });
+            AGShowMessage.success({ title: "Sucesso", description: `Perfis atualizados para "${userToAssignRole.fullName}" com sucesso.` });
             setUserToAssignRole(null);
             fetchUsers();
         } else if (!response.success && response.error) {
