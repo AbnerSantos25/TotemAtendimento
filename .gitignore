@@ -294,3 +294,4 @@ __pycache__/
 **/.env.local
 **/.env.*.local
 **/node_modules
+/src/Services/Totem.API/appsettings.json
