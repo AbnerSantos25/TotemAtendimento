@@ -1,4 +1,5 @@
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
+import { Link } from "react-router-dom"
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -93,9 +94,11 @@ function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Minha Conta
+              <DropdownMenuItem asChild>
+                <Link to="/minha-conta">
+                  <BadgeCheck />
+                  Minha Conta
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />

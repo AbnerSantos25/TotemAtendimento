@@ -1,16 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Validation;
 
 namespace Totem.Domain.Models.IdentityModels
 {
-	public class UpdatePasswordRequest
+	public class ChangePasswordRequest
 	{
 		[RequiredValidation]
-		public string CurrentPassword { get; set; }
+		public string OldPassword { get; set; }
 
 		[RequiredValidation]
 		[DataType(DataType.Password)]
+		[CannotEqual("OldPassword", ErrorMessageResourceType = typeof(Errors), ErrorMessageResourceName = nameof(Errors.PasswordCannotBeEqual))]
 		public string NewPassword { get; set; }
 
 		[RequiredValidation]

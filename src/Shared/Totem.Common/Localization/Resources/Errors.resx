@@ -183,4 +183,37 @@
   <data name="PermissionListCannotBeEmpty" xml:space="preserve">
     <value>A lista de permissões não pode estar vazia.</value>
   </data>
+  <data name="PasswordCannotBeEqual" xml:space="preserve">
+    <value>A nova senha não pode ser igual à senha anterior.</value>
+  </data>
+  <data name="GenericValueCannotBeEqual" xml:space="preserve">
+    <value>O valor de '{0}' não pode ser igual ao de '{1}'.</value>
+  </data>
+  <data name="PropertyNotFound" xml:space="preserve">
+    <value>Propriedade '{0}' não encontrada.</value>
+  </data>
+  <data name="PasswordConfirmationMismatch" xml:space="preserve">
+    <value>A nova senha e a confirmação não conferem.</value>
+  </data>
+  <data name="GenericFieldMustBeRange" xml:space="preserve">
+    <value>O {0} deve ter entre {2} e {1} caracteres.</value>
+  </data>
+  <data name="PasswordLengthRange" xml:space="preserve">
+    <value>A senha deve ter entre {2} e {1} caracteres.</value>
+  </data>
+  <data name="NameFieldLengthRange" xml:space="preserve">
+    <value>O Campo Nome deve ter entre {2} e {1} caracteres.</value>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>O {0} está em um formato inválido.</value>
+  </data>
+  <data name="PasswordsMismatch" xml:space="preserve">
+    <value>As senhas não conferem.</value>
+  </data>
+  <data name="NameLengthRange" xml:space="preserve">
+    <value>O Nome deve ter entre {2} e {1} caracteres.</value>
+  </data>
+  <data name="EmailConfirmationMismatch" xml:space="preserve">
+    <value>O e-mail de confirmação não confere com o novo e-mail.</value>
+  </data>
 </root>

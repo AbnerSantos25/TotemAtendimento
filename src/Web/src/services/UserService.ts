@@ -1,6 +1,6 @@
 import { api } from "./BaseService";
 import type { ServiceResult } from "../models/baseServiceModels";
-import type { UserSummary, RegisterUserRequest, AssignRoleRequest, UpdateUserRolesRequest } from "../models/UserModels";
+import type { UserSummary, RegisterUserRequest, AssignRoleRequest, UpdateUserRolesRequest, ChangePasswordRequest } from "../models/UserModels";
 
 export class UserService {
     private readonly basePath = "/totem/Identity";
@@ -18,12 +18,12 @@ export class UserService {
     // #endregion
 
     // #region Status (Ativar / Inativar)
-    public async inactivateUserAsync(id: string): Promise<ServiceResult<void>> {
-        return api.PatchAsync<void, void>(`${this.basePath}/user/${id}/inactivate`, undefined);
+    public async inactivateUserAsync(userId: string): Promise<ServiceResult<void>> {
+        return api.PatchAsync<void, void>(`${this.basePath}/user/${userId}/inactivate`, undefined);
     }
 
-    public async activateUserAsync(id: string): Promise<ServiceResult<void>> {
-        return api.PatchAsync<void, void>(`${this.basePath}/user/${id}/active`, undefined);
+    public async activateUserAsync(userId: string): Promise<ServiceResult<void>> {
+        return api.PatchAsync<void, void>(`${this.basePath}/user/${userId}/active`, undefined);
     }
     // #endregion
 
@@ -36,6 +36,10 @@ export class UserService {
         return api.PostAsync<void, UpdateUserRolesRequest>(`${this.basePath}/assign-roles`, request, true);
     }
     // #endregion
+
+    public async changePasswordAsync(userId: string, request: ChangePasswordRequest): Promise<ServiceResult<void>> {
+        return api.PostAsync<void, ChangePasswordRequest>(`${this.basePath}/user/${userId}/change-password`, request, true);
+    }
 }
 
 export const userService = new UserService();
