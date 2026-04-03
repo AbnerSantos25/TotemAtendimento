@@ -86,7 +86,7 @@ namespace Totem.Application.Services.ServiceTypeServices
 			if(serviceType is null)
 				return Unsuccessful(Errors.ServiceTypeNotFound);
 
-			serviceType.Update(request.Title, request.Icon, request.Color, request.TargetQueueId);
+			serviceType.Update(request.Title, request.Icon, request.Color, request.TargetQueueId, request.TicketPrefix);
 
 			ServiceTypeValidator validator = new();
 			var validationResult = validator.Validate(serviceType);

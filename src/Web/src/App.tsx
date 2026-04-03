@@ -9,6 +9,7 @@ import { Configuration } from "./pages/configuration/configuration";
 import { QueueConfiguration } from "./pages/configuration/QueueConfiguration";
 import { ServiceLocationConfiguration } from "@/pages/configuration/ServiceLocationConfiguration";
 import { UserConfiguration } from "@/pages/configuration/UserConfiguration";
+import { ServiceTypeConfiguration } from "@/pages/configuration/ServiceTypeConfiguration";
 import { MyAccount } from "./pages/user/MyAccount";
 
 function DashboardTemporario() {
@@ -39,6 +40,7 @@ export function App() {
                 <Route path="/gestao/filas" element={<QueueConfiguration />} />
                 <Route path="/gestao/locais" element={<ServiceLocationConfiguration />} />
                 <Route path="/gestao/usuarios" element={<UserConfiguration />} />
+                <Route path="/gestao/servicos" element={<ServiceTypeConfiguration />} />
               </Route>
             </Route>
           </Route>

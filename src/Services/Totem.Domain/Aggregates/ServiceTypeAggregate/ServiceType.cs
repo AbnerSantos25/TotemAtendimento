@@ -30,12 +30,13 @@ namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 			return new HexColor(color);
 		}
 
-		public void Update(string title, string? icon, string? color, Guid targetQueueId)
+		public void Update(string title, string? icon, string? color, Guid targetQueueId, string ticketPrefix)
 		{
 			Title = title;
 			Icon = icon;
 			Color = CreateColor(color);
 			TargetQueueId = targetQueueId;
+			TicketPrefix = ticketPrefix;
 		}
 
 		public void ToggleStatus()
