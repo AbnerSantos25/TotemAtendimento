@@ -34,6 +34,20 @@ namespace Totem.Application.Services.ServiceTypeServices
 			return Successful(serviceType.Id);
 		}
 
+		public async Task<Result> DeleteAsync(Guid id)
+		{
+			var serviceType = await _repository.GetByIdAsync(id);
+			if (serviceType is null)
+				return Unsuccessful(Errors.ServiceTypeNotFound);
+
+			_repository.Delete(serviceType);
+
+			if (!await _repository.UnitOfWork.CommitAsync())
+				return Unsuccessful(Errors.ErrorSavingDatabase);
+
+			return Successful();
+		}
+
 		public async Task<Result> DisableAsync(Guid id)
 		{
 			var serviceType = await _repository.GetByIdAsync(id);
@@ -76,6 +90,9 @@ namespace Totem.Application.Services.ServiceTypeServices
 				return Unsuccessful(Errors.ServiceTypeNotFound);
 
 			serviceType.ToggleStatus();
+
+			if (!await _repository.UnitOfWork.CommitAsync())
+				return Unsuccessful(Errors.ErrorSavingDatabase);
 
 			return Successful();
 		}

@@ -5,7 +5,7 @@
 namespace Totem.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class updteIndex : Migration
+    public partial class UpdateIndex : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

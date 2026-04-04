@@ -12,7 +12,7 @@ type RequestOptions = {
 
 export class BaseService implements IBaseService {
 
-    // --- MÉTODOS PRIVADOS (Lógica interna) ---
+    //#region Métodos Privados (Lógica interna)
 
     private async createApiErrorAsync(response: Response): Promise<ApiError> {
         let errorBodyText: string = "";
@@ -62,7 +62,7 @@ export class BaseService implements IBaseService {
         };
     }
 
-    async tryRefreshTokenAsync(isRefreshing: boolean): Promise<boolean> {
+    private async tryRefreshTokenAsync(isRefreshing: boolean): Promise<boolean> {
         try {
             if (!isRefreshing) {
                 const user = await session.getUserAsync();
@@ -208,7 +208,7 @@ export class BaseService implements IBaseService {
         }
     }
 
-    // --- MÉTODOS PÚBLICOS (Implementação da Interface) ---
+    //#endregion
 
     public async GetAsync<TResponse>(endpoint: string, requiresAuth: boolean = true): Promise<ServiceResult<TResponse>> {
         return this._request<TResponse>('GET', endpoint, null, { requiresAuth });
@@ -231,5 +231,4 @@ export class BaseService implements IBaseService {
     }
 }
 
-// Exportamos uma instância única (Singleton) para ser usada em toda a aplicação Web
 export const api = new BaseService();

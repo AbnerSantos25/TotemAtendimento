@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Totem.Infra.Data;
 
@@ -11,9 +12,11 @@ using Totem.Infra.Data;
 namespace Totem.Infra.Migrations
 {
     [DbContext(typeof(TotemDbContext))]
-    partial class TotemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260403020059_UpdateIndex")]
+    partial class UpdateIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,6 @@ namespace Totem.Infra.Migrations
                         .HasColumnName("Color");
 
                     b.Property<string>("Icon")
-                        .HasMaxLength(50)
                         .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsActive")
@@ -164,19 +166,16 @@ namespace Totem.Infra.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TicketPrefix")
-                        .HasMaxLength(3)
+                        .IsRequired()
                         .HasColumnType("varchar(100)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TicketPrefix");
-
-                    b.HasIndex("Title");
 
                     b.HasIndex("Title", "TargetQueueId")
                         .IsUnique();

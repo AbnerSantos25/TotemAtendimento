@@ -50,6 +50,14 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _serviceTypeService.UpdateAsync(id, request));
 		}
 
+		[HttpDelete("{id:guid}")]
+		public async Task<ActionResult> Delete([FromRoute] Guid id)
+		{
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+			return CustomResponse(await _serviceTypeService.DeleteAsync(id));
+		}
+
 		[HttpPatch("{id:guid}/toggle-status")]
 		public async Task<ActionResult> ToggleStatus([FromRoute] Guid id)
 		{

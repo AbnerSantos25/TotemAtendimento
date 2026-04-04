@@ -1,8 +1,8 @@
 import type { ServiceResult } from "../models/baseServiceModels";
-import type { 
-  ServiceTypeRequest, 
-  ServiceTypeSummary, 
-  ServiceTypeView 
+import type {
+  ServiceTypeRequest,
+  ServiceTypeSummary,
+  ServiceTypeView
 } from "../models/ServiceTypeModels";
 import { BaseService } from "./BaseService";
 import type { IServiceTypeService } from "./interfaces/IServiceTypeService";
@@ -36,6 +36,10 @@ class ServiceTypeService extends BaseService implements IServiceTypeService {
 
   public async disableAsync(id: string): Promise<ServiceResult<void>> {
     return this.PatchAsync<void, undefined>(`${this._endpoint}/${id}/disable`, undefined);
+  }
+
+  public async deleteAsync(id: string): Promise<ServiceResult<void>> {
+    return this.DeleteAsync<void>(`${this._endpoint}/${id}`);
   }
 }
 

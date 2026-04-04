@@ -1,4 +1,4 @@
-import type { AuthData, UserView } from "../../models/baseServiceModels";
+import type { AuthData, UserView } from "@/models/AuthModels";
 
 export interface IStorageService {
     saveAuthDataAsync(authData: AuthData): Promise<void>;

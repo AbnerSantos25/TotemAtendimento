@@ -1,21 +1,18 @@
 import type { ServiceResult } from "../../models/baseServiceModels";
 import type { AuthData, LoginRequest } from "../../models/AuthModels";
-import { api } from "../BaseService";
+import { BaseService } from "../BaseService";
+import type { IAuthService } from "../interfaces/IAuthService";
 
-export interface IAuthService {
-    loginAsync(credentials: LoginRequest): Promise<ServiceResult<AuthData>>;
-    logoutAsync(userId: string): Promise<ServiceResult<void>>;
-}
+class AuthService extends BaseService implements IAuthService {
 
-class AuthServiceImpl implements IAuthService {
-
-    async loginAsync(credentials: LoginRequest): Promise<ServiceResult<AuthData>> {
-        return await api.PostAsync<AuthData, LoginRequest>('/totem/identity/login', credentials, false);
+    public async loginAsync(credentials: LoginRequest): Promise<ServiceResult<AuthData>> {
+        return await this.PostAsync<AuthData, LoginRequest>('/totem/identity/login', credentials, false);
     }
 
-    async logoutAsync(userId: string): Promise<ServiceResult<void>> {
-        return await api.PostAsync<void, null>(`/totem/identity/logout/${userId}`, null);
+    public async logoutAsync(userId: string): Promise<ServiceResult<void>> {
+        return await this.PostAsync<void, null>(`/totem/identity/logout/${userId}`, null);
     }
 
 }
-export const authService = new AuthServiceImpl();
+
+export const authService = new AuthService();
