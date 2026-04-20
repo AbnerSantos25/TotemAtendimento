@@ -1,8 +1,8 @@
 import type { ServiceResult } from "../models/baseServiceModels";
-import type {
-  ServiceTypeRequest,
-  ServiceTypeSummary,
-  ServiceTypeView
+import type { 
+  ServiceTypeRequest, 
+  ServiceTypeSummary, 
+  ServiceTypeView 
 } from "../models/ServiceTypeModels";
 import { BaseService } from "./BaseService";
 import type { IServiceTypeService } from "./interfaces/IServiceTypeService";
