@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Totem.Common.API.Configurations;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Totem.Infra.Data;
 using Totem.Infra.Data.IdentityData;
 
@@ -7,10 +8,15 @@ namespace Totem.Application.Configurations
 {
 	public static class DbContextConfiguration
 	{
-		public static void AddDbContexts(this IServiceCollection services)
+		public static void AddDbContexts(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddGenericDBContext<TotemDbContext>();
-			services.AddGenericDBContext<AppIdentityDbContext>();
-        }
+			var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+			services.AddDbContext<TotemDbContext>(options =>
+				options.UseSqlServer(connectionString));
+
+			services.AddDbContext<AppIdentityDbContext>(options =>
+				options.UseSqlServer(connectionString));
+		}
 	}
 }

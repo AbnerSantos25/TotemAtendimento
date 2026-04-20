@@ -11,7 +11,7 @@ namespace Totem.Infra.Data.Mappings
 		{
 			builder.HasIndex(s => new { s.Title, s.TargetQueueId }).IsUnique();
 
-			builder.HasIndex(s => s.TicketPrefix).IsUnique();
+			builder.HasIndex(s => s.TicketPrefix);
 
 			builder.Property(s => s.Color)
 					.HasConversion(

@@ -52,7 +52,7 @@ const data = {
       items: [
         { title: "Filas", url: "/gestao/filas" },
         { title: "Locais de Atendimento", url: "/gestao/locais" },
-        { title: "Tipos de Serviço", url: "/gestao/tipos-servico" },
+        { title: "Tipos de Serviço", url: "/gestao/servicos" },
         { title: "Usuários", url: "/gestao/usuarios" },
         { title: "Configurações", url: "/configurations", isActive: true },
       ],
