@@ -82,19 +82,20 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
         __html: Object.entries(THEMES)
           .map(
             ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
+${prefix} [data-chart=${id.replace(/[^a-zA-Z0-9\-_:]/g, "")}] {
 ${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
+                .map(([key, itemConfig]) => {
+                  const color =
+                    itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                    itemConfig.color
+                  const safeColor = color ? color.replace(/[^a-zA-Z0-9#,() \.%-]/g, "") : null;
+                  return safeColor ? `  --color-${key}: ${safeColor};` : null
+                })
+                .join("\n")}
 }
 `
           )
-          .join("\n"),
+          .join("\n").replace(/</g, "").replace(/>/g, ""), // Garantia final contra fuga do <style>
       }}
     />
   )
@@ -318,8 +319,8 @@ function getPayloadConfigFromPayload(
 
   const payloadPayload =
     "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
+      typeof payload.payload === "object" &&
+      payload.payload !== null
       ? payload.payload
       : undefined
 

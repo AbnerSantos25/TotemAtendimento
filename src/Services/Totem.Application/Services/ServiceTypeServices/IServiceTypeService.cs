@@ -9,6 +9,7 @@ namespace Totem.Application.Services.ServiceTypeServices
 		Task<(Result result, List<ServiceTypeSummary> data)> GetAllAsync();
 		Task<(Result result, Guid data)> CreateAsync(ServiceTypeRequest request);
 		Task<Result> UpdateAsync(Guid id, ServiceTypeRequest request);
+		Task<Result> DeleteAsync(Guid id);
 		Task<Result> ToggleStatusAsync(Guid id);
 		Task<Result> DisableAsync(Guid id);
 	}

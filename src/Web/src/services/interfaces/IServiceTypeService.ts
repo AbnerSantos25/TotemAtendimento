@@ -9,4 +9,5 @@ export interface IServiceTypeService {
   updateAsync(id: string, request: ServiceTypeRequest): Promise<ServiceResult<void>>;
   toggleStatusAsync(id: string): Promise<ServiceResult<void>>;
   disableAsync(id: string): Promise<ServiceResult<void>>;
+  deleteAsync(id: string): Promise<ServiceResult<void>>;
 }

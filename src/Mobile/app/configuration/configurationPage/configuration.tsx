@@ -15,7 +15,7 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 export default function configuration() {
-  const {user, isLoading, signOut} = useAuth();
+  const { user, isLoading, signOut } = useAuth();
 
   //#region ThemeModel
   const [modalVisible, setModalVisible] = useState(false);
@@ -33,23 +33,23 @@ export default function configuration() {
     }
   }
 
-    const handleLogout = async () => {
-      try {
-        await signOut(); 
-          AGShowMessage("Você saiu com sucesso!", AGMessageType.success);
-          router.replace('/');
-      } catch (error) {
-          AGShowMessage("Erro ao Sair!", AGMessageType.success);
-      }
-    };
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      AGShowMessage("Você saiu com sucesso!", AGMessageType.success);
+      router.replace('/');
+    } catch (error) {
+      AGShowMessage("Erro ao Sair!", AGMessageType.success);
+    }
+  };
 
   return (
-      <>
-        <LinearGradient
-        colors={['#000000', '#121018','#2a1a4a', '#4a1a2a']}
+    <>
+      <LinearGradient
+        colors={['#000000', '#121018', '#2a1a4a', '#4a1a2a']}
         style={StyleSheet.absoluteFill}
-        />
-        <View style={[ConfigStyle.MainContainer]}>
+      />
+      <View style={[ConfigStyle.MainContainer]}>
         <View style={{ flex: 1, alignItems: 'center' }}>
           <View id="UserInfo" style={[ConfigStyle.UserInfo]}>
             <Pressable onPress={() => {
@@ -94,15 +94,15 @@ export default function configuration() {
               <ConfigButton title={GetLocalized(Labels.SettingsPrivacy)} route="/" iconName="shield-half-outline"></ConfigButton>
             </View>
           </View>
-          <View style={{margin:10}}>
-              <Pressable
-                style={({ pressed }) => [ButtonStyles.logoutButton,
-                  pressed && { opacity: 0.8 }
-                ]}
-                onPress={handleLogout}
-              >
-                <Text style={ButtonStyles.logoutText}>Sair da Conta</Text>
-              </Pressable>
+          <View style={{ margin: 10 }}>
+            <Pressable
+              style={({ pressed }) => [ButtonStyles.logoutButton,
+              pressed && { opacity: 0.8 }
+              ]}
+              onPress={handleLogout}
+            >
+              <Text style={ButtonStyles.logoutText}>Sair da Conta</Text>
+            </Pressable>
           </View>
         </View>
 
@@ -113,7 +113,7 @@ export default function configuration() {
           currentTheme={currentTheme}
         />
       </View>
-      </>
+    </>
   );
 }
 

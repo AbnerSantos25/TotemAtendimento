@@ -10,6 +10,12 @@ namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 				.NotEmpty()
 				.MaximumLength(100);
 
+			RuleFor(x => x.Icon)
+				.MaximumLength(50);
+
+			RuleFor(x => x.TicketPrefix)
+				.MaximumLength(3);
+
 			RuleFor(x => x.TargetQueueId)
 				.NotEmpty();
 		}

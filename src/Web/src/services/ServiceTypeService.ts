@@ -37,6 +37,10 @@ class ServiceTypeService extends BaseService implements IServiceTypeService {
   public async disableAsync(id: string): Promise<ServiceResult<void>> {
     return this.PatchAsync<void, undefined>(`${this._endpoint}/${id}/disable`, undefined);
   }
+
+  public async deleteAsync(id: string): Promise<ServiceResult<void>> {
+    return this.DeleteAsync<void>(`${this._endpoint}/${id}`);
+  }
 }
 
 export const serviceTypeService = new ServiceTypeService();

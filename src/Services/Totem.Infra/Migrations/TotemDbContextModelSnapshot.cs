@@ -154,6 +154,7 @@ namespace Totem.Infra.Migrations
                         .HasColumnName("Color");
 
                     b.Property<string>("Icon")
+                        .HasMaxLength(50)
                         .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsActive")
@@ -163,16 +164,19 @@ namespace Totem.Infra.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TicketPrefix")
-                        .IsRequired()
+                        .HasMaxLength(3)
                         .HasColumnType("varchar(100)");
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TicketPrefix");
+
+                    b.HasIndex("Title");
 
                     b.HasIndex("Title", "TargetQueueId")
                         .IsUnique();

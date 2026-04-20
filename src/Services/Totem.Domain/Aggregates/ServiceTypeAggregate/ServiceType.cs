@@ -9,13 +9,13 @@ namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 		public string Title { get; private set; }
 		public string? Icon { get; private set; }
 		public HexColor? Color { get; private set; }
-		public string TicketPrefix { get; private set; }
+		public string? TicketPrefix { get; private set; }
 		public Guid TargetQueueId { get; private set; }
 		public bool IsActive { get; private set; }
 
 		protected ServiceType(){}
 
-		public ServiceType(string title, string? icon, string? color, string ticketPrefix, Guid targetQueueId)
+		public ServiceType(string title, string? icon, string? color, string? ticketPrefix, Guid targetQueueId)
 		{
 			Title = title;
 			Icon = icon;
@@ -30,7 +30,7 @@ namespace Totem.Domain.Aggregates.ServiceTypeAggregate
 			return new HexColor(color);
 		}
 
-		public void Update(string title, string? icon, string? color, Guid targetQueueId, string ticketPrefix)
+		public void Update(string title, string? icon, string? color, Guid targetQueueId, string? ticketPrefix)
 		{
 			Title = title;
 			Icon = icon;

@@ -10,16 +10,11 @@ export interface LoginRequest {
     password: string;
 }
 
-export interface AuthData {
-    jwt: string;
-    newToken: string;
-    userView: UserView
-}
-
 export interface UserView {
     id: string;
     name: string;
     email: string;
+    isActive?: boolean;
     profileImageUrl?: string;
     roles?: string[];
 }

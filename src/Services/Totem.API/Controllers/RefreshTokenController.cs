@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Totem.Application.Services.RefreshTokenServices;
 using Totem.Common.API.Controller;
@@ -17,12 +17,37 @@ namespace Totem.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("user/{userId}/token/{tokenId}")]
-        public async Task<IActionResult> SaveRefreshToken(Guid userId, Guid tokenId)
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken()
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            var userIdCookie = Request.Cookies["user_id"];
+            var refreshTokenCookie = Request.Cookies["refresh_token"];
 
-            return CustomResponse(await _refreshTokenService.RefreshTokenAsync(userId, tokenId));
+            if (string.IsNullOrWhiteSpace(userIdCookie) || !Guid.TryParse(userIdCookie, out var userId))
+                return Unauthorized();
+
+            if (string.IsNullOrWhiteSpace(refreshTokenCookie) || !Guid.TryParse(refreshTokenCookie, out var tokenId))
+                return Unauthorized();
+
+            var result = await _refreshTokenService.RefreshTokenAsync(userId, tokenId);
+            if (!result.result.Success) return CustomResponse(result.result);
+
+            Response.Cookies.Append("access_token", result.data.Jwt, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false, // TODO: Em produção, alterar para true
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddHours(1)
+            });
+            Response.Cookies.Append("refresh_token", result.data.RefreshToken.ToString(), new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false, // TODO: Em produção, alterar para true
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+            return CustomResponse((result.result, result.data.UserView));
         }
     }
 }

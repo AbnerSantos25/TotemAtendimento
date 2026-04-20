@@ -53,11 +53,11 @@ export const ServiceTypeConfiguration = () => {
 
     const [serviceToDelete, setServiceToDelete] = useState<{ id: string, title: string } | null>(null);
 
-    const renderIcon = (icon: string | undefined, className: string = "") => {
+    const renderIcon = (icon: string | null | undefined, className: string = "") => {
         if (!icon) return <LayoutGrid className={className || "h-4 w-4 text-muted-foreground"} />;
 
-        // Tratar sempre como classe de ícone bootstrap (bi bi-...)
-        return <i className={`${icon} ${className}`} />;
+        const safeIcon = icon.replace(/[^a-zA-Z0-9\s\-]/g, '');
+        return <i className={`${safeIcon} ${className}`} />;
     };
 
     const fetchData = async () => {
@@ -137,9 +137,15 @@ export const ServiceTypeConfiguration = () => {
             return;
         }
 
+        const requestData: ServiceTypeRequest = {
+            ...formData,
+            ticketPrefix: formData.ticketPrefix?.trim() || null,
+            icon: formData.icon?.trim() || null
+        };
+
         const response = editingId
-            ? await serviceTypeService.updateAsync(editingId, formData)
-            : await serviceTypeService.createAsync(formData);
+            ? await serviceTypeService.updateAsync(editingId, requestData)
+            : await serviceTypeService.createAsync(requestData);
 
         if (response.success) {
             AGShowMessage.success({
@@ -161,7 +167,7 @@ export const ServiceTypeConfiguration = () => {
         if (response.success) {
             AGShowMessage.success({
                 title: "Status Atualizado",
-                description: `O serviço foi ${!currentStatus ? 'ativado' : 'desativada'}.`
+                description: `O serviço foi ${!currentStatus ? 'ativado' : 'desativado'}.`
             });
             setServiceTypes(prev => prev.map(s => s.serviceTypeId === id ? { ...s, isActive: !currentStatus } : s));
         } else {
@@ -171,9 +177,9 @@ export const ServiceTypeConfiguration = () => {
 
     const handleDelete = async () => {
         if (!serviceToDelete) return;
-        const response = await serviceTypeService.disableAsync(serviceToDelete.id);
+        const response = await serviceTypeService.deleteAsync(serviceToDelete.id);
         if (response.success) {
-            AGShowMessage.success({ title: "Desativado", description: "O serviço foi desativado com sucesso." });
+            AGShowMessage.success({ title: "Excluído", description: "O tipo de serviço foi removido com sucesso." });
             setServiceTypes(prev => prev.filter(s => s.serviceTypeId !== serviceToDelete.id));
         } else {
             AGShowMessage.error({ title: "Erro", description: response.error.message });
@@ -360,7 +366,7 @@ export const ServiceTypeConfiguration = () => {
                                 <Label htmlFor="icon">Ícone Bootstrap (Classe)</Label>
                                 <Input
                                     id="icon"
-                                    value={formData.icon}
+                                    value={formData.icon ?? ""}
                                     onChange={(e) => setFormData(p => ({ ...p, icon: e.target.value }))}
                                     placeholder="Ex: bi bi-card-list"
                                 />
@@ -375,11 +381,11 @@ export const ServiceTypeConfiguration = () => {
                                         id="color"
                                         type="color"
                                         className="w-12 p-1"
-                                        value={formData.color}
+                                        value={formData.color ?? "#000000"}
                                         onChange={(e) => setFormData(p => ({ ...p, color: e.target.value }))}
                                     />
                                     <Input
-                                        value={formData.color}
+                                        value={formData.color ?? ""}
                                         onChange={(e) => setFormData(p => ({ ...p, color: e.target.value }))}
                                         className="flex-1 font-mono uppercase"
                                     />
@@ -392,7 +398,7 @@ export const ServiceTypeConfiguration = () => {
                                 <Label htmlFor="prefix">Prefixo da Senha</Label>
                                 <Input
                                     id="prefix"
-                                    value={formData.ticketPrefix}
+                                    value={formData.ticketPrefix ?? ""}
                                     onChange={(e) => setFormData(p => ({ ...p, ticketPrefix: e.target.value }))}
                                     placeholder="Ex: CONS"
                                 />
@@ -422,7 +428,7 @@ export const ServiceTypeConfiguration = () => {
                                         {renderIcon(formData.icon, "text-3xl")}
                                     </span>
                                     <div className="flex flex-col">
-                                        <span className="text-lg leading-tight break-all text-xs">{formData.title || 'Novo Serviço'}</span>
+                                        <span className="leading-tight break-all text-xs">{formData.title || 'Novo Serviço'}</span>
                                         <span className="text-xs opacity-75">{formData.ticketPrefix ? `${formData.ticketPrefix}001` : '001'}</span>
                                     </div>
                                 </div>
@@ -440,10 +446,10 @@ export const ServiceTypeConfiguration = () => {
             <ConfirmDialog
                 open={!!serviceToDelete}
                 onOpenChange={(open) => !open && setServiceToDelete(null)}
-                title="Desativar Serviço"
-                description={`Tem certeza que deseja desativar o serviço "${serviceToDelete?.title}"? Ele deixará de aparecer no Totem.`}
+                title="Excluir Serviço"
+                description={`Tem certeza que deseja excluir o serviço "${serviceToDelete?.title}"?`}
                 onConfirm={handleDelete}
-                confirmText="Confirmar Desativação"
+                confirmText="Confirmar Exclusão"
             />
         </div>
     );
