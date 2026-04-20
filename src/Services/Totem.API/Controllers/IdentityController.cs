@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Security.Claims;
 using Totem.Application.Services.IdentityServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -19,19 +21,43 @@ namespace Totem.API.Controllers
         }
 
         [HttpPost("register")]
+        [EnableRateLimiting("Auth")]
         public async Task<ActionResult> Register(RegisterUserView registerUser)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return CustomResponse(await _identityService.RegisterUserAsync(registerUser));
+            var result = await _identityService.RegisterUserAsync(registerUser);
+            if (!result.Result.Success) return CustomResponse(result.Result);
+
+            SetAuthCookies(result.Data.Jwt, result.Data.RefreshToken, result.Data.UserView.Id!.Value);
+            return CustomResponse((result.Result, result.Data.UserView));
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
+        [EnableRateLimiting("Auth")]
         public async Task<ActionResult> Login(LoginUserView loginUser)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
-            return CustomResponse(await _identityService.LoginUserAsync(loginUser));
+
+            var result = await _identityService.LoginUserAsync(loginUser);
+            if (!result.Result.Success) return CustomResponse(result.Result);
+
+            SetAuthCookies(result.Data.Jwt, result.Data.RefreshToken, result.Data.UserView.Id!.Value);
+            return CustomResponse((result.Result, result.Data.UserView));
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<ActionResult> GetMe()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                              ?? User.FindFirstValue("sub");
+
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            return CustomResponse(await _identityService.GetMeAsync(userId));
         }
 
         [HttpGet("users")]
@@ -80,10 +106,13 @@ namespace Totem.API.Controllers
         {
             var result = await _identityService.LogoutAsync(userId);
 
+            ClearAuthCookies();
+
             return CustomResponse(result);
         }
 
 		[HttpPost("user/{userId}/change-password")]
+        [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> ChangePassword([FromRoute] Guid userId, [FromBody] ChangePasswordRequest request)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -91,5 +120,43 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _identityService.ChangePasswordAsync(userId, request));
 		}
 
+        private void SetAuthCookies(string jwt, Guid refreshToken, Guid userId)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddHours(1)
+            };
+
+            var refreshOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Path = "/api/totem/RefreshToken"
+            };
+
+            var userIdOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            };
+
+            Response.Cookies.Append("access_token", jwt, cookieOptions);
+            Response.Cookies.Append("refresh_token", refreshToken.ToString(), refreshOptions);
+            Response.Cookies.Append("user_id", userId.ToString(), userIdOptions);
+        }
+
+        private void ClearAuthCookies()
+        {
+            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
+            Response.Cookies.Delete("user_id");
+        }
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Totem.Application.Services.ServiceTypeServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -35,6 +36,7 @@ namespace Totem.API.Controllers
 		}
 
 		[HttpPost]
+        [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Create([FromBody] ServiceTypeRequest request)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -43,6 +45,7 @@ namespace Totem.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
+        [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] ServiceTypeRequest request)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -51,6 +54,7 @@ namespace Totem.API.Controllers
 		}
 
 		[HttpDelete("{id:guid}")]
+        [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Delete([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -59,6 +63,7 @@ namespace Totem.API.Controllers
 		}
 
 		[HttpPatch("{id:guid}/toggle-status")]
+        [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> ToggleStatus([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -67,6 +72,7 @@ namespace Totem.API.Controllers
 		}
 
 		[HttpPatch("{id:guid}/disable")]
+        [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Disable([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid) return CustomResponse(ModelState);

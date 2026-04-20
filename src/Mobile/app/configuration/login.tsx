@@ -76,7 +76,6 @@ export default function LoginScreen() {
 
   const GobackHome = () => {
     if (router.canGoBack()) {
-      console.log("Voltando para a tela anterior");
       router.back();
     } else {
       router.replace('/');
@@ -87,7 +86,7 @@ export default function LoginScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <LinearGradient
-          colors={['#000000', '#121018','#2a1a4a', '#4a1a2a']}
+          colors={['#000000', '#121018', '#2a1a4a', '#4a1a2a']}
           style={StyleSheet.absoluteFill}
         />
 

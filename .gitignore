@@ -296,3 +296,4 @@ __pycache__/
 **/node_modules
 appsettings.json
 appsettings.*.json
+auditoria_seguranca_premium.html

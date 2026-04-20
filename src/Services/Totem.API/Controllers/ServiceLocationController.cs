@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Totem.Application.Services.ServiceLocationServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -17,6 +18,7 @@ namespace Totem.API.Controllers
 
 
         [HttpPost("{serviceLocationId}/ready")]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> NotifyAvailable([FromRoute] Guid serviceLocationId, [FromBody] ServiceLocationReadyRequest request)
         {
             if (!ModelState.IsValid)
@@ -47,6 +49,7 @@ namespace Totem.API.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddAsync([FromBody] ServiceLocationRequest request)
         {
             if (!ModelState.IsValid)
@@ -56,6 +59,7 @@ namespace Totem.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] ServiceLocationRequest request)
         {
             if (!ModelState.IsValid)
@@ -65,6 +69,7 @@ namespace Totem.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)

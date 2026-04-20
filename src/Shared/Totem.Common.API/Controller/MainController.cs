@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.RateLimiting;
+using Totem.Common.API.Filters;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Enumerations;
 
@@ -8,8 +10,10 @@ namespace Totem.Common.API.Controller
 {
     [Authorize]
     [ApiController]
+    [ValidateCookieAntiforgery]
     [Authorize(Roles = nameof(UserRole.Admin))]
-	public abstract class MainController : ControllerBase
+    [EnableRateLimiting("Global")]
+    public abstract class MainController : ControllerBase
     {
         private readonly INotificator _notificador;
 		protected MainController(INotificator notificador)

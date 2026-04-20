@@ -1,8 +1,7 @@
-import { jwtDecode } from "jwt-decode";
+import Cookies from 'js-cookie';
 import type { ApiError, ApiResponse, ServiceResult } from "../models/baseServiceModels.js";
 import { session } from "./StorageService";
 import type { IBaseService } from "./interfaces/IBaseService";
-import type { AuthData } from "../models/AuthModels";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -62,55 +61,24 @@ export class BaseService implements IBaseService {
         };
     }
 
-    private async tryRefreshTokenAsync(isRefreshing: boolean): Promise<boolean> {
+    private async tryRefreshTokenAsync(): Promise<boolean> {
         try {
-            if (!isRefreshing) {
-                const user = await session.getUserAsync();
-                const tokenId = await session.getJwtTokenAsync();
+            const response = await fetch(`${API_BASE_URL}/totem/RefreshToken/refresh`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { "Content-Type": "application/json" },
+            });
 
-                if (!user || !tokenId) return false;
 
-                const response = await this.GetAsync<AuthData>(`/totem/RefreshToken/user/${user.id}/token/${tokenId}`, false);
-
-                if (!response.success || !response.data) {
-                    console.log("Falha no refresh Token");
-                    return false;
-                }
-
-                await session.saveAuthDataAsync(response.data);
-                return true;
+            if (!response.ok) {
+                console.warn("[BaseService] Falha no refresh Token. Status:", response.status);
+                return false;
             }
 
-            return false;
-
+            return true;
         } catch (error) {
-            console.log("Catch Exception:");
+            console.error("[BaseService] Excecao no refresh:", error);
             return false;
-        }
-    }
-
-    private async GetjwtDecodedAsync(currentToken: string): Promise<any | null> {
-        return jwtDecode(currentToken);
-    }
-
-    private async ensureTokenIsValid(currentToken: string): Promise<string | null> {
-        try {
-            const decoded: any = await this.GetjwtDecodedAsync(currentToken);
-            const currentTime = Date.now() / 1000;
-
-            if (decoded.exp < currentTime + 120) {
-                const success = await this.tryRefreshTokenAsync(false);
-                if (success) {
-                    return await session.getJwtTokenAsync();
-                } else {
-                    await session.clearSessionAsync();
-                    return null;
-                }
-            }
-            return currentToken;
-        } catch (e) {
-            await session.clearSessionAsync();
-            return null;
         }
     }
 
@@ -120,52 +88,34 @@ export class BaseService implements IBaseService {
         body: any = null,
         options: RequestOptions = { requiresAuth: true }
     ): Promise<ServiceResult<TResponse>> {
-        let token: string | null = null;
-
-        if (options.requiresAuth) {
-            token = await session.getJwtTokenAsync();
-
-            if (!token) {
-                await session.clearSessionAsync();
-                return { success: false, error: { message: "Usuário não autenticado.", statusCode: 401 } };
-            }
-
-            const validToken = await this.ensureTokenIsValid(token);
-            if (!validToken) {
-                return { success: false, error: { message: "Sessão expirada.", statusCode: 401 } };
-            }
-            token = validToken;
-        } else {
-            token = await session.getJwtTokenAsync();
-        }
 
         const url = `${API_BASE_URL}${endpoint}`;
         const headers: HeadersInit = {
             "Content-Type": "application/json",
         };
 
-        if (token) {
-            (headers as any)["Authorization"] = `Bearer ${token}`;
+        // Anti-CSRF: Adiciona o token XSRF no header se o cookie existir e não for método GET
+        const xsrfToken = Cookies.get('XSRF-TOKEN');
+        if (xsrfToken && method !== 'GET') {
+            (headers as any)["X-XSRF-TOKEN"] = xsrfToken;
         }
 
         const requestInit: RequestInit = {
             method,
             headers,
+            credentials: 'include',
             body: body ? JSON.stringify(body) : undefined,
         };
+
 
         try {
             let response = await fetch(url, requestInit);
 
+
             if (response.status === 401 && options.requiresAuth) {
-                const refreshSuccess = await this.tryRefreshTokenAsync(false);
+                const refreshSuccess = await this.tryRefreshTokenAsync();
 
                 if (refreshSuccess) {
-                    const newToken = await session.getJwtTokenAsync();
-                    requestInit.headers = {
-                        ...headers,
-                        "Authorization": `Bearer ${newToken}`
-                    };
                     response = await fetch(url, requestInit);
                 } else {
                     await session.clearSessionAsync();

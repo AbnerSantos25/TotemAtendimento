@@ -1,29 +1,16 @@
-import type { AuthData, UserView } from "@/models/AuthModels";
+import type { UserView } from "@/models/AuthModels";
 import { Status } from "@/models/baseServiceModels";
 import type { IStorageService } from "@/services/interfaces/IStorageService";
 
-const JWT_KEY = "jwt";
-const REFRESH_TOKEN_KEY = "newToken";
 const STATUS_KEY = "status";
 const USER_DATA = "userView";
 
 class StorageService implements IStorageService {
 
-    async saveAuthDataAsync(authData: AuthData): Promise<void> {
-        try {
-            localStorage.setItem(JWT_KEY, authData.jwt);
-            localStorage.setItem(REFRESH_TOKEN_KEY, authData.newToken);
-            localStorage.setItem(USER_DATA, JSON.stringify(authData.userView));
-
-            await this.saveStatusAsync(Status.loggedIn);
-        } catch (error) {
-            console.log("Erro ao salvar dados de autenticação", error);
-        }
-    }
-
     async saveUserAsync(user: UserView): Promise<void> {
         try {
             localStorage.setItem(USER_DATA, JSON.stringify(user));
+            await this.saveStatusAsync(Status.loggedIn);
         } catch (error) {
             console.log("Erro ao salvar dados do usuário", error);
         }
@@ -34,15 +21,6 @@ class StorageService implements IStorageService {
             localStorage.setItem(STATUS_KEY, status.toString());
         } catch (error) {
             console.log("Erro ao salvar status", error);
-        }
-    }
-
-    async getJwtTokenAsync(): Promise<string | null> {
-        try {
-            return Promise.resolve(localStorage.getItem(JWT_KEY));
-        } catch (error) {
-            console.log("Erro ao buscar JWT token", error);
-            return Promise.resolve(null);
         }
     }
 
@@ -57,8 +35,6 @@ class StorageService implements IStorageService {
 
     async clearSessionAsync(): Promise<void> {
         try {
-            localStorage.removeItem(JWT_KEY);
-            localStorage.removeItem(REFRESH_TOKEN_KEY);
             localStorage.removeItem(USER_DATA);
             await this.saveStatusAsync(Status.loggedOut);
             window.dispatchEvent(new Event('onSessionExpired'));

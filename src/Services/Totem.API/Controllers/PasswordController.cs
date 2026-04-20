@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Totem.Application.Services.PasswordServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -36,6 +37,7 @@ namespace Totem.API.Controllers
 
 
         [HttpPost]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddPassword([FromBody] PasswordRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -44,6 +46,7 @@ namespace Totem.API.Controllers
         }
 
         [HttpPost("{passwordId}/transfer")]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> Transfer([FromRoute] Guid passwordId, [FromBody] PasswordTransferRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -52,12 +55,14 @@ namespace Totem.API.Controllers
         }
 
         [HttpPatch("{passwordId}/MarkAsServed")]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> MarkAsServedAsync([FromRoute] Guid passwordId)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _passwordService.MarkAsServed(passwordId));
         }
         [HttpDelete]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> RemovePassword(Guid id)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);

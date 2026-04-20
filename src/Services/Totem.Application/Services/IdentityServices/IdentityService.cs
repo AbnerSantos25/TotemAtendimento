@@ -6,6 +6,7 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Totem.Application.Models;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Enumerations;
 using Totem.Common.Extension;
@@ -99,36 +100,37 @@ namespace Totem.Application.Services.IdentityServices
 			return Successful(userSummaries);
 		}
 
-        public async Task<(Result Result, LoginDataView Data)> LoginUserAsync(LoginUserView loginUserView)
+        public async Task<(Result Result, AuthResult Data)> LoginUserAsync(LoginUserView loginUserView)
         {
             var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByEmailAsync(loginUserView.Email);
                 if (user == null)
-                    return Unsuccessful<LoginDataView>(Errors.UserNotFound);
+                    return Unsuccessful<AuthResult>(Errors.UserNotFound);
 
                 if(user.IsActive is false)
-                    return Unsuccessful<LoginDataView>(Errors.UserInactive);
+                    return Unsuccessful<AuthResult>(Errors.UserInactive);
 
 				var newRefreshToken = Guid.NewGuid();
                 await _mediator.Publish(new SaveRefreshTokenEvent(newRefreshToken, user.Id));
 
 				var jwt = await GenerateJwtTokenAsync(user);
-				var userView = new UserView { Id = user.Id, Email = user.Email, Name = user.FullName, IsActive = user.IsActive };
+				var roles = await _userManager.GetRolesAsync(user);
+				var userView = new UserView { Id = user.Id, Email = user.Email, Name = user.FullName, IsActive = user.IsActive, Roles = roles.ToList() };
 
-                return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
+                return Successful(new AuthResult { Jwt = jwt.Data, RefreshToken = newRefreshToken, UserView = userView });
             }
 
             if (result.IsLockedOut)
             {
-                return Unsuccessful<LoginDataView>(Errors.UserTemporarilyBlocked);
+                return Unsuccessful<AuthResult>(Errors.UserTemporarilyBlocked);
             }
 
-            return Unsuccessful<LoginDataView>(Errors.IncorrectUsernamePassword);
+            return Unsuccessful<AuthResult>(Errors.IncorrectUsernamePassword);
         }
 
-		public async Task<(Result Result, LoginDataView Data)> RegisterUserAsync(RegisterUserView registerUserView)
+		public async Task<(Result Result, AuthResult Data)> RegisterUserAsync(RegisterUserView registerUserView)
 		{
             var user = new User(registerUserView.FullName, registerUserView.Email);
 
@@ -143,22 +145,24 @@ namespace Totem.Application.Services.IdentityServices
 
                 var jwt = await GenerateJwtTokenAsync(user);
 
+			var roles = await _userManager.GetRolesAsync(user);
 				var userView = new UserView
 				{
 					Id = user.Id,
 					Email = user.Email,
 					Name = user.FullName,
-					IsActive = user.IsActive
+					IsActive = user.IsActive,
+					Roles = roles.ToList()
 				};
 
-                return Successful(new LoginDataView { JWT = jwt.Data, NewToken = newRefreshToken, UserView = userView });
+                return Successful(new AuthResult { Jwt = jwt.Data, RefreshToken = newRefreshToken, UserView = userView });
             }
 
             foreach (var error in result.Errors)
             {
                 Notify(error.Description);
             }
-            return Unsuccessful<LoginDataView>();
+            return Unsuccessful<AuthResult>();
         }
 
         public async Task<Result> InactiveUser(Guid userId)
@@ -341,6 +345,25 @@ namespace Totem.Application.Services.IdentityServices
             }
 
             return Successful();
+        }
+
+        public async Task<(Result Result, UserView Data)> GetMeAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Unsuccessful<UserView>(Errors.UserNotFound);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var userView = new UserView
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.FullName,
+                IsActive = user.IsActive,
+                Roles = roles.ToList()
+            };
+
+            return Successful(userView);
         }
 
     }

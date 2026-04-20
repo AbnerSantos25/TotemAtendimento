@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Totem.Application.Services.QueueServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -34,6 +35,7 @@ namespace Totem.API.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddAsync([FromBody] QueueRequest request)
         {
             if (!ModelState.IsValid)
@@ -43,6 +45,7 @@ namespace Totem.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] QueueRequest request)
         {
             if (!ModelState.IsValid)
@@ -52,6 +55,7 @@ namespace Totem.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
@@ -61,6 +65,7 @@ namespace Totem.API.Controllers
         }
 
         [HttpPatch("{id}/toggleQueueStatus")]
+        [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> ToggleStatusQueue([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)

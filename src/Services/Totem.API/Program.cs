@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using Totem.API.Configuration;
 using Totem.API.RealTime;
 using Totem.Application.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddApiConfiguration(builder.Configuration, builder.Environment);
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -18,20 +21,13 @@ builder.Services.AddSwaggerConfiguration(builder.Configuration);
 builder.Services.AddEventsConfiguration();
 
 builder.Services.AddSignalR();
+// Antiforgery e Cors configurados em ApiConfiguration
 
-//TODO excluir dps do teste
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-		policy.WithOrigins("http://localhost:7275", "http://localhost:5173")
-				.AllowAnyHeader()
-				.AllowAnyMethod()
-                .AllowCredentials();
-    });
-});
+builder.Services.AddRateLimitingConfiguration();
 
 var app = builder.Build();
+
+app.UseMiddleware<Totem.API.Middleware.GlobalExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -46,9 +42,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 app.UseHttpsRedirection();
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCsrfMiddleware();
 
 app.MapControllers();
 

@@ -56,8 +56,8 @@ export const ServiceTypeConfiguration = () => {
     const renderIcon = (icon: string | null | undefined, className: string = "") => {
         if (!icon) return <LayoutGrid className={className || "h-4 w-4 text-muted-foreground"} />;
 
-        // Tratar sempre como classe de ícone bootstrap (bi bi-...)
-        return <i className={`${icon} ${className}`} />;
+        const safeIcon = icon.replace(/[^a-zA-Z0-9\s\-]/g, '');
+        return <i className={`${safeIcon} ${className}`} />;
     };
 
     const fetchData = async () => {

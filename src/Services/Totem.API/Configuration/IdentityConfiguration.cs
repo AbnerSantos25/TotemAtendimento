@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -18,8 +18,6 @@ namespace Totem.API.Configuration
             .AddRoles<IdentityRole<Guid>>()
 			.AddDefaultTokenProviders();
 
-            //JWT
-
             var AppSettingsSection = configuration.GetSection("Jwt");
             services.Configure<JwtSettings>(AppSettingsSection);
 
@@ -33,8 +31,8 @@ namespace Totem.API.Configuration
 
             }).AddJwtBearer(x =>
             {
-                x.RequireHttpsMetadata = true;
-                x.SaveToken = true; //se deve ser guardado no autentication properties, para validar o usuario logado
+                x.RequireHttpsMetadata = false; // TODO: Em produção, alterar para true (exige HTTPS)
+                x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -44,7 +42,14 @@ namespace Totem.API.Configuration
                     ValidAudience = jwtSettings.ValidAt,
                     ValidIssuer = jwtSettings.Issuer,
                     ClockSkew = TimeSpan.Zero
-
+                };
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["access_token"];
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

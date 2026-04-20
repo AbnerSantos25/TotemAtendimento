@@ -2,13 +2,12 @@ import { createContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { session } from '../services/StorageService';
 import { authService } from '../services/AuthServices/AuthService';
-import type { UserView, AuthData } from '@/models/AuthModels';
-import { jwtDecode } from 'jwt-decode';
+import type { UserView } from '@/models/AuthModels';
 
 interface AuthContextType {
     user: UserView | null;
     isLoading: boolean;
-    signIn: (authData: AuthData) => Promise<void>;
+    signIn: (userView: UserView) => Promise<void>;
     signOut: () => Promise<void>;
     refreshUser: () => Promise<void>;
 }
@@ -28,19 +27,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const loadSession = async () => {
             try {
-                const sessionUser = await session.getUserAsync();
-                const token = await session.getJwtTokenAsync();
+                // Tenta restaurar a sessão via cookie chamando o endpoint /me
+                const result = await authService.getMeAsync();
 
-                if (sessionUser && token) {
-                    const extractedRoles = extractRolesFromToken(token);
-
-                    if (isMounted) {
-                        setUser({
-                            ...sessionUser,
-                            roles: extractedRoles
-                        });
-                    }
+                if (result.success && result.data && isMounted) {
+                    const userView = result.data;
+                    await session.saveUserAsync(userView);
+                    setUser(userView);
                 }
+                // Se falhou (401, cookie expirado, etc), deixa user como null
             } catch (error) {
                 console.log("Falha ao inicializar o estado de autenticação:", error);
             } finally {
@@ -67,18 +62,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         };
     }, []);
 
-    const signIn = async (authData: AuthData): Promise<void> => {
-        await session.saveAuthDataAsync(authData);
-
-        const userRole = extractRolesFromToken(authData.jwt);
-
-        const completeUser: UserView = {
-            ...authData.userView,
-            roles: userRole
-        };
-
-        setUser(completeUser);
-        console.log("Usuário logado com a Role extraída do Token:", completeUser);
+    const signIn = async (userView: UserView): Promise<void> => {
+        await session.saveUserAsync(userView);
+        setUser(userView);
     };
 
     const signOut = async (): Promise<void> => {
@@ -94,6 +80,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     const refreshUser = async (): Promise<void> => {
+        const result = await authService.getMeAsync();
+        if (result.success && result.data) {
+            await session.saveUserAsync(result.data);
+            setUser(result.data);
+        }
     };
 
     const value: AuthContextType = {
@@ -103,24 +94,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         signOut,
         refreshUser,
     };
-
-    function extractRolesFromToken(token: string): string[] {
-        try {
-            const decoded: any = jwtDecode(token);
-
-            const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-
-            const decodedRoles = decoded[roleClaim];
-
-            if (!decodedRoles) return [];
-
-            return Array.isArray(decodedRoles) ? decodedRoles : [decodedRoles];
-
-        } catch (error) {
-            console.log("Erro ao decodificar token", error);
-            return [];
-        }
-    }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
