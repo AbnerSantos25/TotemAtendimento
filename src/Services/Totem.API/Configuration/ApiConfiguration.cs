@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Antiforgery;
+using Totem.Common.Localization.Resources;
 
 namespace Totem.API.Configuration
 {
@@ -23,12 +24,15 @@ namespace Totem.API.Configuration
                 {
                     if (environment.IsDevelopment())
                     {
-                        var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
-                        policy.WithOrigins(allowedOrigins)
-                              .AllowAnyHeader()
-                              .AllowAnyMethod()
-                              .AllowCredentials();
-                    }
+						var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
+						if (allowedOrigins == null || allowedOrigins.Length == 0)
+							throw new InvalidOperationException(Errors.CorsAllowedOriginsNotConfigured);
+
+						policy.WithOrigins(allowedOrigins)
+							  .AllowAnyHeader()
+							  .AllowAnyMethod()
+							  .AllowCredentials();
+					}
                     else
                     {
                         policy.WithOrigins("https://seusiteoficial.com")
@@ -53,7 +57,7 @@ namespace Totem.API.Configuration
                     new CookieOptions { 
                         HttpOnly = false, 
                         Secure = true, 
-                        SameSite = SameSiteMode.Strict 
+                        SameSite = SameSiteMode.Lax 
                     });
 
                 await next(context);

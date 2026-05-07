@@ -216,4 +216,7 @@
   <data name="EmailConfirmationMismatch" xml:space="preserve">
     <value>O e-mail de confirmação não confere com o novo e-mail.</value>
   </data>
+  <data name="CorsAllowedOriginsNotConfigured" xml:space="preserve">
+    <value>CORS: 'AllowedOrigins' não está configurado no appsettings.json.</value>
+  </data>
 </root>
