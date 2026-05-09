@@ -12,9 +12,6 @@ export function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
     const hasShownMessage = useRef(false);
 
     if (!isLoading && user) {
-        console.log("Usuário carregado na PrivateRoute:", user);
-        console.log("Roles do usuário:", user.roles);
-        console.log("Roles exigidas pela rota:", allowedRoles);
     }
 
     const hasPermission = !allowedRoles || allowedRoles.length === 0 ||

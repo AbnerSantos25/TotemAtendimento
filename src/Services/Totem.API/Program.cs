@@ -29,9 +29,10 @@ var app = builder.Build();
 
 app.UseMiddleware<Totem.API.Middleware.GlobalExceptionMiddleware>();
 
+app.MapHub<PasswordHub>("/api/passwordHub");
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapHub<PasswordHub>("/passwordHub");
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(c =>

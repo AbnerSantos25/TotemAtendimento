@@ -1,4 +1,4 @@
-﻿using Totem.Domain.Aggregates.PasswordAggregate;
+using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Models.ServiceLocationModels;
 using Totem.SharedKernel.Models;
 
@@ -24,6 +24,7 @@ namespace Totem.Domain.Models.PasswordModels
                 Preferential = password.Preferential,
                 ServiceLocation = password.ServiceLocation != null ? new ServiceLocationView
                 {
+                    Id = password.ServiceLocation.Id,
                     Name = password.ServiceLocation.Name,
                     Number = password.ServiceLocation.Number
                 } : null

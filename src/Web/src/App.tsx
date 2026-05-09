@@ -11,6 +11,7 @@ import { ServiceLocationConfiguration } from "@/pages/configuration/ServiceLocat
 import { UserConfiguration } from "@/pages/configuration/UserConfiguration";
 import { ServiceTypeConfiguration } from "@/pages/configuration/ServiceTypeConfiguration";
 import { MyAccount } from "./pages/user/MyAccount";
+import { MeuGuiche } from "./pages/attendance/MeuGuiche";
 
 function DashboardTemporario() {
 
@@ -34,6 +35,7 @@ export function App() {
               <Route path="/home" element={<DashboardTemporario />} />
               <Route path="/relatorios" element={<Reports />} />
               <Route path="/minha-conta" element={<MyAccount />} />
+              <Route path="/meu-guiche" element={<MeuGuiche />} />
 
               <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
                 <Route path="/configurations" element={<Configuration />} />

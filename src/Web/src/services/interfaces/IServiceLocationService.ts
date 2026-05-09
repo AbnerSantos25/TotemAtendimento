@@ -7,5 +7,6 @@ export interface IServiceLocationService {
     addAsync(request: ServiceLocationRequest): Promise<ServiceResult<string>>;
     updateAsync(id: string, request: ServiceLocationRequest): Promise<ServiceResult<ServiceLocationView>>;
     deleteAsync(id: string): Promise<ServiceResult<void>>;
-    notifyAvailableAsync(id: string, request: ServiceLocationReadyRequest): Promise<ServiceResult<string>>;
+    notifyAvailableAsync(id: string, request: ServiceLocationReadyRequest): Promise<ServiceResult<PasswordView>>;
+    recallCurrentPasswordAsync(id: string): Promise<ServiceResult<void>>;
 }

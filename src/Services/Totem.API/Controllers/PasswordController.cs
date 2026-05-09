@@ -28,11 +28,11 @@ namespace Totem.API.Controllers
         }
 
         [HttpGet]
-		public async Task<IActionResult> GetPasswords()
+		public async Task<IActionResult> GetPasswords([FromQuery] Guid queueId)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return CustomResponse(await _passwordService.GetListPasswordAsync());
+            return CustomResponse(await _passwordService.GetListPasswordAsync(queueId));
         }
 
 

@@ -1,11 +1,12 @@
 import { BaseService } from "./BaseService";
 import type { ServiceResult } from "../models/baseServiceModels";
-import type { 
-    ServiceLocationView, 
-    ServiceLocationRequest, 
-    ServiceLocationReadyRequest 
+import type {
+    ServiceLocationView,
+    ServiceLocationRequest,
+    ServiceLocationReadyRequest
 } from "../models/ServiceLocationModels";
 import type { IServiceLocationService } from "./interfaces/IServiceLocationService";
+import type { PasswordView } from "@/models/PasswordModels";
 
 export class ServiceLocationService extends BaseService implements IServiceLocationService {
     private readonly basePath = "/totem/ServiceLocation";
@@ -30,8 +31,12 @@ export class ServiceLocationService extends BaseService implements IServiceLocat
         return this.DeleteAsync<void>(`${this.basePath}/${id}`);
     }
 
-    public async notifyAvailableAsync(id: string, request: ServiceLocationReadyRequest): Promise<ServiceResult<string>> {
-        return this.PostAsync<string, ServiceLocationReadyRequest>(`${this.basePath}/${id}/ready`, request);
+    public async notifyAvailableAsync(id: string, request: ServiceLocationReadyRequest): Promise<ServiceResult<PasswordView>> {
+        return this.PostAsync<PasswordView, ServiceLocationReadyRequest>(`${this.basePath}/${id}/ready`, request);
+    }
+
+    public async recallCurrentPasswordAsync(id: string): Promise<ServiceResult<void>> {
+        return this.PostAsync<void, null>(`${this.basePath}/${id}/recall`, null);
     }
 }
 

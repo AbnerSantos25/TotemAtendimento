@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Totem.Common.Data;
 using Totem.Domain.Aggregates.PasswordAggregate;
 
@@ -51,7 +51,17 @@ namespace Totem.Infra.Data.Repositories.PasswordRepository
 			return await _context.Passwords
 				.Include(x => x.ServiceLocation)
 				.Where(p => p.QueueId == queueId && p.ServiceLocationId == null)
-				.OrderBy(p => p.CreatedAt)
+				.OrderByDescending(x => x.Preferential)
+				.ThenBy(x => x.CreatedAt)
+				.FirstOrDefaultAsync();
+		}
+
+		public async Task<Password?> GetCurrentPasswordForServiceLocationAsync(Guid serviceLocationId)
+		{
+			return await _context.Passwords
+				.Include(x => x.ServiceLocation)
+				.Where(p => p.ServiceLocationId == serviceLocationId && !p.Served)
+				.OrderByDescending(p => p.AssignedAt)
 				.FirstOrDefaultAsync();
 		}
 	}

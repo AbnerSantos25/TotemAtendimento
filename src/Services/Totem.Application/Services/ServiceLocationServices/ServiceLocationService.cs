@@ -1,10 +1,9 @@
-﻿using MediatR;
+using Totem.Application.Events.Notifications;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
-using Totem.Domain.Aggregates.PasswordAggregate.Events;
+using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
-using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 using Totem.Domain.Models.ServiceLocationModels;
 using Totem.SharedKernel.Models;
 using Totem.SharedKernel.Services;
@@ -16,12 +15,23 @@ namespace Totem.Application.Services.ServiceLocationServices
 		private readonly IServiceLocationRepository _repository;
 		private readonly IServiceLocationQueries _queries;
 		private readonly IPasswordIntegrationService _passwordIntegrationService;
+		private readonly IPasswordRepository _passwordRepository;
+		private readonly IRealTimeNotifier _notifier;
 
-		public ServiceLocationService(INotificator notificador, IServiceLocationRepository repository, IServiceLocationQueries queries, IPasswordIntegrationService passwordIntegrationService) : base(notificador)
+		public ServiceLocationService(
+			INotificator notificador,
+			IServiceLocationRepository repository,
+			IServiceLocationQueries queries,
+			IPasswordIntegrationService passwordIntegrationService,
+			IPasswordRepository passwordRepository,
+			IRealTimeNotifier notifier
+		) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;
 			_passwordIntegrationService = passwordIntegrationService;
+			_passwordRepository = passwordRepository;
+			_notifier = notifier;
 		}
 
 		public async Task<(Result result, Guid data)> AddAsync(ServiceLocationRequest request)
@@ -29,7 +39,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 			ServiceLocationValidator validator = new();
 			var ServiceLocation = new ServiceLocation(request.Name, request.Number);
 
-			if (!validator.Validate(ServiceLocation).IsValid)
+			if (!ExecuteValidation(validator, ServiceLocation))
 				return Unsuccessful<Guid>();
 
 			if (await _repository.ExistsAsync(request.Name, request.Number))
@@ -105,7 +115,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 		{
 			var serviceLocation = await _repository.GetByIdAsync(serviceLocationId);
 			if (serviceLocation == null)
-				return Unsuccessful<IPasswordView>(Errors.NotFound); //Globalizazr com o erro passando o serviceLocation 
+				return Unsuccessful<IPasswordView>(Errors.NotFound);
 
 			var response = await _passwordIntegrationService.ServiceLocationWaitingPasswordAsync(request.QueueId, serviceLocationId, request.Name);
 			if(!response.result.Success)
@@ -113,5 +123,16 @@ namespace Totem.Application.Services.ServiceLocationServices
 
 			return Successful(response.data);
         }
+
+		public async Task<Result> RecallCurrentPasswordAsync(Guid serviceLocationId)
+		{
+			var currentPassword = await _passwordRepository.GetCurrentPasswordForServiceLocationAsync(serviceLocationId);
+			if (currentPassword == null)
+				return Unsuccessful(Errors.PasswordNotFound.ToString());
+
+			await _notifier.NotifyPasswordRecalledAsync(serviceLocationId, currentPassword.Code, currentPassword.ServiceLocation?.Name ?? string.Empty);
+
+			return Successful();
+		}
     }
 }

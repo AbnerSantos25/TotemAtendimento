@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const handleSessionExpired = () => {
             if (isMounted) {
-                console.log("Evento onSessionExpired recebido. Limpando AuthContext.");
                 setUser(null);
             }
         };

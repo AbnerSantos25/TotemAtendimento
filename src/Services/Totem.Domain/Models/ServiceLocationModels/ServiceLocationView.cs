@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,7 @@ namespace Totem.Domain.Models.ServiceLocationModels
 {
 	public class ServiceLocationView
 	{
+		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public int? Number { get; set; }
 		
@@ -16,6 +17,7 @@ namespace Totem.Domain.Models.ServiceLocationModels
 		{
 			return new ServiceLocationView
 			{
+				Id = serviceLocation.Id,
 				Name = serviceLocation.Name,
 				Number = serviceLocation.Number
 			};

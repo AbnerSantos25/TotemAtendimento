@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Totem.Application.Events.Notifications;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
@@ -18,13 +18,24 @@ namespace Totem.Application.Services.PasswordServices
 		private readonly IPasswordRepository _passwordRepository;
 		private readonly IPasswordQueries _passwordQueries;
 		private readonly IMediator _mediator;
+		private readonly IRealTimeNotifier _notifier;
 
-		public PasswordService(INotificator notificador, IPasswordRepository passwordRepository, IPasswordQueries passwordQueries, PasswordValidations passwordValidation, IServiceLocationRepository serviceLocationRepository, IMediator mediator) : base(notificador)
+		public PasswordService(
+			INotificator notificador,
+			IPasswordRepository passwordRepository,
+			IPasswordQueries passwordQueries,
+			PasswordValidations passwordValidation,
+			IServiceLocationRepository serviceLocationRepository,
+			IMediator mediator,
+			IRealTimeNotifier notifier
+		) : base(notificador)
 		{
 			_passwordRepository = passwordRepository;
 			_passwordQueries = passwordQueries;
 			_mediator = mediator;
+			_notifier = notifier;
 		}
+
 		public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
 		{
 			var password = new Password(request.QueueId, request.Preferential);
@@ -58,7 +69,6 @@ namespace Totem.Application.Services.PasswordServices
 			var oldQueueName = password.Queue.Name;
 
 			password.AssignToQueue(passwordTransfer.QueueId);
-
 
 			_passwordRepository.Update(password);
 
@@ -95,6 +105,10 @@ namespace Totem.Application.Services.PasswordServices
 
 			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId, oldDescription, newServiceLocationName, nextPassword.Code));
 
+			// Notify all clients in the service location group that a password was called
+			var patientName = nextPassword.ServiceLocation?.Name ?? string.Empty;
+			await _notifier.NotifyPasswordCalledAsync(serviceLocationId, nextPassword.Code, patientName);
+
 			return Successful<PasswordView>(nextPassword);
 		}
 
@@ -107,9 +121,9 @@ namespace Totem.Application.Services.PasswordServices
 			return Successful(password);
 		}
 
-		public async Task<(Result result, List<PasswordView> data)> GetListPasswordAsync()
+		public async Task<(Result result, List<PasswordView> data)> GetListPasswordAsync(Guid queueId)
 		{
-			var passwords = await _passwordQueries.GetListPasswordsAsync();
+			var passwords = await _passwordQueries.GetListPasswordsAsync(queueId);
 			return Successful(passwords);
 		}
 
@@ -136,6 +150,9 @@ namespace Totem.Application.Services.PasswordServices
 			if (password.ServiceLocation == null)
 				return Unsuccessful(Errors.PasswordCannotBeServed.ToString());
 
+			var serviceLocationId = password.ServiceLocationId;
+			var code = password.Code;
+
 			password.MarkAsServed();
 
 			_passwordRepository.Update(password);
@@ -143,7 +160,12 @@ namespace Totem.Application.Services.PasswordServices
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
 
-			await _mediator.Publish(new PasswordMarkedAsServedHistoryEvent(passwordId, password.Code));
+			await _mediator.Publish(new PasswordMarkedAsServedHistoryEvent(passwordId, code));
+
+			// Notify all clients in the service location group that the password was served
+			if (serviceLocationId.HasValue)
+				await _notifier.NotifyPasswordServedAsync(serviceLocationId.Value, code);
+
 			return Successful();
 		}
 	}

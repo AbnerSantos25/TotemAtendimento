@@ -42,3 +42,4 @@ You are a Senior Frontend Developer and Software Architect specializing in React
 2. **Styling:** Use Tailwind CSS utility classes exclusively. Avoid creating custom CSS files unless absolutely necessary for external lib overrides.
 3. **shadcn/ui:** When generating UI components (buttons, inputs, modals), prioritize using the existing shadcn/ui structure located in `src/components/ui`.
 4. **Early Returns:** Use early returns to avoid deep nesting and improve readability.
+5. **Form Validation:** ALWAYS use Zod (`import { z } from "zod"`) for validating input fields and form schemas. Integrate it with `react-hook-form` using `@hookform/resolvers/zod` where applicable.

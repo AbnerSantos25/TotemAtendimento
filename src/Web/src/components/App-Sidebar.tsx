@@ -41,7 +41,7 @@ const data = {
       icon: Megaphone,
       isActive: false,
       items: [
-        { title: "Meu Guichê", url: "/operacao/guiche" },
+        { title: "Meu Guichê", url: "/meu-guiche" },
       ],
     },
     {

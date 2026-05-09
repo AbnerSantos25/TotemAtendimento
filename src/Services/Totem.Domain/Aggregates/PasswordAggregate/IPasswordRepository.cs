@@ -1,4 +1,4 @@
-﻿using static Totem.Common.Data.IRepository;
+using static Totem.Common.Data.IRepository;
 
 namespace Totem.Domain.Aggregates.PasswordAggregate
 {
@@ -10,5 +10,8 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
         void Delete(Password password);
         Task<int> GetNextPasswordCodeAsync();
         Task<Password> GetNextUnassignedPasswordFromQueueAsync(Guid queueId);
+
+        /// <summary>Returns the password currently assigned (in service) at the given service location.</summary>
+        Task<Password?> GetCurrentPasswordForServiceLocationAsync(Guid serviceLocationId);
     }
 }

@@ -77,5 +77,15 @@ namespace Totem.API.Controllers
 
             return CustomResponse(await _serviceLocationService.DeleteAsync(id));
         }
+
+        [HttpPost("{serviceLocationId}/recall")]
+        [EnableRateLimiting("Mutation")]
+        public async Task<IActionResult> RecallCurrentPassword([FromRoute] Guid serviceLocationId)
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
+
+            return CustomResponse(await _serviceLocationService.RecallCurrentPasswordAsync(serviceLocationId));
+        }
     }
 }

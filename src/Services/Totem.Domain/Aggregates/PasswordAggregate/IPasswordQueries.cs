@@ -1,9 +1,9 @@
-﻿using Totem.Domain.Models.PasswordModels;
+using Totem.Domain.Models.PasswordModels;
 
 namespace Totem.Domain.Aggregates.PasswordAggregate
 {
     public interface IPasswordQueries
     {
-        Task<List<PasswordView>> GetListPasswordsAsync();
+        Task<List<PasswordView>> GetListPasswordsAsync(Guid queueId);
     }
 }

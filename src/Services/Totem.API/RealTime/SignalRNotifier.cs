@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR;
 using Totem.Application.Events.Notifications;
 
 namespace Totem.API.RealTime
@@ -19,13 +19,25 @@ namespace Totem.API.RealTime
                        .SendAsync("NewPasswordAssigned", new { code, createdAt });
         }
 
-    }
-
-    public class PasswordHub : Hub
-    {
-        public async Task JoinLocation(string serviceLocationId)
+        public Task NotifyPasswordCalledAsync(Guid serviceLocationId, int code, string patientName)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, serviceLocationId);
+            return _hub.Clients
+                       .Group(serviceLocationId.ToString())
+                       .SendAsync("PasswordCalled", new { code, patientName });
+        }
+
+        public Task NotifyPasswordRecalledAsync(Guid serviceLocationId, int code, string patientName)
+        {
+            return _hub.Clients
+                       .Group(serviceLocationId.ToString())
+                       .SendAsync("PasswordRecalled", new { code, patientName });
+        }
+
+        public Task NotifyPasswordServedAsync(Guid serviceLocationId, int code)
+        {
+            return _hub.Clients
+                       .Group(serviceLocationId.ToString())
+                       .SendAsync("PasswordServed", new { code });
         }
     }
 }

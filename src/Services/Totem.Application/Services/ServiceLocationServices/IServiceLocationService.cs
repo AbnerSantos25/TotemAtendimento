@@ -1,4 +1,4 @@
-﻿using Totem.Common.Services;
+using Totem.Common.Services;
 using Totem.Domain.Models.ServiceLocationModels;
 using Totem.SharedKernel.Models;
 
@@ -13,6 +13,9 @@ namespace Totem.Application.Services.ServiceLocationServices
 		Task<Result> DeleteAsync(Guid Id);
 
 		Task<(Result result, IPasswordView data)> ServiceLocationReadyAsync(Guid serviceLocationId, ServiceLocationReadyRequest request);
+
+		/// <summary>Notifies all clients in the service location group to re-display the current password on the panel.</summary>
+		Task<Result> RecallCurrentPasswordAsync(Guid serviceLocationId);
 
 	}
 }
