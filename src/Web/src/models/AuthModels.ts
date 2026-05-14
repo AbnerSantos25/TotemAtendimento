@@ -18,3 +18,9 @@ export interface UserView {
     profileImageUrl?: string;
     roles?: string[];
 }
+
+export interface AuthResult {
+    jwt: string;
+    refreshToken: string;
+    userView: UserView;
+}

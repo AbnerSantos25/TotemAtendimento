@@ -1,12 +1,12 @@
 import type { ServiceResult } from "../../models/baseServiceModels";
-import type { LoginRequest, UserView } from "../../models/AuthModels";
+import type { AuthResult, LoginRequest, UserView } from "../../models/AuthModels";
 import { BaseService } from "../BaseService";
 import type { IAuthService } from "../interfaces/IAuthService";
 
 class AuthService extends BaseService implements IAuthService {
 
-    public async loginAsync(credentials: LoginRequest): Promise<ServiceResult<UserView>> {
-        return await this.PostAsync<UserView, LoginRequest>('/totem/identity/login', credentials, false);
+    public async loginAsync(credentials: LoginRequest): Promise<ServiceResult<AuthResult>> {
+        return await this.PostAsync<AuthResult, LoginRequest>('/totem/identity/login', credentials, false);
     }
 
     public async logoutAsync(userId: string): Promise<ServiceResult<void>> {

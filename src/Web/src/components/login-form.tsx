@@ -59,7 +59,7 @@ export function LoginForm({
           title: "Login realizado!",
           description: "Bem-vindo de volta ao painel."
         });
-        await signIn(result.data);
+        await signIn(result.data.userView);
       } else {
         AGShowMessage.error({
           title: "Falha na autenticação",
