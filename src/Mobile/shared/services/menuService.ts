@@ -10,7 +10,7 @@ export const MenuService = {
             // Nota: Certifique-se de que o método GetAsync está implementado no seu BaseService
             const response = await BaseService.GetAsync<any[]>("/totem/servicetype/active");
             console.log("Resposta da API de Menus:", response);
-            
+
 
             if (response.success && response.data) {
                 // Mapeia o DTO que vem do Backend (ServiceTypeSummary) para o modelo do Frontend (MenuQueue)

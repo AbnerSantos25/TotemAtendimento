@@ -62,7 +62,7 @@ async function ensureTokenIsValid(currentToken: string): Promise<string | null> 
       if (success) {
         return await SessionService.getJwtTokenAsync();
       } else {
-        console.error("Falha ao renovar token proativamente.");
+        // console.error("Falha ao renovar token proativamente.");
         await SessionService.clearSessionAsync();
         return null;
       }
@@ -71,7 +71,7 @@ async function ensureTokenIsValid(currentToken: string): Promise<string | null> 
     return currentToken;
 
   } catch (e) {
-    console.error("Exception no ensureTokenIsValid", e);
+    // console.error("Exception no ensureTokenIsValid", e);
     return null;
   }
 }

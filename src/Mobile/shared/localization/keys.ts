@@ -20,6 +20,21 @@ export const Errors = {
   UnexpectedErrorGeneratingPassword: "errors:UnexpectedErrorGeneratingPassword",
   FillAllFields: "errors:FillAllFields",
   UnexpectedError: "errors:UnexpectedError",
+  RefreshTokenExpired: "errors:RefreshTokenExpired",
+  UserInactive: "errors:UserInactive",
+  PermissionListCannotBeEmpty: "errors:PermissionListCannotBeEmpty",
+  PasswordCannotBeEqual: "errors:PasswordCannotBeEqual",
+  GenericValueCannotBeEqual: "errors:GenericValueCannotBeEqual",
+  PropertyNotFound: "errors:PropertyNotFound",
+  PasswordConfirmationMismatch: "errors:PasswordConfirmationMismatch",
+  GenericFieldMustBeRange: "errors:GenericFieldMustBeRange",
+  PasswordLengthRange: "errors:PasswordLengthRange",
+  NameFieldLengthRange: "errors:NameFieldLengthRange",
+  InvalidFormat: "errors:InvalidFormat",
+  PasswordsMismatch: "errors:PasswordsMismatch",
+  NameLengthRange: "errors:NameLengthRange",
+  EmailConfirmationMismatch: "errors:EmailConfirmationMismatch",
+  CorsAllowedOriginsNotConfigured: "errors:CorsAllowedOriginsNotConfigured",
 } as const;
 
 export const Labels = {

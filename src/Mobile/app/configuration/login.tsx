@@ -39,9 +39,6 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
-    // Validação básica
-    AGShowMessage(GetLocalized(Errors.ErrorSavingDatabase), AGMessageType.error);
-
     setIsLoading(true);
 
     try {
@@ -53,17 +50,14 @@ export default function LoginScreen() {
       );
 
       if (response.success) {
-        // 2. SUCESSO NA API -> Atualiza o Contexto
-        // Isso salva no storage e atualiza o estado global 'user'
+
         await signIn(response.data);
         AGShowMessage(GetLocalized(Messages.WelcomeBack), AGMessageType.success);
 
-        // 3. Redirecionamento
-        // Se viemos de algum lugar, voltamos. Senão, vamos para a Home.
         GobackHome();
 
       } else {
-        // Erro da API (ex: senha errada)
+        console.error("Entrei no else do login:", response.error.message);
         AGShowMessage(response.error.message, AGMessageType.error);
       }
     } catch (error) {

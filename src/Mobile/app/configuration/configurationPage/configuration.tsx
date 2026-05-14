@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Image, ImageBackground, Pressable, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Image, Pressable } from "react-native";
 import ConfigButton from "../../../shared/components/ConfigButton";
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from "react";
@@ -10,6 +10,7 @@ import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { GetLocalized } from "../../../shared/localization/i18n";
 import { Labels } from "../../../shared/localization/keys";
+import React from "react";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

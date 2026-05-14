@@ -17,5 +17,20 @@
   "ErrorLoadingAvailableQueues": "Erro ao carregar filas disponíveis",
   "UnexpectedErrorGeneratingPassword": "Erro inesperado ao gerar senha",
   "FillAllFields": "Por favor, preencha todos os campos.",
-  "UnexpectedError": "Ocorreu um erro inesperado. Tente novamente."
+  "UnexpectedError": "Ocorreu um erro inesperado. Tente novamente.",
+  "RefreshTokenExpired": "Sessão expirada. Faça login novamente.",
+  "UserInactive": "Usuário Inativo.",
+  "PermissionListCannotBeEmpty": "A lista de permissões não pode estar vazia.",
+  "PasswordCannotBeEqual": "A nova senha não pode ser igual à senha anterior.",
+  "GenericValueCannotBeEqual": "O valor de '{0}' não pode ser igual ao de '{1}'.",
+  "PropertyNotFound": "Propriedade '{0}' não encontrada.",
+  "PasswordConfirmationMismatch": "A nova senha e a confirmação não conferem.",
+  "GenericFieldMustBeRange": "O {0} deve ter entre {2} e {1} caracteres.",
+  "PasswordLengthRange": "A senha deve ter entre {2} e {1} caracteres.",
+  "NameFieldLengthRange": "O Campo Nome deve ter entre {2} e {1} caracteres.",
+  "InvalidFormat": "O {0} está em um formato inválido.",
+  "PasswordsMismatch": "As senhas não conferem.",
+  "NameLengthRange": "O Nome deve ter entre {2} e {1} caracteres.",
+  "EmailConfirmationMismatch": "O e-mail de confirmação não confere com o novo e-mail.",
+  "CorsAllowedOriginsNotConfigured": "CORS: 'AllowedOrigins' não está configurado no appsettings.json."
 }

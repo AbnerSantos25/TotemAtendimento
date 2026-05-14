@@ -68,7 +68,7 @@ export class SessionService {
   }
 
   static async tryRefreshTokenAsync(isRefreshing: boolean): Promise<boolean> {
-    try { 
+    try {
       if (!isRefreshing) {
 
         var userData = await AsyncStorage.getItem(USER_DATA);
@@ -79,7 +79,6 @@ export class SessionService {
         const response = await BaseService.GetAsync<AuthData>(`/totem/RefreshToken/user/${user.id}/token/${tokenId}`, false);
 
         if (!response.success) {
-          console.error("Falha no refresh Token")
           return false;
         }
 
@@ -97,14 +96,14 @@ export class SessionService {
     }
   }
 
-  static async getUserAsync(): Promise<UserView | null>{
-   try {
-     const jsonValue = await AsyncStorage.getItem(USER_DATA);
-     let userViewConverted = jsonValue != null ? JSON.parse(jsonValue) as UserView : null;
-     return userViewConverted;
-   } catch (error) {
-     console.error("Erro ao resgatar usuário - ", error);
-     return null;
-   }
- }
+  static async getUserAsync(): Promise<UserView | null> {
+    try {
+      const jsonValue = await AsyncStorage.getItem(USER_DATA);
+      let userViewConverted = jsonValue != null ? JSON.parse(jsonValue) as UserView : null;
+      return userViewConverted;
+    } catch (error) {
+      console.error("Erro ao resgatar usuário - ", error);
+      return null;
+    }
+  }
 }

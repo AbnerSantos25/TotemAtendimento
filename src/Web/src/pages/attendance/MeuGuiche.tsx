@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { Megaphone, Play, RefreshCcw, CheckCircle2, WifiOff, Monitor, ArrowRight, Loader2 } from "lucide-react";
+import { Megaphone, Play, RefreshCcw, CheckCircle2, Monitor, ArrowRight, Loader2, MessageCircleWarning } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSignalR } from "@/hooks/useSignalR";
 import { serviceLocationService } from "@/services/ServiceLocationService";
@@ -191,6 +190,17 @@ export function MeuGuiche() {
   // Selection View
   // ---------------------------------------------------------------------------
 
+  if (loading && selectedWorkstationId && !workstation) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-4 text-muted-foreground animate-in fade-in duration-300">
+          <Loader2 className="h-10 w-10 animate-spin" />
+          <p className="text-lg font-medium">Carregando informações do guichê...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!selectedWorkstationId || !workstation) {
     return (
       <div className="flex min-h-[80vh] items-center justify-center p-4">
@@ -330,7 +340,7 @@ export function MeuGuiche() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center text-muted-foreground">
-                  <WifiOff className="mb-4 h-16 w-16 opacity-20" />
+                  <MessageCircleWarning className="mb-4 h-16 w-16 opacity-20" />
                   <span className="text-xl font-medium">Nenhum atendimento em andamento</span>
                   <span className="text-sm">Clique abaixo para chamar a próxima senha da fila</span>
                 </div>
