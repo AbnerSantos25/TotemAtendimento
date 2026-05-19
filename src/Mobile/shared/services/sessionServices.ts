@@ -13,7 +13,7 @@ export class SessionService {
   static async saveAuthDataAsync(authData: AuthData): Promise<void> {
     try {
       await AsyncStorage.setItem(JWT_KEY, authData.jwt);
-      await AsyncStorage.setItem(REFRESH_TOKEN_KEY, authData.newToken);
+      await AsyncStorage.setItem(REFRESH_TOKEN_KEY, authData.refreshToken);
       await AsyncStorage.setItem(USER_DATA, JSON.stringify(authData.userView))
 
       await this.saveStatusAsync(Status.loggedIn);

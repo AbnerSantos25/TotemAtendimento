@@ -1,8 +1,7 @@
 export interface UserView {
-  id: number;
+  id: string;
   name: string;
   email: string;
-  profileImageUrl: string;
+  isActive?: boolean;
+  roles?: string[];
 }
-
-export default null

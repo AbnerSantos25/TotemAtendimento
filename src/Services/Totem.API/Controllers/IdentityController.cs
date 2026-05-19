@@ -30,7 +30,7 @@ namespace Totem.API.Controllers
             if (!result.Result.Success) return CustomResponse(result.Result);
 
             SetAuthCookies(result.Data.Jwt, result.Data.RefreshToken, result.Data.UserView.Id!.Value);
-            return CustomResponse((result.Result, result.Data.UserView));
+            return CustomResponse((result.Result, result.Data));
         }
 
         [AllowAnonymous]
@@ -44,7 +44,7 @@ namespace Totem.API.Controllers
             if (!result.Result.Success) return CustomResponse(result.Result);
 
             SetAuthCookies(result.Data.Jwt, result.Data.RefreshToken, result.Data.UserView.Id!.Value);
-            return CustomResponse((result.Result, result.Data.UserView));
+            return CustomResponse((result.Result, result.Data));
         }
 
         [HttpGet("me")]
@@ -125,16 +125,16 @@ namespace Totem.API.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
+                Secure = false, // TODO: Em produção, alterar para true
+                SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddHours(1)
             };
 
             var refreshOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
+                Secure = false, // TODO: Em produção, alterar para true
+                SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddDays(7),
                 Path = "/api/totem/RefreshToken"
             };
@@ -142,8 +142,8 @@ namespace Totem.API.Controllers
             var userIdOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
+                Secure = false, // TODO: Em produção, alterar para true
+                SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
 

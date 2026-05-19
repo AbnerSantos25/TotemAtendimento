@@ -39,7 +39,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection(); // Em dev, o certificado auto-assinado impede conexões de dispositivos mobile
+}
 app.UseRateLimiter();
 
 app.UseAuthentication();

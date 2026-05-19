@@ -47,7 +47,13 @@ namespace Totem.API.Configuration
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["access_token"];
+                        // Prioridade 1: Header Authorization (Mobile - Bearer Token)
+                        // O middleware JWT já lê o header por padrão, então só intervimos se NÃO houver header.
+                        if (string.IsNullOrEmpty(context.Token))
+                        {
+                            // Prioridade 2: Cookie (Web - HttpOnly Cookie)
+                            context.Token = context.Request.Cookies["access_token"];
+                        }
                         return Task.CompletedTask;
                     }
                 };

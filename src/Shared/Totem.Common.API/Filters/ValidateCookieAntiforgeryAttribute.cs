@@ -32,6 +32,15 @@ namespace Totem.Common.API.Filters
                 return;
             }
 
+            // 2b. Ignorar se for um cliente mobile nativo (ex: login, que não tem token ainda)
+            // Apps nativos não são vulneráveis a CSRF pois não usam cookies automáticos.
+            if (request.Headers.TryGetValue("X-Client-Type", out var clientType) &&
+                clientType.ToString().Equals("mobile", StringComparison.OrdinalIgnoreCase))
+            {
+                await next();
+                return;
+            }
+
             // 3. Validar Antiforgery para requisições que dependem de Cookies (Web)
             var antiforgery = context.HttpContext.RequestServices.GetRequiredService<IAntiforgery>();
             

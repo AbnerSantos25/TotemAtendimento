@@ -51,9 +51,7 @@ export function AGShowMessage(
     ...customOptions,
   };
 
-  console.log("Antes do toast");
   Toast.show(message, options);
-  console.log("passou pelo toast");
 
 }
 

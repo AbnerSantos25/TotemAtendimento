@@ -3,6 +3,7 @@ import { SessionService } from "./sessionServices";
 import { jwtDecode } from "jwt-decode";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+console.log('[BaseService] API_BASE_URL carregado:', API_BASE_URL);
 
 type RequestOptions = {
   requiresAuth?: boolean;
@@ -106,6 +107,7 @@ export const BaseService = {
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
+      "X-Client-Type": "mobile",
     };
 
     if (token) {
@@ -119,8 +121,10 @@ export const BaseService = {
     };
 
     try {
-      console.log(`[${method}] ${url} (Auth: ${options.requiresAuth}) Time: ${new Date().toISOString()}`);
-      let response = await fetch(url, requestInit);
+      const fullUrl = `${API_BASE_URL}${endpoint}`;
+      console.log(`[BaseService] Iniciando ${method} -> ${fullUrl}`);
+      let response = await fetch(fullUrl, requestInit);
+      console.log(`[BaseService] Resposta: ${response.status} ${response.statusText}`);
 
       if (response.status === 401 && options.requiresAuth) {
         // Reativo    
@@ -166,7 +170,8 @@ export const BaseService = {
         };
       }
     } catch (error) {
-      console.error(`Falha na requisição ${method} para ${url}:`, error);
+      console.error(`[BaseService] CATCH - Falha em ${method} ${url}:`, error);
+      console.error('[BaseService] Tipo do erro:', typeof error, JSON.stringify(error));
       return {
         success: false,
         error: {

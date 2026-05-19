@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, ImageBackground, View, Text, Pressable, ActivityIndicator, StatusBar } from "react-native";
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View, Text, Pressable, ActivityIndicator, StatusBar } from "react-native";
 import { Redirect } from "expo-router";
-import BackgroundImage from "../assets/images/background.png";
 import { useAuth } from '../shared/contexts/AuthContext';
 import { GetLocalized } from '../shared/localization/i18n';
 import { Errors, Messages } from '../shared/localization/keys';
@@ -10,7 +9,7 @@ import AGButton from '../shared/components/AGButton';
 import ConfirmDialog from '../shared/components/ConfirmDialog';
 import { MenuQueue, QueueRequest } from '../shared/models/menuModels';
 import { MenuService } from '../shared/services/menuService';
-import { GlobalStyles, TextStyles, ButtonStyles } from '../shared/styles/mainStyles';
+import { GlobalStyles } from '../shared/styles/mainStyles';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function HomeScreen() {
@@ -18,22 +17,31 @@ export default function HomeScreen() {
 
   const [menus, setMenus] = useState<MenuQueue[]>([]);
   const [loadingMenus, setLoadingMenus] = useState(true);
+  const [reloading, setReloading] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<MenuQueue | null>(null);
 
-  useEffect(() => {
-    const loadMenus = async () => {
-      try {
-        const availableMenus = await MenuService.getAvailableMenus();
-        setMenus(availableMenus);
-        AGShowMessage(GetLocalized(Errors.ErrorLoadingAvailableQueues), AGMessageType.error);
-      } finally {
-        setLoadingMenus(false);
-      }
-    };
+  const loadMenus = useCallback(async (isReload = false) => {
+    if (isReload) setReloading(true);
+    else setLoadingMenus(true);
 
-    loadMenus();
+    try {
+      const availableMenus = await MenuService.getAvailableMenus();
+      setMenus(availableMenus);
+      if (isReload) {
+        AGShowMessage('Serviços atualizados!', AGMessageType.success);
+      }
+    } catch {
+      AGShowMessage(GetLocalized(Errors.ErrorLoadingAvailableQueues), AGMessageType.error);
+    } finally {
+      if (isReload) setReloading(false);
+      else setLoadingMenus(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadMenus();
+  }, [loadMenus]);
 
   if (isLoading || loadingMenus) {
     return (
@@ -49,12 +57,8 @@ export default function HomeScreen() {
   }
 
   const handleMenuClick = async (menu: MenuQueue) => {
-    if (true) {
-      setDialogVisible(true);
-      setSelectedMenu(menu);
-    } else {
-      await processQueueRequest(menu, false);
-    }
+    setDialogVisible(true);
+    setSelectedMenu(menu);
   };
 
   const processQueueRequest = async (menu: MenuQueue, isPreferential: boolean) => {
@@ -71,7 +75,7 @@ export default function HomeScreen() {
       } else {
         AGShowMessage(response.error.message, AGMessageType.error);
       }
-    } catch (error) {
+    } catch {
       AGShowMessage(GetLocalized(Errors.UnexpectedErrorGeneratingPassword), AGMessageType.error);
     }
   };
@@ -80,30 +84,50 @@ export default function HomeScreen() {
     try {
       await signOut();
       AGShowMessage(GetLocalized(Messages.LoggedOutSuccess), AGMessageType.success);
-    } catch (error) {
-      AGShowMessage("Erro ao Sair!", AGMessageType.success);
+    } catch {
+      AGShowMessage('Erro ao sair!', AGMessageType.error);
     }
   };
 
   return (
     <>
       <LinearGradient
-        colors={['#000000', '#121018', '#2a1a4a', '#4a1a2a']}
+        colors={['#000000', '#1c2044ff', '#272b4eff', '#05050cff']}
         style={StyleSheet.absoluteFill}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
       />
-
       <StatusBar barStyle="light-content" />
+
       <View style={GlobalStyles.centeredContainer}>
         <View style={GlobalStyles.buttonsContainer}>
-          {menus.map((menu) => (
-            <AGButton
-              key={menu.queueId}
-              title={menu.title}
-              width="100%"
-              onPress={() => handleMenuClick(menu)}
-            />
-          ))}
+          {menus.length === 0 ? (
+            <Text style={styles.emptyText}>Nenhum serviço disponível.</Text>
+          ) : (
+            menus.map((menu, index) => (
+              <AGButton
+                key={`${menu.queueId}-${index}`}
+                title={menu.title}
+                color={menu.color}
+                width="100%"
+                onPress={() => handleMenuClick(menu)}
+              />
+            ))
+          )}
         </View>
+
+        {/* Botão de recarregar */}
+        <Pressable
+          style={({ pressed }) => [styles.reloadButton, pressed && styles.reloadButtonPressed]}
+          onPress={() => loadMenus(true)}
+          disabled={reloading}
+        >
+          {reloading ? (
+            <ActivityIndicator size="small" color="#a78bfa" />
+          ) : (
+            <Text style={styles.reloadButtonText}>↺  Recarregar serviços</Text>
+          )}
+        </Pressable>
       </View>
 
       <ConfirmDialog
@@ -127,8 +151,30 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    marginBottom: 20,
+  emptyText: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 15,
+    textAlign: 'center',
+    marginVertical: 24,
+  },
+  reloadButton: {
+    marginTop: 24,
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 206, 250, 0.4)',
+    backgroundColor: 'rgba(139, 165, 250, 0.08)',
     alignItems: 'center',
+    minWidth: 200,
+  },
+  reloadButtonPressed: {
+    backgroundColor: 'rgba(167, 139, 250, 0.2)',
+  },
+  reloadButtonText: {
+    color: '#8ba5faff',
+    fontSize: 14,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
 });

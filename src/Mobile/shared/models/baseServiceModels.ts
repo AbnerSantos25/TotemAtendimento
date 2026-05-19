@@ -14,7 +14,7 @@ export interface ApiError {
 
 export interface AuthData {
   jwt: string;
-  newToken: string;
+  refreshToken: string;
   userView: UserView
 }
 
@@ -23,6 +23,4 @@ export enum Status {
   loggedOut
 }
 
-export type ServiceResult<T> = { success: true; data: T } | { success: false; error: ApiError };
-
-export default null
+export type ServiceResult<T> = { success: true; data: T } | { success: false; error: ApiError };
