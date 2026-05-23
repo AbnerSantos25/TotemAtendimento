@@ -105,9 +105,16 @@ namespace Totem.Application.Services.PasswordServices
 
 			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId, oldDescription, newServiceLocationName, nextPassword.Code));
 
-			// Notify all clients in the service location group that a password was called
-			var patientName = nextPassword.ServiceLocation?.Name ?? string.Empty;
-			await _notifier.NotifyPasswordCalledAsync(serviceLocationId, nextPassword.Code, patientName);
+			// Notify ALL attendants in the same queue (including the calling workstation,
+			// which is also a member of the queue group). This replaces the per-workstation
+			// PasswordCalledAsync so we don't double-refresh the caller's screen.
+			await _notifier.NotifyQueuePasswordUpdatedAsync(
+				queueId,
+				nextPassword.Code,
+				nextPassword.Preferential,
+				serviceLocationId,
+				newServiceLocationName,
+				served: false);
 
 			return Successful<PasswordView>(nextPassword);
 		}
@@ -162,9 +169,19 @@ namespace Totem.Application.Services.PasswordServices
 
 			await _mediator.Publish(new PasswordMarkedAsServedHistoryEvent(passwordId, code));
 
-			// Notify all clients in the service location group that the password was served
+			// Notify the attendant's own workstation group that the password was served
 			if (serviceLocationId.HasValue)
 				await _notifier.NotifyPasswordServedAsync(serviceLocationId.Value, code);
+
+			// Notify ALL attendants in the same queue so other workstations remove this
+			// password from their "Em Atendimento em Outros Guiches" card
+			await _notifier.NotifyQueuePasswordUpdatedAsync(
+				password.QueueId,
+				code,
+				password.Preferential,
+				serviceLocationId ?? Guid.Empty,
+				password.ServiceLocation?.Name ?? string.Empty,
+				served: true);
 
 			return Successful();
 		}

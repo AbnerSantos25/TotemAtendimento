@@ -21,5 +21,12 @@ namespace Totem.Application.Events.Notifications
         /// Notifies when a password has been marked as served/completed.
         /// </summary>
         Task NotifyPasswordServedAsync(Guid serviceLocationId, int code);
+
+        /// <summary>
+        /// Notifies ALL attendants of the same queue when a password changes state (called or served).
+        /// This allows attendants at other workstations (e.g. Mesa B) to see in real-time
+        /// that another workstation (e.g. Mesa A) called or finished a password.
+        /// </summary>
+        Task NotifyQueuePasswordUpdatedAsync(Guid queueId, int code, bool preferential, Guid serviceLocationId, string serviceLocationName, bool served);
     }
 }

@@ -21,5 +21,24 @@ namespace Totem.API.RealTime
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, serviceLocationId);
         }
+
+        /// <summary>
+        /// Joins the SignalR group for the specified queue.
+        /// Allows all attendants serving the same queue to receive real-time updates
+        /// when any workstation calls or finishes a password.
+        /// </summary>
+        public async Task JoinQueue(string queueId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"queue-{queueId}");
+        }
+
+        /// <summary>
+        /// Leaves the SignalR group for the specified queue.
+        /// Called when the attendant changes queue or disconnects.
+        /// </summary>
+        public async Task LeaveQueue(string queueId)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"queue-{queueId}");
+        }
     }
 }

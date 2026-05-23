@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Megaphone, Play, RefreshCcw, CheckCircle2, Monitor, ArrowRight, Loader2, MessageCircleWarning } from "lucide-react";
+import { Megaphone, Play, RefreshCcw, CheckCircle2, Monitor, ArrowRight, Loader2, MessageCircleWarning, Users } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,8 @@ import type { QueueView } from "@/models/QueueModels";
 import type {
   PasswordCalledPayload,
   PasswordServedPayload,
-  NewPasswordAssignedPayload
+  NewPasswordAssignedPayload,
+  QueuePasswordUpdatedPayload,
 } from "@/services/interfaces/ISignalRService";
 
 // ---------------------------------------------------------------------------
@@ -45,6 +46,10 @@ export function MeuGuiche() {
   const currentPassword = passwords.find((p) => !p.served && p.serviceLocation?.id === selectedWorkstationId);
   const waitingPasswords = passwords.filter((p) => !p.served && !p.serviceLocation);
   const servedPasswords = passwords.filter((p) => p.served && p.serviceLocation?.id === selectedWorkstationId);
+  // Passwords being attended by OTHER workstations in the same queue (not mine, not yet served)
+  // const otherGuichePasswords = passwords.filter(
+  //   (p) => !p.served && p.serviceLocation != null && p.serviceLocation.id !== selectedWorkstationId
+  // );
 
   // ---------------------------------------------------------------------------
   // Data Fetching
@@ -118,11 +123,18 @@ export function MeuGuiche() {
     fetchData();
   }, [fetchData]);
 
+  const handleQueuePasswordUpdated = useCallback((_data: QueuePasswordUpdatedPayload) => {
+    // Refresh the full password list so "Em Outros Guiches" updates in real-time
+    fetchData();
+  }, [fetchData]);
+
   const { isConnected } = useSignalR({
     serviceLocationId: selectedWorkstationId,
+    queueId: selectedQueueId || null,
     onPasswordCalled: handlePasswordCalled,
     onPasswordServed: handlePasswordServed,
     onNewPasswordAssigned: handleNewPasswordAssigned,
+    onQueuePasswordUpdated: handleQueuePasswordUpdated,
   });
 
   // ---------------------------------------------------------------------------
@@ -491,6 +503,8 @@ export function MeuGuiche() {
               </ScrollArea>
             </div>
           </Card>
+
+
         </div>
       </div>
     </div>

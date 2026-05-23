@@ -39,5 +39,19 @@ namespace Totem.API.RealTime
                        .Group(serviceLocationId.ToString())
                        .SendAsync("PasswordServed", new { code });
         }
+
+        public Task NotifyQueuePasswordUpdatedAsync(Guid queueId, int code, bool preferential, Guid serviceLocationId, string serviceLocationName, bool served)
+        {
+            return _hub.Clients
+                       .Group($"queue-{queueId}")
+                       .SendAsync("QueuePasswordUpdated", new
+                       {
+                           code,
+                           preferential,
+                           serviceLocationId,
+                           serviceLocationName,
+                           served
+                       });
+        }
     }
 }

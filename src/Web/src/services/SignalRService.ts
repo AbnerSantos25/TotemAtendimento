@@ -4,6 +4,7 @@ import type {
   NewPasswordAssignedPayload,
   PasswordCalledPayload,
   PasswordServedPayload,
+  QueuePasswordUpdatedPayload,
 } from "./interfaces/ISignalRService";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
@@ -61,6 +62,18 @@ class SignalRService implements ISignalRService {
     }
   }
 
+  async joinQueueAsync(queueId: string): Promise<void> {
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection.invoke("JoinQueue", queueId);
+    }
+  }
+
+  async leaveQueueAsync(queueId: string): Promise<void> {
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection.invoke("LeaveQueue", queueId);
+    }
+  }
+
   onPasswordCalled(callback: (data: PasswordCalledPayload) => void): void {
     this.connection?.on("PasswordCalled", callback);
   }
@@ -77,12 +90,17 @@ class SignalRService implements ISignalRService {
     this.connection?.on("NewPasswordAssigned", callback);
   }
 
+  onQueuePasswordUpdated(callback: (data: QueuePasswordUpdatedPayload) => void): void {
+    this.connection?.on("QueuePasswordUpdated", callback);
+  }
+
   offAll(): void {
     if (!this.connection) return;
     this.connection.off("PasswordCalled");
     this.connection.off("PasswordRecalled");
     this.connection.off("PasswordServed");
     this.connection.off("NewPasswordAssigned");
+    this.connection.off("QueuePasswordUpdated");
   }
 
   isConnected(): boolean {
@@ -91,3 +109,4 @@ class SignalRService implements ISignalRService {
 }
 
 export const signalRService = new SignalRService();
+
