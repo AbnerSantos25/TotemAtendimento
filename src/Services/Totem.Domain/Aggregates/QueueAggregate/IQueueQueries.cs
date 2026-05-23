@@ -1,4 +1,4 @@
-﻿using Totem.Domain.Models.QueueModels;
+using Totem.Domain.Models.QueueModels;
 
 namespace Totem.Domain.Aggregates.QueueAggregate
 {
@@ -6,6 +6,7 @@ namespace Totem.Domain.Aggregates.QueueAggregate
 	{
 		Task<QueueView> GetByIdAsync(Guid id);
 		Task<List<QueueSummary>> GetListAsync();
+		Task<List<QueueSummary>> GetListByIdsAsync(List<Guid> queueIds);
 
 	}
 }

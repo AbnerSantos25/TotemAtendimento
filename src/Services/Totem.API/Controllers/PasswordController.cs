@@ -61,6 +61,7 @@ namespace Totem.API.Controllers
             if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _passwordService.MarkAsServed(passwordId));
         }
+        [Authorize(Roles = "Admin,Manager")]
         [HttpDelete]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> RemovePassword(Guid id)

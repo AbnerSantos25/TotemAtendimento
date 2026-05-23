@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Totem.Application.Services.ServiceLocationServices;
@@ -48,6 +49,7 @@ namespace Totem.API.Controllers
             return CustomResponse(response);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddAsync([FromBody] ServiceLocationRequest request)
@@ -58,6 +60,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _serviceLocationService.AddAsync(request));
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPut("{id}")]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] ServiceLocationRequest request)
@@ -68,6 +71,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _serviceLocationService.UpdateAsync(id, request));
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [HttpDelete("{id}")]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)

@@ -259,6 +259,29 @@ export function MeuGuiche() {
     );
   }
 
+  // Se o usuário não tiver acesso a nenhuma fila
+  if (!loading && availableQueues.length === 0) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center p-4">
+        <Card className="w-full max-w-md shadow-lg border-amber-200 bg-amber-50/30 dark:bg-amber-950/20 dark:border-amber-900/50">
+          <CardContent className="flex flex-col items-center justify-center p-10 text-center">
+            <Users className="mb-4 h-12 w-12 text-amber-500" />
+            <h2 className="mb-2 text-2xl font-bold text-foreground">Acesso Restrito</h2>
+            <p className="mb-6 text-muted-foreground">
+              Você não possui permissão para acessar nenhuma fila de atendimento.
+            </p>
+            <Button variant="outline" className="w-full" disabled>
+              Solicite acesso ao seu gestor
+            </Button>
+            <Button variant="ghost" className="mt-4 text-xs" onClick={handleLogoutWorkstation}>
+              Trocar Guichê
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   // ---------------------------------------------------------------------------
   // Main Dashboard View
   // ---------------------------------------------------------------------------

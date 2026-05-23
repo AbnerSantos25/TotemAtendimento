@@ -9,4 +9,6 @@ export interface IUserService {
     assignRoleAsync(request: AssignRoleRequest): Promise<ServiceResult<void>>;
     updateUserRolesAsync(request: UpdateUserRolesRequest): Promise<ServiceResult<void>>;
     changePasswordAsync(userId: string, request: ChangePasswordRequest): Promise<ServiceResult<void>>;
+    getUserQueuePermissionsAsync(userId: string): Promise<ServiceResult<string[]>>;
+    setUserQueuePermissionsAsync(userId: string, queueIds: string[]): Promise<ServiceResult<void>>;
 }

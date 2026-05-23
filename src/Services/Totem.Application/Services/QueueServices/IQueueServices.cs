@@ -1,4 +1,4 @@
-﻿using Totem.Domain.Models.QueueModels;
+using Totem.Domain.Models.QueueModels;
 
 namespace Totem.Application.Services.QueueServices
 {
@@ -8,6 +8,7 @@ namespace Totem.Application.Services.QueueServices
 		public Task<Result> UpdateAsync(Guid Id, QueueRequest request);
 		public Task<Result> DeleteAsync(Guid id);
 		public Task<(Result result, List<QueueSummary> data)> GetListAsync();
+		public Task<(Result result, List<QueueSummary> data)> GetListByPermissionAsync(Guid userId, bool isAdminOrManager);
 		public Task<(Result result, QueueView data)> GetByIdAsync(Guid id);
 		public Task<Result> ToggleStatusQueue(Guid id);
 	}
