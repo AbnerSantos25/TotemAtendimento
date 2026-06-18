@@ -49,6 +49,12 @@ namespace Totem.Application.Services.PasswordServices
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
 
+			await _notifier.NotifyPasswordCreatedAsync(
+				password.QueueId,
+				password.Code,
+				password.CreatedAt,
+				password.Preferential);
+
 			await _mediator.Publish(new PasswordCreatedEvent(password.Id, password.QueueId));
 
 			return Successful(password.Id);

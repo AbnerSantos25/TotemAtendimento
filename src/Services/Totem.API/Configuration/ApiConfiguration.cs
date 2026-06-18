@@ -24,15 +24,26 @@ namespace Totem.API.Configuration
                 {
                     if (environment.IsDevelopment())
                     {
-						var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
-						if (allowedOrigins == null || allowedOrigins.Length == 0)
-							throw new InvalidOperationException(Errors.CorsAllowedOriginsNotConfigured);
+                        var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
+                        if (allowedOrigins == null || allowedOrigins.Length == 0)
+                            throw new InvalidOperationException(Errors.CorsAllowedOriginsNotConfigured);
 
-						policy.WithOrigins(allowedOrigins)
-							  .AllowAnyHeader()
-							  .AllowAnyMethod()
-							  .AllowCredentials();
-					}
+                        // Only during development.
+                        if (allowedOrigins.Length == 1 && allowedOrigins[0] == "*")
+                        {
+                            policy.SetIsOriginAllowed(_ => true) 
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod()
+                                  .AllowCredentials();
+                        }
+                        else
+                        {
+                            policy.WithOrigins(allowedOrigins)
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod()
+                                  .AllowCredentials();
+                        }
+                    }
                     else
                     {
                         policy.WithOrigins("https://seusiteoficial.com")
