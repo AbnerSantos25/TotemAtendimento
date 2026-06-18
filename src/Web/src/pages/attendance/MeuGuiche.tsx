@@ -15,7 +15,8 @@ import type { QueueView } from "@/models/QueueModels";
 import type {
   PasswordCalledPayload,
   PasswordServedPayload,
-  NewPasswordAssignedPayload
+  NewPasswordAssignedPayload,
+  PasswordCreatedPayload,
 } from "@/services/interfaces/ISignalRService";
 
 // ---------------------------------------------------------------------------
@@ -118,11 +119,17 @@ export function MeuGuiche() {
     fetchData();
   }, [fetchData]);
 
+  const handlePasswordCreated = useCallback((_data: PasswordCreatedPayload) => {
+    fetchData();
+  }, [fetchData]);
+
   const { isConnected } = useSignalR({
     serviceLocationId: selectedWorkstationId,
+    queueId: selectedQueueId || null,
     onPasswordCalled: handlePasswordCalled,
     onPasswordServed: handlePasswordServed,
     onNewPasswordAssigned: handleNewPasswordAssigned,
+    onPasswordCreated: handlePasswordCreated,
   });
 
   // ---------------------------------------------------------------------------
