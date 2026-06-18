@@ -20,6 +20,7 @@ namespace Totem.API.Controllers
             _identityService = identityService;
         }
 
+
         [Authorize(Roles = "Admin")]
         [HttpPost("register")]
         [EnableRateLimiting("Auth")]
