@@ -14,7 +14,6 @@ class SignalRService implements ISignalRService {
   private currentServiceLocationId: string | null = null;
 
   async startAsync(serviceLocationId: string): Promise<void> {
-    // If already connected to the same room, do nothing
     if (
       this.connection?.state === signalR.HubConnectionState.Connected &&
       this.currentServiceLocationId === serviceLocationId
@@ -22,7 +21,6 @@ class SignalRService implements ISignalRService {
       return;
     }
 
-    // Disconnect from the previous room before joining a new one
     await this.stopAsync();
 
     this.connection = new signalR.HubConnectionBuilder()
@@ -66,16 +64,27 @@ class SignalRService implements ISignalRService {
     if (this.connection?.state === signalR.HubConnectionState.Connected) {
       await this.connection.invoke("JoinQueue", queueId);
     }
+    else {
+      console.error("[SignalRService] Not connected to SignalR");
+    }
   }
 
   async leaveQueueAsync(queueId: string): Promise<void> {
     if (this.connection?.state === signalR.HubConnectionState.Connected) {
       await this.connection.invoke("LeaveQueue", queueId);
     }
+    else {
+      console.error("[SignalRService] Not connected to SignalR");
+    }
   }
 
   onPasswordCalled(callback: (data: PasswordCalledPayload) => void): void {
-    this.connection?.on("PasswordCalled", callback);
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      this.connection?.on("PasswordCalled", callback);
+    }
+    else {
+      console.error("[SignalRService] Not connected to SignalR, trying to listen for PasswordCalled event");
+    }
   }
 
   onPasswordRecalled(callback: (data: PasswordCalledPayload) => void): void {

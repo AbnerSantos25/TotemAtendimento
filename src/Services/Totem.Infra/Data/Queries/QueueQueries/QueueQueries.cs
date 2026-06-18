@@ -38,20 +38,15 @@ namespace Totem.Infra.Data.Queries.QueueQueries
 
 		public async Task<List<QueueSummary>> GetListByIdsAsync(List<Guid> queueIds)
 		{
-			var list = await _context
-				.Queues
+			return await _context.Queues
 				.Where(q => queueIds.Contains(q.Id))
+					.Select(x => new QueueSummary
+					{
+						Id = x.Id,
+						Name = x.Name,
+						IsActive = x.IsActive
+					})
 				.ToListAsync();
-
-			List<QueueSummary> queueSummaries = list
-				.Select(x => new QueueSummary
-				{
-					Id = x.Id,
-					Name = x.Name,
-					IsActive = x.IsActive
-				}).ToList();
-
-			return queueSummaries;
 		}
 
 		public async Task<QueueView> GetByIdAsync(Guid id)

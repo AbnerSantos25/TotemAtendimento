@@ -46,10 +46,6 @@ export function MeuGuiche() {
   const currentPassword = passwords.find((p) => !p.served && p.serviceLocation?.id === selectedWorkstationId);
   const waitingPasswords = passwords.filter((p) => !p.served && !p.serviceLocation);
   const servedPasswords = passwords.filter((p) => p.served && p.serviceLocation?.id === selectedWorkstationId);
-  // Passwords being attended by OTHER workstations in the same queue (not mine, not yet served)
-  // const otherGuichePasswords = passwords.filter(
-  //   (p) => !p.served && p.serviceLocation != null && p.serviceLocation.id !== selectedWorkstationId
-  // );
 
   // ---------------------------------------------------------------------------
   // Data Fetching
