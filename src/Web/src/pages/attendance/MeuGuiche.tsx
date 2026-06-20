@@ -16,7 +16,8 @@ import type {
   PasswordCalledPayload,
   PasswordServedPayload,
   NewPasswordAssignedPayload,
-  QueuePasswordUpdatedPayload,
+  PasswordCreatedPayload,
+  QueuePasswordUpdatedPayload
 } from "@/services/interfaces/ISignalRService";
 
 // ---------------------------------------------------------------------------
@@ -119,6 +120,10 @@ export function MeuGuiche() {
     fetchData();
   }, [fetchData]);
 
+  const handlePasswordCreated = useCallback((_data: PasswordCreatedPayload) => {
+    fetchData();
+  }, [fetchData]);
+
   const handleQueuePasswordUpdated = useCallback((_data: QueuePasswordUpdatedPayload) => {
     // Refresh the full password list so "Em Outros Guiches" updates in real-time
     fetchData();
@@ -130,6 +135,7 @@ export function MeuGuiche() {
     onPasswordCalled: handlePasswordCalled,
     onPasswordServed: handlePasswordServed,
     onNewPasswordAssigned: handleNewPasswordAssigned,
+    onPasswordCreated: handlePasswordCreated,
     onQueuePasswordUpdated: handleQueuePasswordUpdated,
   });
 

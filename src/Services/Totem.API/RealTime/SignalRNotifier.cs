@@ -12,6 +12,13 @@ namespace Totem.API.RealTime
             _hub = hub;
         }
 
+        public Task NotifyPasswordCreatedAsync(Guid queueId, int code, DateTime createdAt, bool preferential)
+        {
+            return _hub.Clients
+                       .Group(PasswordHub.QueueGroup(queueId))
+                       .SendAsync("PasswordCreated", new { code, createdAt, preferential });
+        }
+
         public Task NotifyPasswordAssignedAsync(Guid serviceLocationId, int code, DateTime createdAt)
         {
             return _hub.Clients

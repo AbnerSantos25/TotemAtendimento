@@ -3,6 +3,7 @@ import type {
   ISignalRService,
   NewPasswordAssignedPayload,
   PasswordCalledPayload,
+  PasswordCreatedPayload,
   PasswordServedPayload,
   QueuePasswordUpdatedPayload,
 } from "./interfaces/ISignalRService";
@@ -12,6 +13,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 class SignalRService implements ISignalRService {
   private connection: signalR.HubConnection | null = null;
   private currentServiceLocationId: string | null = null;
+  private currentQueueId: string | null = null;
 
   async startAsync(serviceLocationId: string): Promise<void> {
     if (
@@ -31,6 +33,10 @@ class SignalRService implements ISignalRService {
       .configureLogging(signalR.LogLevel.Information)
       .build();
 
+    this.connection.onreconnected(async () => {
+      await this.rejoinGroupsAsync();
+    });
+
     try {
       await this.connection.start();
       await this.connection.invoke("JoinServiceLocation", serviceLocationId);
@@ -41,15 +47,48 @@ class SignalRService implements ISignalRService {
     }
   }
 
+  async joinQueueAsync(queueId: string): Promise<void> {
+    if (this.currentQueueId === queueId) return;
+
+    if (
+      this.currentQueueId &&
+      this.connection?.state === signalR.HubConnectionState.Connected
+    ) {
+      await this.connection.invoke("LeaveQueue", this.currentQueueId);
+    }
+
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection.invoke("JoinQueue", queueId);
+      this.currentQueueId = queueId;
+    }
+  }
+
+  async leaveQueueAsync(queueId: string): Promise<void> {
+    if (
+      this.currentQueueId !== queueId ||
+      this.connection?.state !== signalR.HubConnectionState.Connected
+    ) {
+      return;
+    }
+
+    await this.connection.invoke("LeaveQueue", queueId);
+    this.currentQueueId = null;
+  }
+
   async stopAsync(): Promise<void> {
     if (!this.connection) return;
 
     try {
-      if (
-        this.currentServiceLocationId &&
-        this.connection.state === signalR.HubConnectionState.Connected
-      ) {
-        await this.connection.invoke("LeaveServiceLocation", this.currentServiceLocationId);
+      if (this.connection.state === signalR.HubConnectionState.Connected) {
+        if (this.currentQueueId) {
+          await this.connection.invoke("LeaveQueue", this.currentQueueId);
+        }
+        if (this.currentServiceLocationId) {
+          await this.connection.invoke(
+            "LeaveServiceLocation",
+            this.currentServiceLocationId
+          );
+        }
       }
       await this.connection.stop();
     } catch (error) {
@@ -57,6 +96,7 @@ class SignalRService implements ISignalRService {
     } finally {
       this.connection = null;
       this.currentServiceLocationId = null;
+      this.currentQueueId = null;
     }
   }
 
@@ -99,6 +139,10 @@ class SignalRService implements ISignalRService {
     this.connection?.on("NewPasswordAssigned", callback);
   }
 
+  onPasswordCreated(callback: (data: PasswordCreatedPayload) => void): void {
+    this.connection?.on("PasswordCreated", callback);
+  }
+
   onQueuePasswordUpdated(callback: (data: QueuePasswordUpdatedPayload) => void): void {
     this.connection?.on("QueuePasswordUpdated", callback);
   }
@@ -109,11 +153,25 @@ class SignalRService implements ISignalRService {
     this.connection.off("PasswordRecalled");
     this.connection.off("PasswordServed");
     this.connection.off("NewPasswordAssigned");
+    this.connection.off("PasswordCreated");
     this.connection.off("QueuePasswordUpdated");
   }
 
   isConnected(): boolean {
     return this.connection?.state === signalR.HubConnectionState.Connected;
+  }
+
+  private async rejoinGroupsAsync(): Promise<void> {
+    if (!this.connection || this.connection.state !== signalR.HubConnectionState.Connected) {
+      return;
+    }
+
+    if (this.currentServiceLocationId) {
+      await this.connection.invoke("JoinServiceLocation", this.currentServiceLocationId);
+    }
+    if (this.currentQueueId) {
+      await this.connection.invoke("JoinQueue", this.currentQueueId);
+    }
   }
 }
 
