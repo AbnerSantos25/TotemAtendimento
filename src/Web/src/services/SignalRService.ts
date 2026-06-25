@@ -100,31 +100,9 @@ class SignalRService implements ISignalRService {
     }
   }
 
-  async joinQueueAsync(queueId: string): Promise<void> {
-    if (this.connection?.state === signalR.HubConnectionState.Connected) {
-      await this.connection.invoke("JoinQueue", queueId);
-    }
-    else {
-      console.error("[SignalRService] Not connected to SignalR");
-    }
-  }
-
-  async leaveQueueAsync(queueId: string): Promise<void> {
-    if (this.connection?.state === signalR.HubConnectionState.Connected) {
-      await this.connection.invoke("LeaveQueue", queueId);
-    }
-    else {
-      console.error("[SignalRService] Not connected to SignalR");
-    }
-  }
 
   onPasswordCalled(callback: (data: PasswordCalledPayload) => void): void {
-    if (this.connection?.state === signalR.HubConnectionState.Connected) {
-      this.connection?.on("PasswordCalled", callback);
-    }
-    else {
-      console.error("[SignalRService] Not connected to SignalR, trying to listen for PasswordCalled event");
-    }
+    this.connection?.on("PasswordCalled", callback);
   }
 
   onPasswordRecalled(callback: (data: PasswordCalledPayload) => void): void {

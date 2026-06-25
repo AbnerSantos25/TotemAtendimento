@@ -32,9 +32,6 @@ export interface ISignalRService {
   joinQueueAsync(queueId: string): Promise<void>;
   leaveQueueAsync(queueId: string): Promise<void>;
 
-  joinQueueAsync(queueId: string): Promise<void>;
-  leaveQueueAsync(queueId: string): Promise<void>;
-
   onPasswordCalled(callback: (data: PasswordCalledPayload) => void): void;
   onPasswordRecalled(callback: (data: PasswordCalledPayload) => void): void;
   onPasswordServed(callback: (data: PasswordServedPayload) => void): void;
