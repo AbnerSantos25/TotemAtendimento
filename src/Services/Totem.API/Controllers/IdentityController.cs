@@ -20,6 +20,8 @@ namespace Totem.API.Controllers
             _identityService = identityService;
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("register")]
         [EnableRateLimiting("Auth")]
         public async Task<ActionResult> Register(RegisterUserView registerUser)
@@ -60,6 +62,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.GetMeAsync(userId));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("users")]
         public async Task<ActionResult> GetListUser()
         {
@@ -67,6 +70,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.GetListUserAsync());
 		}
   
+        [Authorize(Roles = "Admin")]
         [HttpPut("user/{userId}/update-email")]
         public async Task<ActionResult> UpdateEmail([FromRoute] Guid userId, [FromBody] UpdateEmailRequest request)
         {
@@ -74,6 +78,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.UpdateEmailAsync(userId, request));
         }
 
+        [Authorize(Roles = "Admin")]
 		[HttpPatch("user/{userId}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid userId)
         {
@@ -82,6 +87,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.InactiveUser(userId));
 		}
 
+        [Authorize(Roles = "Admin")]
 		[HttpPatch("user/{userId}/active")]
         public async Task<ActionResult> ActiveUser([FromRoute] Guid userId)
         {
@@ -119,6 +125,21 @@ namespace Totem.API.Controllers
 
 			return CustomResponse(await _identityService.ChangePasswordAsync(userId, request));
 		}
+
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpGet("user/{userId}/queue-permissions")]
+        public async Task<ActionResult> GetUserQueuePermissions([FromRoute] Guid userId, [FromServices] IUserQueuePermissionService permissionService)
+        {
+            return CustomResponse(await permissionService.GetAllowedQueueIdsAsync(userId));
+        }
+
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpPut("user/{userId}/queue-permissions")]
+        public async Task<ActionResult> SetUserQueuePermissions([FromRoute] Guid userId, [FromBody] SetUserQueuePermissionsRequest request, [FromServices] IUserQueuePermissionService permissionService)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            return CustomResponse(await permissionService.SetPermissionsAsync(userId, request));
+        }
 
         private void SetAuthCookies(string jwt, Guid refreshToken, Guid userId)
         {

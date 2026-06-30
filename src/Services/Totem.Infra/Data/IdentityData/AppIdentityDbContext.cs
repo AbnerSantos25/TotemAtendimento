@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Totem.Common.Data;
@@ -16,6 +16,7 @@ namespace Totem.Infra.Data.IdentityData
         }
 		private const string prefix = "Sys";
 		public DbSet<RefreshToken> RefreshTokens { get; set; }
+		public DbSet<UserQueuePermission> UserQueuePermissions { get; set; }
 
 		public virtual async Task<bool> CommitAsync()
 		{
@@ -74,6 +75,7 @@ namespace Totem.Infra.Data.IdentityData
 
 			modelBuilder.ApplyConfiguration(new RefreshTokenMapping());
 			modelBuilder.ApplyConfiguration(new SysUserMappings());
+			modelBuilder.ApplyConfiguration(new UserQueuePermissionMapping());
 		}
 	}
 }

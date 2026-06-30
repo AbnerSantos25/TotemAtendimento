@@ -11,7 +11,6 @@ namespace Totem.Common.API.Controller
     [Authorize]
     [ApiController]
     [ValidateCookieAntiforgery]
-    [Authorize(Roles = nameof(UserRole.Admin))]
     [EnableRateLimiting("Global")]
     public abstract class MainController : ControllerBase
     {

@@ -18,6 +18,14 @@ export interface PasswordCreatedPayload {
   preferential: boolean;
 }
 
+export interface QueuePasswordUpdatedPayload {
+  code: number;
+  preferential: boolean;
+  serviceLocationId: string;
+  serviceLocationName: string;
+  served: boolean;
+}
+
 export interface ISignalRService {
   startAsync(serviceLocationId: string): Promise<void>;
   stopAsync(): Promise<void>;
@@ -29,6 +37,7 @@ export interface ISignalRService {
   onPasswordServed(callback: (data: PasswordServedPayload) => void): void;
   onNewPasswordAssigned(callback: (data: NewPasswordAssignedPayload) => void): void;
   onPasswordCreated(callback: (data: PasswordCreatedPayload) => void): void;
+  onQueuePasswordUpdated(callback: (data: QueuePasswordUpdatedPayload) => void): void;
 
   offAll(): void;
   isConnected(): boolean;

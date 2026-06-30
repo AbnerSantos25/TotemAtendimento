@@ -5,6 +5,7 @@ import type {
   PasswordCalledPayload,
   PasswordCreatedPayload,
   PasswordServedPayload,
+  QueuePasswordUpdatedPayload,
 } from "./interfaces/ISignalRService";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
@@ -99,6 +100,7 @@ class SignalRService implements ISignalRService {
     }
   }
 
+
   onPasswordCalled(callback: (data: PasswordCalledPayload) => void): void {
     this.connection?.on("PasswordCalled", callback);
   }
@@ -119,6 +121,10 @@ class SignalRService implements ISignalRService {
     this.connection?.on("PasswordCreated", callback);
   }
 
+  onQueuePasswordUpdated(callback: (data: QueuePasswordUpdatedPayload) => void): void {
+    this.connection?.on("QueuePasswordUpdated", callback);
+  }
+
   offAll(): void {
     if (!this.connection) return;
     this.connection.off("PasswordCalled");
@@ -126,6 +132,7 @@ class SignalRService implements ISignalRService {
     this.connection.off("PasswordServed");
     this.connection.off("NewPasswordAssigned");
     this.connection.off("PasswordCreated");
+    this.connection.off("QueuePasswordUpdated");
   }
 
   isConnected(): boolean {
@@ -147,3 +154,4 @@ class SignalRService implements ISignalRService {
 }
 
 export const signalRService = new SignalRService();
+

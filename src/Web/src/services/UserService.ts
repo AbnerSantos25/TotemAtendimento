@@ -5,7 +5,8 @@ import type {
     RegisterUserRequest, 
     AssignRoleRequest, 
     UpdateUserRolesRequest, 
-    ChangePasswordRequest 
+    ChangePasswordRequest,
+    SetUserQueuePermissionsRequest
 } from "../models/UserModels";
 import type { IUserService } from "./interfaces/IUserService";
 
@@ -38,6 +39,15 @@ export class UserService extends BaseService implements IUserService {
 
     public async changePasswordAsync(userId: string, request: ChangePasswordRequest): Promise<ServiceResult<void>> {
         return this.PostAsync<void, ChangePasswordRequest>(`${this.basePath}/user/${userId}/change-password`, request, true);
+    }
+
+    public async getUserQueuePermissionsAsync(userId: string): Promise<ServiceResult<string[]>> {
+        return this.GetAsync<string[]>(`${this.basePath}/user/${userId}/queue-permissions`);
+    }
+
+    public async setUserQueuePermissionsAsync(userId: string, queueIds: string[]): Promise<ServiceResult<void>> {
+        const request: SetUserQueuePermissionsRequest = { queueIds };
+        return this.PutAsync<void, SetUserQueuePermissionsRequest>(`${this.basePath}/user/${userId}/queue-permissions`, request);
     }
 }
 

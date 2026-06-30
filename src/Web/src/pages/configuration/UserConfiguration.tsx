@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { userService } from "@/services/UserService";
+import { queueService } from "@/services/QueueService";
 import type { UserSummary } from "@/models/UserModels";
+import type { QueueView } from "@/models/QueueModels";
 import { Role, RoleLabels } from "@/models/UserModels";
 import {
     Table,
@@ -39,7 +41,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, Users, X, UserX, UserCheck, ShieldPlus } from "lucide-react";
+import { Plus, Users, X, UserX, UserCheck, ShieldPlus, ListChecks } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { EmptyState } from "@/components/EmptyState";
@@ -78,6 +80,11 @@ export function UserConfiguration() {
     const [userToAssignRole, setUserToAssignRole] = useState<UserSummary | null>(null);
     const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
     const [isAssigningRole, setIsAssigningRole] = useState(false);
+
+    const [userToConfigQueues, setUserToConfigQueues] = useState<UserSummary | null>(null);
+    const [availableQueues, setAvailableQueues] = useState<QueueView[]>([]);
+    const [selectedQueueIds, setSelectedQueueIds] = useState<string[]>([]);
+    const [isConfiguringQueues, setIsConfiguringQueues] = useState(false);
 
     const form = useForm<UserFormValues>({
         resolver: zodResolver(userSchema),
@@ -226,6 +233,46 @@ export function UserConfiguration() {
         );
     };
 
+    const openConfigQueuesDialog = async (user: UserSummary) => {
+        setUserToConfigQueues(user);
+        
+        const queuesResponse = await queueService.getAllQueuesAsync();
+        if (queuesResponse.success && queuesResponse.data) {
+            setAvailableQueues(queuesResponse.data.filter(q => q.isActive));
+        }
+
+        const permissionsResponse = await userService.getUserQueuePermissionsAsync(user.id);
+        if (permissionsResponse.success && permissionsResponse.data) {
+            setSelectedQueueIds(permissionsResponse.data);
+        } else {
+            setSelectedQueueIds([]);
+        }
+    };
+
+    const handleSaveQueuePermissions = async () => {
+        if (!userToConfigQueues) return;
+
+        setIsConfiguringQueues(true);
+        const response = await userService.setUserQueuePermissionsAsync(userToConfigQueues.id, selectedQueueIds);
+
+        if (response.success) {
+            AGShowMessage.success({ title: "Sucesso", description: `Permissões de fila atualizadas para "${userToConfigQueues.fullName}".` });
+            setUserToConfigQueues(null);
+        } else if (!response.success && response.error) {
+            AGShowMessage.error({ title: "Erro ao Atualizar Permissões", description: response.error.message || "Não foi possível atualizar as permissões de fila." });
+        }
+
+        setIsConfiguringQueues(false);
+    };
+
+    const toggleQueue = (queueId: string) => {
+        setSelectedQueueIds(prev =>
+            prev.includes(queueId)
+                ? prev.filter(id => id !== queueId)
+                : [...prev, queueId]
+        );
+    };
+
     return (
         <div className="flex flex-col gap-6 p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -318,6 +365,15 @@ export function UserConfiguration() {
                                                 )}
                                             </TableCell>
                                             <TableCell className="text-right">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    title="Configurar filas permitidas"
+                                                    className="text-muted-foreground hover:text-primary"
+                                                    onClick={() => openConfigQueuesDialog(user)}
+                                                >
+                                                    <ListChecks className="h-4 w-4" />
+                                                </Button>
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
@@ -519,6 +575,53 @@ export function UserConfiguration() {
                         <Button variant="outline" onClick={() => setUserToAssignRole(null)} disabled={isAssigningRole}>Cancelar</Button>
                         <Button onClick={handleAssignRole} disabled={isAssigningRole}>
                             {isAssigningRole ? "Salvando..." : "Salvar Alterações"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Dialog: Configurar Filas */}
+            <Dialog open={!!userToConfigQueues} onOpenChange={(open) => { if (!open) setUserToConfigQueues(null); }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Configurar Filas de Acesso</DialogTitle>
+                        <DialogDescription>
+                            Selecione as filas que <strong>{userToConfigQueues?.fullName}</strong> poderá atender no guichê.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
+                        {availableQueues.length === 0 ? (
+                            <p className="text-sm text-muted-foreground text-center py-4">Nenhuma fila ativa encontrada.</p>
+                        ) : (
+                            availableQueues.map((queue) => {
+                                const id = `queue-${queue.id}`;
+                                return (
+                                    <div key={queue.id} className="flex items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm hover:bg-accent/50 transition-colors">
+                                        <Checkbox
+                                            id={id}
+                                            checked={selectedQueueIds.includes(queue.id)}
+                                            onCheckedChange={() => toggleQueue(queue.id)}
+                                            disabled={isConfiguringQueues}
+                                        />
+                                        <div className="grid gap-1.5 leading-none">
+                                            <UILabel
+                                                htmlFor={id}
+                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                            >
+                                                {queue.name}
+                                            </UILabel>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setUserToConfigQueues(null)} disabled={isConfiguringQueues}>Cancelar</Button>
+                        <Button onClick={handleSaveQueuePermissions} disabled={isConfiguringQueues}>
+                            {isConfiguringQueues ? "Salvando..." : "Salvar Alterações"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

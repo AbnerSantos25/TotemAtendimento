@@ -5,6 +5,7 @@ import type {
   PasswordCalledPayload,
   PasswordCreatedPayload,
   PasswordServedPayload,
+  QueuePasswordUpdatedPayload,
 } from "@/services/interfaces/ISignalRService";
 
 export interface UseSignalROptions {
@@ -15,6 +16,7 @@ export interface UseSignalROptions {
   onPasswordServed?: (data: PasswordServedPayload) => void;
   onNewPasswordAssigned?: (data: NewPasswordAssignedPayload) => void;
   onPasswordCreated?: (data: PasswordCreatedPayload) => void;
+  onQueuePasswordUpdated?: (data: QueuePasswordUpdatedPayload) => void;
 }
 
 export interface UseSignalRResult {
@@ -45,6 +47,10 @@ export const useSignalR = (options: UseSignalROptions): UseSignalRResult => {
     if (optionsRef.current.onPasswordCreated) {
       signalRService.onPasswordCreated(optionsRef.current.onPasswordCreated);
     }
+    if (optionsRef.current.onQueuePasswordUpdated) {
+        signalRService.onQueuePasswordUpdated(optionsRef.current.onQueuePasswordUpdated);
+    }
+
   }, []);
 
   const connect = useCallback(
@@ -73,11 +79,14 @@ export const useSignalR = (options: UseSignalROptions): UseSignalRResult => {
     connect(options.serviceLocationId, options.queueId);
 
     return () => {
+      if (options.queueId) {
+        void signalRService.leaveQueueAsync(options.queueId);
+      }
       signalRService.offAll();
       void signalRService.stopAsync();
       setIsConnected(false);
     };
-  }, [options.serviceLocationId, connect]);
+  }, [options.serviceLocationId, options.queueId, connect]);
 
   useEffect(() => {
     if (!isConnected || !options.queueId) return;
@@ -87,3 +96,4 @@ export const useSignalR = (options: UseSignalROptions): UseSignalRResult => {
 
   return { isConnected, connectionError };
 };
+

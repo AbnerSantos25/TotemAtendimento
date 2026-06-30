@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Megaphone, Play, RefreshCcw, CheckCircle2, Monitor, ArrowRight, Loader2, MessageCircleWarning } from "lucide-react";
+import { Megaphone, Play, RefreshCcw, CheckCircle2, Monitor, ArrowRight, Loader2, MessageCircleWarning, Users } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ import type {
   PasswordServedPayload,
   NewPasswordAssignedPayload,
   PasswordCreatedPayload,
+  QueuePasswordUpdatedPayload
 } from "@/services/interfaces/ISignalRService";
 
 // ---------------------------------------------------------------------------
@@ -123,6 +124,11 @@ export function MeuGuiche() {
     fetchData();
   }, [fetchData]);
 
+  const handleQueuePasswordUpdated = useCallback((_data: QueuePasswordUpdatedPayload) => {
+    // Refresh the full password list so "Em Outros Guiches" updates in real-time
+    fetchData();
+  }, [fetchData]);
+
   const { isConnected } = useSignalR({
     serviceLocationId: selectedWorkstationId,
     queueId: selectedQueueId || null,
@@ -130,6 +136,7 @@ export function MeuGuiche() {
     onPasswordServed: handlePasswordServed,
     onNewPasswordAssigned: handleNewPasswordAssigned,
     onPasswordCreated: handlePasswordCreated,
+    onQueuePasswordUpdated: handleQueuePasswordUpdated,
   });
 
   // ---------------------------------------------------------------------------
@@ -249,6 +256,29 @@ export function MeuGuiche() {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
+  // Se o usuário não tiver acesso a nenhuma fila
+  if (!loading && availableQueues.length === 0) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center p-4">
+        <Card className="w-full max-w-md shadow-lg border-amber-200 bg-amber-50/30 dark:bg-amber-950/20 dark:border-amber-900/50">
+          <CardContent className="flex flex-col items-center justify-center p-10 text-center">
+            <Users className="mb-4 h-12 w-12 text-amber-500" />
+            <h2 className="mb-2 text-2xl font-bold text-foreground">Acesso Restrito</h2>
+            <p className="mb-6 text-muted-foreground">
+              Você não possui permissão para acessar nenhuma fila de atendimento.
+            </p>
+            <Button variant="outline" className="w-full" disabled>
+              Solicite acesso ao seu gestor
+            </Button>
+            <Button variant="ghost" className="mt-4 text-xs" onClick={handleLogoutWorkstation}>
+              Trocar Guichê
+            </Button>
+          </CardContent>
         </Card>
       </div>
     );
@@ -498,6 +528,8 @@ export function MeuGuiche() {
               </ScrollArea>
             </div>
           </Card>
+
+
         </div>
       </div>
     </div>

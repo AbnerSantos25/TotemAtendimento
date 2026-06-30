@@ -24,6 +24,8 @@ builder.Services.AddRateLimitingConfiguration();
 
 var app = builder.Build();
 
+await app.Services.InitializeDatabaseAsync();
+
 app.UseMiddleware<Totem.API.Middleware.GlobalExceptionMiddleware>();
 
 app.MapHub<PasswordHub>("/api/passwordHub");

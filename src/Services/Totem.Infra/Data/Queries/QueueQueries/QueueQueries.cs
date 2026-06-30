@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +35,20 @@ namespace Totem.Infra.Data.Queries.QueueQueries
 
 			return queueSummaries;
 		}
+
+		public async Task<List<QueueSummary>> GetListByIdsAsync(List<Guid> queueIds)
+		{
+			return await _context.Queues
+				.Where(q => queueIds.Contains(q.Id))
+					.Select(x => new QueueSummary
+					{
+						Id = x.Id,
+						Name = x.Name,
+						IsActive = x.IsActive
+					})
+				.ToListAsync();
+		}
+
 		public async Task<QueueView> GetByIdAsync(Guid id)
 		{
 			return await _context.Queues.SingleOrDefaultAsync(x => x.Id == id);

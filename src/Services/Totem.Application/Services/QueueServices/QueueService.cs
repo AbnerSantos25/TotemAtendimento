@@ -1,20 +1,23 @@
-﻿using Totem.Common.Domain.Notification;
+using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.QueueAggregate;
+using Totem.Domain.Aggregates.QueueAggregate;
+using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.QueueModels;
-
 namespace Totem.Application.Services.QueueServices
 {
 	public class QueueService : BaseService, IQueueServices
 	{
 		private readonly IQueueRepository _repository;
 		private readonly IQueueQueries _queries;
+		private readonly IUserQueuePermissionRepository _permissionRepository;
 
-		public QueueService(INotificator notificador, IQueueRepository repository, IQueueQueries queries) : base(notificador)
+		public QueueService(INotificator notificador, IQueueRepository repository, IQueueQueries queries, IUserQueuePermissionRepository permissionRepository) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;
+			_permissionRepository = permissionRepository;
 		}
 
 		public async Task<Result> AddAsync(QueueRequest request)
@@ -92,6 +95,24 @@ namespace Totem.Application.Services.QueueServices
 		public async Task<(Result result, List<QueueSummary> data)> GetListAsync()
 		{
 			return Successful(await _queries.GetListAsync());
+		}
+
+		public async Task<(Result result, List<QueueSummary> data)> GetListByPermissionAsync(Guid userId, bool isAdminOrManager)
+		{
+			if (isAdminOrManager)
+			{
+				return await GetListAsync();
+			}
+
+			var allowedQueueIds = await _permissionRepository.GetAllowedQueueIdsAsync(userId);
+			
+			if (allowedQueueIds.Count == 0)
+			{
+				return Successful(new List<QueueSummary>());
+			}
+
+			var queues = await _queries.GetListByIdsAsync(allowedQueueIds);
+			return Successful(queues);
 		}
 
 		public async Task<Result> ToggleStatusQueue(Guid id)
