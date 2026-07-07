@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { queueService } from "@/services/QueueService";
 import type { QueueView } from "@/models/QueueModels";
@@ -16,6 +19,14 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import {
     Dialog,
     DialogContent,
     DialogDescription,
@@ -31,6 +42,12 @@ import { EmptyState } from "@/components/EmptyState";
 import { TableSkeleton } from "@/components/TableSkeleton";
 import { FolderSearch } from "lucide-react";
 
+const QueueSchema = z.object({
+    name: z.string().min(1, { message: "O nome da fila é obrigatório." }),
+    isActive: z.boolean()
+});
+type QueueFormValues = z.infer<typeof QueueSchema>;
+
 export function QueueConfiguration() {
     const [queues, setQueues] = useState<QueueView[]>([]);
     const [loading, setLoading] = useState(true);
@@ -38,18 +55,20 @@ export function QueueConfiguration() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-    const [newQueueName, setNewQueueName] = useState("");
-    const [newQueueActive, setNewQueueActive] = useState(true);
+
+    const form = useForm<QueueFormValues>({
+        resolver: zodResolver(QueueSchema),
+        defaultValues: {
+            name: "",
+            isActive: true,
+        },
+    });
 
     const [queueToDelete, setQueueToDelete] = useState<{ id: string, name: string } | null>(null);
 
     const fetchQueues = async () => {
         setLoading(true);
 
-        // Simulando delay de rede de 2 segundos para ver os Skeletons (REMOVA DEPOIS!)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Em um cenário real, você buscaria da API. Aqui vamos usar dados fixos ou chamadas de fallback até a API estar pronta.
         const response = await queueService.getAllQueuesAsync();
 
         if (response.success && response.data) {
@@ -71,24 +90,32 @@ export function QueueConfiguration() {
         return true;
     });
 
-    const handleAddQueue = async () => {
-        if (!newQueueName.trim()) {
-            AGShowMessage.warning({ title: "Atenção", description: "O nome da fila é obrigatório." });
-            return;
+    const handleOpenChange = (open: boolean) => {
+        setIsAddDialogOpen(open);
+        if (!open) {
+            form.reset();
         }
+    };
 
-        const dto = { name: newQueueName, isActive: newQueueActive };
+    const onSubmit = async (values: QueueFormValues) => {
+        const dto = { name: values.name, isActive: values.isActive };
         const response = await queueService.createQueueAsync(dto);
 
         if (response.success && response.data) {
+
+            const newQueue: QueueView = {
+                id: response.data,
+                name: dto.name,
+                isActive: dto.isActive,
+            }
+
             AGShowMessage.success({ title: "Sucesso", description: "Fila criada com sucesso." });
-            setQueues(prev => [...prev, response.data]);
+            setQueues(prev => [...prev, newQueue]);
+            setIsAddDialogOpen(false);
+            form.reset();
         } else if (!response.success && response.error) {
             AGShowMessage.error({ title: "Erro na Criação", description: response.error.message || "Não foi possível criar a fila." });
         }
-        setIsAddDialogOpen(false);
-        setNewQueueName("");
-        setNewQueueActive(true);
     };
 
     const handleToggleStatus = async (queue: QueueView, newStatus: boolean) => {
@@ -233,7 +260,7 @@ export function QueueConfiguration() {
                 </CardContent>
             </Card>
 
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <Dialog open={isAddDialogOpen} onOpenChange={handleOpenChange}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Adicionar Nova Fila</DialogTitle>
@@ -242,31 +269,48 @@ export function QueueConfiguration() {
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">Nome da Fila</Label>
-                            <Input
-                                id="name"
-                                value={newQueueName}
-                                onChange={(e) => setNewQueueName(e.target.value)}
-                                placeholder="Ex: Prioritário"
-                                autoFocus
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nome da Fila</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Ex: Prioritário"
+                                                autoFocus
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
                             />
-                        </div>
-                        <div className="flex items-center space-x-2 mt-2">
-                            <Switch
-                                id="active"
-                                checked={newQueueActive}
-                                onCheckedChange={setNewQueueActive}
-                            />
-                            <Label htmlFor="active">Ativar Imediatamente</Label>
-                        </div>
-                    </div>
 
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancelar</Button>
-                        <Button onClick={handleAddQueue}>Salvar Fila</Button>
-                    </DialogFooter>
+                            <FormField
+                                control={form.control}
+                                name="isActive"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-center space-x-2 space-y-0 mt-2">
+                                        <FormControl>
+                                            <Switch
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                        <FormLabel>Ativar Imediatamente</FormLabel>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <DialogFooter className="pt-4">
+                                <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>Cancelar</Button>
+                                <Button type="submit">Salvar Fila</Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
                 </DialogContent>
             </Dialog>
 

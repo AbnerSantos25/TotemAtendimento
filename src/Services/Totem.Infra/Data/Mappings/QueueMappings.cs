@@ -8,7 +8,15 @@ namespace Totem.Infra.Data.Mappings
 	{
 		public void Configure(EntityTypeBuilder<Queue> builder)
 		{
+			builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
 
+			builder.Property(x => x.IsActive)
+				.HasDefaultValue(true).IsRequired();
+
+			builder.HasMany(x => x.Passwords)
+				.WithOne(p => p.Queue)
+				.HasForeignKey(x => x.QueueId)
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

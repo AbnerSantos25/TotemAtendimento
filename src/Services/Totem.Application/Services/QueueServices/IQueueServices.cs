@@ -4,7 +4,7 @@ namespace Totem.Application.Services.QueueServices
 {
 	public interface IQueueServices
 	{
-		public Task<Result> AddAsync(QueueRequest request);
+		public Task<(Result result, Guid data)> AddAsync(QueueRequest request);
 		public Task<Result> UpdateAsync(Guid Id, QueueRequest request);
 		public Task<Result> DeleteAsync(Guid id);
 		public Task<(Result result, List<QueueSummary> data)> GetListAsync();
