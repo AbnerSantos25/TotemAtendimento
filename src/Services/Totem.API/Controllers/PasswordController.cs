@@ -35,7 +35,6 @@ namespace Totem.API.Controllers
             return CustomResponse(await _passwordService.GetListPasswordAsync(queueId));
         }
 
-
         [HttpPost]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddPassword([FromBody] PasswordRequest request)
@@ -69,5 +68,13 @@ namespace Totem.API.Controllers
             if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _passwordService.RemovePasswordAsync(id));
         }
-    }
+
+        [Authorize(Roles = "User")]
+        [EnableRateLimiting("Global")]
+        [HttpGet("latest-calls")]
+		public async Task<IActionResult> GetLatestCalls()
+		{
+			return CustomResponse(await _passwordService.GetLatestCallsAsync());
+		}
+	}
 }
