@@ -191,5 +191,10 @@ namespace Totem.Application.Services.PasswordServices
 
 			return Successful();
 		}
+
+		public async Task<(Result result, List<AttendanceDisplayView> data)> GetLatestCallsAsync()
+		{
+			return Successful(await _passwordQueries.GetLatestCallsAsync());
+		}
 	}
 }

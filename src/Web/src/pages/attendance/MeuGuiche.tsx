@@ -106,7 +106,6 @@ export function MeuGuiche() {
   // ---------------------------------------------------------------------------
   // SignalR event handlers
   // ---------------------------------------------------------------------------
-
   const handlePasswordCalled = useCallback((_data: PasswordCalledPayload) => {
     // Refresh full list to ensure consistency
     fetchData();
