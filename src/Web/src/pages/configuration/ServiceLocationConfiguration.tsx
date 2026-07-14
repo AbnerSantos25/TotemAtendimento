@@ -2,6 +2,24 @@ import { useState, useEffect } from "react";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { serviceLocationService } from "@/services/ServiceLocationService";
 import type { ServiceLocationView } from "@/models/ServiceLocationModels";
+
+//#region import zod
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+//#endregion import zod
+
+//#region Schema Zod
+const ServiceLocationSchema = z.object({
+    name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
+    number: z.number().nullable().optional(),
+});
+
+type ServiceLocationValues = z.infer<typeof ServiceLocationSchema>;
+//#endregion Schema Zod
+
+
 import {
     Table,
     TableBody,
@@ -12,7 +30,6 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
     Dialog,
     DialogContent,
@@ -26,6 +43,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { EmptyState } from "@/components/EmptyState";
 import { TableSkeleton } from "@/components/TableSkeleton";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 export function ServiceLocationConfiguration() {
     const [locations, setLocations] = useState<ServiceLocationView[]>([]);
@@ -33,12 +51,18 @@ export function ServiceLocationConfiguration() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [newName, setNewName] = useState("");
-    const [newNumber, setNewNumber] = useState<string>("");
 
     const [locationIDToEdit, setLocationIdToEdit] = useState<string | null>(null);
 
     const [locationToDelete, setLocationToDelete] = useState<{ id: string, name: string } | null>(null);
+
+    const form = useForm<ServiceLocationValues>({
+        resolver: zodResolver(ServiceLocationSchema),
+        defaultValues: {
+            name: "",
+            number: null
+        }
+    });
 
     const fetchLocations = async () => {
         setLoading(true);
@@ -63,26 +87,20 @@ export function ServiceLocationConfiguration() {
 
     const openAddDialog = () => {
         setLocationIdToEdit(null);
-        setNewName("");
-        setNewNumber("");
+        form.reset();
         setIsDialogOpen(true);
     };
 
     const openEditDialog = (loc: ServiceLocationView) => {
         setLocationIdToEdit(loc.id);
-        setNewName(loc.name);
-        setNewNumber(loc.number !== null && loc.number !== undefined ? loc.number.toString() : "");
+        form.reset();
+        form.setValue("name", loc.name);
+        form.setValue("number", loc.number ?? undefined);
         setIsDialogOpen(true);
     };
 
-    const handleSaveLocation = async () => {
-        if (!newName.trim()) {
-            AGShowMessage.warning({ title: "Atenção", description: "O nome do local é obrigatório." });
-            return;
-        }
-
-        const parsedNumber = newNumber.trim() ? parseInt(newNumber, 10) : null;
-        const dto = { id: locationIDToEdit, name: newName, number: parsedNumber };
+    const handleSaveLocation = async (data: ServiceLocationValues) => {
+        const dto = { id: locationIDToEdit, name: data.name, number: data.number };
 
         if (locationIDToEdit) {
             const response = await serviceLocationService.updateAsync(locationIDToEdit, dto);
@@ -224,6 +242,7 @@ export function ServiceLocationConfiguration() {
                 </CardContent>
             </Card>
 
+
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
@@ -233,35 +252,55 @@ export function ServiceLocationConfiguration() {
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">Nome do Local</Label>
-                            <Input
-                                id="name"
-                                value={newName}
-                                onChange={(e) => setNewName(e.target.value)}
-                                placeholder="Ex: Guichê"
-                                autoFocus
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="number">Número (Opcional)</Label>
-                            <Input
-                                id="number"
-                                type="number"
-                                value={newNumber}
-                                onChange={(e) => setNewNumber(e.target.value)}
-                                placeholder="Ex: 5"
-                            />
-                        </div>
-                    </div>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(handleSaveLocation)} className="space-y-4 pt-4">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nome do Local</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Ex: Guichê 1" autoFocus {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}>
+                            </FormField>
 
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
-                        <Button onClick={handleSaveLocation}>
-                            {locationIDToEdit ? "Salvar Alterações" : "Salvar Local"}
-                        </Button>
-                    </DialogFooter>
+                            <FormField
+                                control={form.control}
+                                name="number"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Número do Local</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Ex: 5"
+                                                type="number"
+                                                {...field}
+                                                value={field.value ?? ""}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    field.onChange(val === "" ? null : Number(val));
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}>
+                            </FormField>
+
+                            <DialogFooter className="pt-4">
+                                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                                    Cancelar
+                                </Button>
+                                <Button type="submit">
+                                    {locationIDToEdit ? "Salvar Alterações" : "Salvar Local"}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
                 </DialogContent>
             </Dialog>
 

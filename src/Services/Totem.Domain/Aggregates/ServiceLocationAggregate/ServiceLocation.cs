@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Totem.Common.Domain;
+﻿using Totem.Common.Domain;
 using Totem.Common.Domain.Entity;
 using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.QueueAggregate;
@@ -16,7 +15,6 @@ namespace Totem.Domain.Aggregates.ServiceLocationAggregate
 
         public ServiceLocation(string name, int? number = null)
 		{
-			//TODO: Abner Validar com Validator
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentException($"{Messages.UnableCreateServiceLocation}", nameof(name));
 
