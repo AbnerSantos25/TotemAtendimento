@@ -57,7 +57,8 @@ export function LoginForm({
       if (result.success) {
         AGShowMessage.success({
           title: "Login realizado!",
-          description: "Bem-vindo de volta ao painel."
+          description: "Bem-vindo de volta ao painel.",
+          duration: 9000
         });
         await signIn(result.data.userView);
       } else {
