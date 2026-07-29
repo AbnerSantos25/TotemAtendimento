@@ -1,5 +1,5 @@
 import type { ServiceResult } from "../../models/baseServiceModels";
-import type { PasswordView, PasswordRequest, PasswordTransferRequest } from "../../models/PasswordModels";
+import type { PasswordView, PasswordRequest, PasswordTransferRequest, AttendanceDisplayView } from "../../models/PasswordModels";
 
 export interface IPasswordService {
     getPasswordByIdAsync(id: string): Promise<ServiceResult<PasswordView>>;
@@ -8,4 +8,5 @@ export interface IPasswordService {
     transferPasswordAsync(passwordId: string, request: PasswordTransferRequest): Promise<ServiceResult<void>>;
     markAsServedAsync(passwordId: string): Promise<ServiceResult<void>>;
     removePasswordAsync(id: string): Promise<ServiceResult<void>>;
+    getLatestCallsAsync(): Promise<ServiceResult<AttendanceDisplayView[]>>;
 }

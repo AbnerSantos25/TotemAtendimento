@@ -60,5 +60,12 @@ namespace Totem.API.RealTime
                            served
                        });
         }
+
+        public Task NotifyPasswordCalledAsync(Guid queueId, int code, string serviceLocationName, bool preferential)
+        {
+            return _hub.Clients
+                       .Group(PasswordHub.QueueGroup(queueId))
+                       .SendAsync("PasswordCalled", new { queueId, code, serviceLocationName, preferential });
+        }
     }
 }

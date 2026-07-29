@@ -18,3 +18,10 @@ export interface PasswordTransferRequest {
     queueId: string;
     name: string;
 }
+
+export interface AttendanceDisplayView {
+    passwordCode: string;
+    serviceLocationName: string;
+    queueName: string;
+    index: number;
+}

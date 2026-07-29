@@ -33,5 +33,10 @@ namespace Totem.Application.Events.Notifications
         /// that another workstation (e.g. Mesa A) called or finished a password.
         /// </summary>
         Task NotifyQueuePasswordUpdatedAsync(Guid queueId, int code, bool preferential, Guid serviceLocationId, string serviceLocationName, bool served);
+
+        /// <summary>
+        /// Notifies the Attendance Display Panel that a password was just called (matched with a ServiceLocation).
+        /// </summary>
+        Task NotifyPasswordCalledAsync(Guid queueId, int code, string serviceLocationName, bool preferential);
     }
 }

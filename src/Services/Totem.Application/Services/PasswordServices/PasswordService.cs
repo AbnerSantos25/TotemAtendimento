@@ -122,6 +122,13 @@ namespace Totem.Application.Services.PasswordServices
 				newServiceLocationName,
 				served: false);
 
+			// Notify the TV Panel that a new password was called
+			await _notifier.NotifyPasswordCalledAsync(
+				queueId,
+				nextPassword.Code,
+				newServiceLocationName,
+				nextPassword.Preferential);
+
 			return Successful<PasswordView>(nextPassword);
 		}
 

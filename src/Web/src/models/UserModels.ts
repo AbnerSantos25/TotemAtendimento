@@ -13,10 +13,12 @@ export interface RegisterUserRequest {
     confirmPassword?: string;
 }
 
+// TODO <AI-Generated>: futuramente removeremos isto, e passaremos a exibir a string recebida em UserSummary (decodificado do JWT)
 export const Role = {
     Admin: 1,
     User: 2,
     Manager: 3,
+    System: 4,
 } as const;
 export type Role = (typeof Role)[keyof typeof Role];
 
@@ -24,6 +26,7 @@ export const RoleLabels: Record<Role, string> = {
     [Role.Admin]: "Administrador",
     [Role.User]: "Usuário",
     [Role.Manager]: "Gerente",
+    [Role.System]: "Sistema",
 };
 
 export interface AssignRoleRequest {
