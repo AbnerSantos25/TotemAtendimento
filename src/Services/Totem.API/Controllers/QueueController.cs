@@ -39,9 +39,9 @@ namespace Totem.API.Controllers
             if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
                 return Unauthorized();
 
-            var isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
+            var hasFullAccess = User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("System");
 
-            return CustomResponse(await _queueServices.GetListByPermissionAsync(userId, isAdminOrManager));
+            return CustomResponse(await _queueServices.GetListByPermissionAsync(userId, hasFullAccess));
         }
 
         [Authorize(Roles = "Admin,Manager")]

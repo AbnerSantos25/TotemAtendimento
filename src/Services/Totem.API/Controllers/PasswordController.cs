@@ -69,7 +69,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _passwordService.RemovePasswordAsync(id));
         }
 
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "System")]
         [EnableRateLimiting("Global")]
         [HttpGet("latest-calls")]
 		public async Task<IActionResult> GetLatestCalls()

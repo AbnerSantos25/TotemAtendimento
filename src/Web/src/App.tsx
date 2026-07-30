@@ -12,6 +12,7 @@ import { UserConfiguration } from "@/pages/configuration/UserConfiguration";
 import { ServiceTypeConfiguration } from "@/pages/configuration/ServiceTypeConfiguration";
 import { MyAccount } from "./pages/user/MyAccount";
 import { MeuGuiche } from "./pages/attendance/MeuGuiche";
+import { AttendanceDisplay } from "./pages/attendance/AttendanceDisplay";
 
 function DashboardTemporario() {
 
@@ -45,6 +46,10 @@ export function App() {
                 <Route path="/gestao/servicos" element={<ServiceTypeConfiguration />} />
               </Route>
             </Route>
+          </Route>
+
+          <Route element={<PrivateRoute allowedRoles={["System"]} />}>
+            <Route path="/painel-senhas" element={<AttendanceDisplay />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/home" replace />} />

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Totem.Application.Events.Notifications;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
@@ -58,6 +58,7 @@ namespace Totem.Application.Services.PasswordMatchingServices
 
 				await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(pwd.Id, oldServiceLocationId, slId, oldServiceLocationName, pwd.ServiceLocation.Name, pwd.Code));
 				await _notifier.NotifyPasswordAssignedAsync(slId, pwd.Code, pwd.CreatedAt);
+				await _notifier.NotifyPasswordCalledAsync(pwd.QueueId, pwd.Code, pwd.ServiceLocation.Name, pwd.Preferential);
 
 				// TODO<Gabriel> Esse evento acima (SignalR) será recebido apenas pela aplicação Blazor?
 				// caso o react native precise receber este evento, ideia: https://medium.com/@adilsonsanchesjunior555/criando-um-chat-em-tempo-real-utilizando-react-native-net-signalr-redux-c0ca499b451a
