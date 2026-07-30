@@ -13,7 +13,6 @@ export interface RegisterUserRequest {
     confirmPassword?: string;
 }
 
-// TODO <AI-Generated>: futuramente removeremos isto, e passaremos a exibir a string recebida em UserSummary (decodificado do JWT)
 export const Role = {
     Admin: 1,
     User: 2,

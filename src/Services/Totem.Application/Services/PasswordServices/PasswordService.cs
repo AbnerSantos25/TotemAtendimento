@@ -111,9 +111,6 @@ namespace Totem.Application.Services.PasswordServices
 
 			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId, oldDescription, newServiceLocationName, nextPassword.Code));
 
-			// Notify ALL attendants in the same queue (including the calling workstation,
-			// which is also a member of the queue group). This replaces the per-workstation
-			// PasswordCalledAsync so we don't double-refresh the caller's screen.
 			await _notifier.NotifyQueuePasswordUpdatedAsync(
 				queueId,
 				nextPassword.Code,
@@ -122,7 +119,6 @@ namespace Totem.Application.Services.PasswordServices
 				newServiceLocationName,
 				served: false);
 
-			// Notify the TV Panel that a new password was called
 			await _notifier.NotifyPasswordCalledAsync(
 				queueId,
 				nextPassword.Code,
