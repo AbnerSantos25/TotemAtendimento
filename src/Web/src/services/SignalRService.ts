@@ -6,6 +6,7 @@ import type {
   PasswordCreatedPayload,
   PasswordServedPayload,
   QueuePasswordUpdatedPayload,
+  PanelPasswordCalledPayload,
 } from "./interfaces/ISignalRService";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
@@ -14,6 +15,7 @@ class SignalRService implements ISignalRService {
   private connection: signalR.HubConnection | null = null;
   private currentServiceLocationId: string | null = null;
   private currentQueueId: string | null = null;
+  private currentQueueIds: string[] = [];
 
   async startAsync(serviceLocationId: string): Promise<void> {
     if (
@@ -63,6 +65,22 @@ class SignalRService implements ISignalRService {
     }
   }
 
+  async joinQueuesAsync(queueIds: string[]): Promise<void> {
+    const toJoin = queueIds.filter(id => !this.currentQueueIds.includes(id));
+    const toLeave = this.currentQueueIds.filter(id => !queueIds.includes(id));
+
+    this.currentQueueIds = [...queueIds];
+
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      for (const id of toLeave) {
+        await this.connection.invoke("LeaveQueue", id);
+      }
+      for (const id of toJoin) {
+        await this.connection.invoke("JoinQueue", id);
+      }
+    }
+  }
+
   async leaveQueueAsync(queueId: string): Promise<void> {
     if (
       this.currentQueueId !== queueId ||
@@ -83,6 +101,9 @@ class SignalRService implements ISignalRService {
         if (this.currentQueueId) {
           await this.connection.invoke("LeaveQueue", this.currentQueueId);
         }
+        for (const id of this.currentQueueIds) {
+          await this.connection.invoke("LeaveQueue", id);
+        }
         if (this.currentServiceLocationId) {
           await this.connection.invoke(
             "LeaveServiceLocation",
@@ -97,6 +118,7 @@ class SignalRService implements ISignalRService {
       this.connection = null;
       this.currentServiceLocationId = null;
       this.currentQueueId = null;
+      this.currentQueueIds = [];
     }
   }
 
@@ -125,6 +147,10 @@ class SignalRService implements ISignalRService {
     this.connection?.on("QueuePasswordUpdated", callback);
   }
 
+  onPanelPasswordCalled(callback: (data: PanelPasswordCalledPayload) => void): void {
+    this.connection?.on("PasswordCalled", callback);
+  }
+
   offAll(): void {
     if (!this.connection) return;
     this.connection.off("PasswordCalled");
@@ -133,6 +159,7 @@ class SignalRService implements ISignalRService {
     this.connection.off("NewPasswordAssigned");
     this.connection.off("PasswordCreated");
     this.connection.off("QueuePasswordUpdated");
+    this.connection.off("PasswordCalled");
   }
 
   isConnected(): boolean {
@@ -149,6 +176,9 @@ class SignalRService implements ISignalRService {
     }
     if (this.currentQueueId) {
       await this.connection.invoke("JoinQueue", this.currentQueueId);
+    }
+    for (const id of this.currentQueueIds) {
+      await this.connection.invoke("JoinQueue", id);
     }
   }
 }

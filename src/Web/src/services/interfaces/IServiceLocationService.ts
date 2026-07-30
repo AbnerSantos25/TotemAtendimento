@@ -1,5 +1,6 @@
 import type { ServiceResult } from "../../models/baseServiceModels";
 import type { ServiceLocationView, ServiceLocationRequest, ServiceLocationReadyRequest } from "../../models/ServiceLocationModels";
+import type { PasswordView } from "../../models/PasswordModels";
 
 export interface IServiceLocationService {
     getListAsync(): Promise<ServiceResult<ServiceLocationView[]>>;

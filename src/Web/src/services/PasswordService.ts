@@ -1,6 +1,6 @@
 import { BaseService } from "./BaseService";
 import type { ServiceResult } from "../models/baseServiceModels";
-import type { PasswordView, PasswordRequest, PasswordTransferRequest } from "../models/PasswordModels";
+import type { PasswordView, PasswordRequest, PasswordTransferRequest, AttendanceDisplayView } from "../models/PasswordModels";
 import type { IPasswordService } from "./interfaces/IPasswordService";
 
 export class PasswordService extends BaseService implements IPasswordService {
@@ -28,6 +28,10 @@ export class PasswordService extends BaseService implements IPasswordService {
 
     public async removePasswordAsync(id: string): Promise<ServiceResult<void>> {
         return this.DeleteAsync<void>(`${this.basePath}/${id}`);
+    }
+
+    public async getLatestCallsAsync(): Promise<ServiceResult<AttendanceDisplayView[]>> {
+        return this.GetAsync<AttendanceDisplayView[]>(`${this.basePath}/latest-calls`);
     }
 }
 

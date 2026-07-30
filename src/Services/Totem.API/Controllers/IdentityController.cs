@@ -31,7 +31,6 @@ namespace Totem.API.Controllers
             var result = await _identityService.RegisterUserAsync(registerUser);
             if (!result.Result.Success) return CustomResponse(result.Result);
 
-            SetAuthCookies(result.Data.Jwt, result.Data.RefreshToken, result.Data.UserView.Id!.Value);
             return CustomResponse((result.Result, result.Data));
         }
 

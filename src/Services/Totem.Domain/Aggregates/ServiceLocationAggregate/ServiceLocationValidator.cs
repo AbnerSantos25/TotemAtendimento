@@ -10,10 +10,9 @@ namespace Totem.Domain.Aggregates.ServiceLocationAggregate
 				.NotEmpty()
 				.NotNull();
 
-			RuleFor(x => x.Number)
-				.NotEmpty()
-				.NotNull();
+			RuleFor(x => x.Name)
+				.Length(3, 100)
+				.WithMessage("O campo {PropertyName} deve ter entre {MinLength} e {MaxLength} caracteres.");
 		}
-
 	}
 }

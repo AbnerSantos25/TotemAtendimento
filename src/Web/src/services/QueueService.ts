@@ -14,8 +14,8 @@ export class QueueService extends BaseService implements IQueueService {
         return this.GetAsync<QueueView>(`${this.basePath}/${id}`);
     }
 
-    public async createQueueAsync(dto: QueueRequest): Promise<ServiceResult<QueueView>> {
-        return this.PostAsync<QueueView, QueueRequest>(this.basePath, dto);
+    public async createQueueAsync(dto: QueueRequest): Promise<ServiceResult<string>> {
+        return this.PostAsync<string, QueueRequest>(this.basePath, dto);
     }
 
     public async updateQueueAsync(id: string, dto: QueueRequest): Promise<ServiceResult<QueueView>> {

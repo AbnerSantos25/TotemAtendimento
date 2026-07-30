@@ -42,6 +42,7 @@ const data = {
       isActive: false,
       items: [
         { title: "Meu Guichê", url: "/meu-guiche" },
+        { title: "Painel de Senhas", url: "/painel-senhas" },
       ],
     },
     {

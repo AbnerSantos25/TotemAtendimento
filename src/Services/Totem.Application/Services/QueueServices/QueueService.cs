@@ -20,25 +20,25 @@ namespace Totem.Application.Services.QueueServices
 			_permissionRepository = permissionRepository;
 		}
 
-		public async Task<Result> AddAsync(QueueRequest request)
+		public async Task<(Result result, Guid data)> AddAsync(QueueRequest request)
 		{
 			if (request == null)
-				return Unsuccessful();
-
-			var queue = new Queue(request.Name);
-
-			if (!ExecuteValidation(new QueueValidator(), queue))
-				return Unsuccessful();
+				return Unsuccessful<Guid>();
 
 			if (await _repository.ExistsAsync(request.Name))
-				return Unsuccessful(Errors.RegisterAlreadyExists);
+				return Unsuccessful<Guid>(Errors.RegisterAlreadyExists);
+
+			var queue = new Queue(request.Name, request.IsActive);
+
+			if (!ExecuteValidation(new QueueValidator(), queue))
+				return Unsuccessful<Guid>();
 
 			_repository.Add(queue);
 
 			if (!await _repository.UnitOfWork.CommitAsync())
-				return Unsuccessful(Errors.ErrorSavingDatabase);
+				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase);
 
-			return Successful();
+			return Successful(queue.Id);
 		}
 
 		public async Task<Result> UpdateAsync(Guid Id, QueueRequest request)

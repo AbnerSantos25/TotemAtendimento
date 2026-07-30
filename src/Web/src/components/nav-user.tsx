@@ -1,12 +1,5 @@
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
-import {
-  IconCreditCard,
-  IconDotsVertical,
-  IconLogout,
-  IconNotification,
-  IconUserCircle,
-} from "@tabler/icons-react"
 
 import {
   Avatar,

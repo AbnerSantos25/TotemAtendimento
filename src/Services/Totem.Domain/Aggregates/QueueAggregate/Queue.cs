@@ -1,4 +1,4 @@
-﻿using Totem.Domain.Aggregates.PasswordAggregate;
+using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Common.Domain.Entity;
 using Totem.Common.Domain;
 
@@ -8,13 +8,16 @@ namespace Totem.Domain.Aggregates.QueueAggregate
 	{
 		public string Name { get; private set; }
 		public bool IsActive { get; private set; }
+
 		private readonly List<Password> _passwords = new();
 		public IReadOnlyCollection<Password> Passwords => _passwords.AsReadOnly();
 
-		public Queue(string name)
+		protected Queue() {}
+
+		public Queue(string name, bool isActive = true)
 		{
 			Name = name;
-			IsActive = true;
+			IsActive = isActive;
 		}
 
 		public void AddPassword(Password password) => _passwords.Add(password);

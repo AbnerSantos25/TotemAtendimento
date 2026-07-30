@@ -119,6 +119,12 @@ namespace Totem.Application.Services.PasswordServices
 				nextPassword.Code,
 				nextPassword.Preferential));
 
+			await _notifier.NotifyPasswordCalledAsync(
+				queueId,
+				nextPassword.Code,
+				newServiceLocationName,
+				nextPassword.Preferential);
+
 			return Successful<PasswordView>(nextPassword);
 		}
 
@@ -179,6 +185,11 @@ namespace Totem.Application.Services.PasswordServices
 				password.Preferential));
 
 			return Successful();
+		}
+
+		public async Task<(Result result, List<AttendanceDisplayView> data)> GetLatestCallsAsync()
+		{
+			return Successful(await _passwordQueries.GetLatestCallsAsync());
 		}
 	}
 }

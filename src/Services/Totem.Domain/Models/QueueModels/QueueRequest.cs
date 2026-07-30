@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Totem.Common.Validation;
+﻿using Totem.Common.Validation;
 
 namespace Totem.Domain.Models.QueueModels
 {
@@ -7,6 +6,6 @@ namespace Totem.Domain.Models.QueueModels
     {
 		[RequiredValidation]
 		public string Name { get; set; }
-        public bool Active { get; set; }
+        public bool IsActive { get; set; }
     }
 }

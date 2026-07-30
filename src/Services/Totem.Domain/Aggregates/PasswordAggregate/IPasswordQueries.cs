@@ -5,5 +5,6 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
     public interface IPasswordQueries
     {
         Task<List<PasswordView>> GetListPasswordsAsync(Guid queueId);
-    }
+        Task<List<AttendanceDisplayView>> GetLatestCallsAsync();
+	}
 }
