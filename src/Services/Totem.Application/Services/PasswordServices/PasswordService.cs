@@ -1,5 +1,4 @@
 using MediatR;
-using Totem.Application.Events.Notifications;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
@@ -18,7 +17,6 @@ namespace Totem.Application.Services.PasswordServices
 		private readonly IPasswordRepository _passwordRepository;
 		private readonly IPasswordQueries _passwordQueries;
 		private readonly IMediator _mediator;
-		private readonly IRealTimeNotifier _notifier;
 
 		public PasswordService(
 			INotificator notificador,
@@ -26,14 +24,12 @@ namespace Totem.Application.Services.PasswordServices
 			IPasswordQueries passwordQueries,
 			PasswordValidations passwordValidation,
 			IServiceLocationRepository serviceLocationRepository,
-			IMediator mediator,
-			IRealTimeNotifier notifier
+			IMediator mediator
 		) : base(notificador)
 		{
 			_passwordRepository = passwordRepository;
 			_passwordQueries = passwordQueries;
 			_mediator = mediator;
-			_notifier = notifier;
 		}
 
 		public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
@@ -49,13 +45,12 @@ namespace Totem.Application.Services.PasswordServices
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
 
-			await _notifier.NotifyPasswordCreatedAsync(
+			await _mediator.Publish(new PasswordCreatedEvent(
+				password.Id,
 				password.QueueId,
 				password.Code,
 				password.CreatedAt,
-				password.Preferential);
-
-			await _mediator.Publish(new PasswordCreatedEvent(password.Id, password.QueueId));
+				password.Preferential));
 
 			return Successful(password.Id);
 		}
@@ -81,7 +76,12 @@ namespace Totem.Application.Services.PasswordServices
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
 
-			await _mediator.Publish(new PasswordCreatedEvent(passwordId, passwordTransfer.QueueId));
+			await _mediator.Publish(new PasswordCreatedEvent(
+				passwordId,
+				passwordTransfer.QueueId,
+				password.Code,
+				password.CreatedAt,
+				password.Preferential));
 
 			await _mediator.Publish(new PasswordQueueChangedEvent(password.Id, oldQueueId, passwordTransfer.QueueId, password.Code, oldQueueName, passwordTransfer.Name));
 
@@ -109,18 +109,15 @@ namespace Totem.Application.Services.PasswordServices
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful<IPasswordView>(Errors.ErrorSavingDatabase.ToString());
 
-			await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(nextPassword.Id, oldServiceLocation, serviceLocationId, oldDescription, newServiceLocationName, nextPassword.Code));
-
-			// Notify ALL attendants in the same queue (including the calling workstation,
-			// which is also a member of the queue group). This replaces the per-workstation
-			// PasswordCalledAsync so we don't double-refresh the caller's screen.
-			await _notifier.NotifyQueuePasswordUpdatedAsync(
+			await _mediator.Publish(new PasswordCalledEvent(
+				nextPassword.Id,
 				queueId,
-				nextPassword.Code,
-				nextPassword.Preferential,
 				serviceLocationId,
 				newServiceLocationName,
-				served: false);
+				oldServiceLocation,
+				oldDescription,
+				nextPassword.Code,
+				nextPassword.Preferential));
 
 			return Successful<PasswordView>(nextPassword);
 		}
@@ -173,21 +170,13 @@ namespace Totem.Application.Services.PasswordServices
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
 
-			await _mediator.Publish(new PasswordMarkedAsServedHistoryEvent(passwordId, code));
-
-			// Notify the attendant's own workstation group that the password was served
-			if (serviceLocationId.HasValue)
-				await _notifier.NotifyPasswordServedAsync(serviceLocationId.Value, code);
-
-			// Notify ALL attendants in the same queue so other workstations remove this
-			// password from their "Em Atendimento em Outros Guiches" card
-			await _notifier.NotifyQueuePasswordUpdatedAsync(
+			await _mediator.Publish(new PasswordServedEvent(
+				passwordId,
 				password.QueueId,
-				code,
-				password.Preferential,
 				serviceLocationId ?? Guid.Empty,
 				password.ServiceLocation?.Name ?? string.Empty,
-				served: true);
+				code,
+				password.Preferential));
 
 			return Successful();
 		}

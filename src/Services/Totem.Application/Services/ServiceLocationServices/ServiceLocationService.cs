@@ -1,8 +1,9 @@
-using Totem.Application.Events.Notifications;
+using MediatR;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
+using Totem.Domain.Aggregates.PasswordAggregate.Events;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Models.ServiceLocationModels;
 using Totem.SharedKernel.Models;
@@ -16,7 +17,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 		private readonly IServiceLocationQueries _queries;
 		private readonly IPasswordIntegrationService _passwordIntegrationService;
 		private readonly IPasswordRepository _passwordRepository;
-		private readonly IRealTimeNotifier _notifier;
+		private readonly IMediator _mediator;
 
 		public ServiceLocationService(
 			INotificator notificador,
@@ -24,14 +25,14 @@ namespace Totem.Application.Services.ServiceLocationServices
 			IServiceLocationQueries queries,
 			IPasswordIntegrationService passwordIntegrationService,
 			IPasswordRepository passwordRepository,
-			IRealTimeNotifier notifier
+			IMediator mediator
 		) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;
 			_passwordIntegrationService = passwordIntegrationService;
 			_passwordRepository = passwordRepository;
-			_notifier = notifier;
+			_mediator = mediator;
 		}
 
 		public async Task<(Result result, Guid data)> AddAsync(ServiceLocationRequest request)
@@ -130,7 +131,10 @@ namespace Totem.Application.Services.ServiceLocationServices
 			if (currentPassword == null)
 				return Unsuccessful(Errors.PasswordNotFound.ToString());
 
-			await _notifier.NotifyPasswordRecalledAsync(serviceLocationId, currentPassword.Code, currentPassword.ServiceLocation?.Name ?? string.Empty);
+			await _mediator.Publish(new PasswordRecalledEvent(
+				serviceLocationId, 
+				currentPassword.Code, 
+				currentPassword.ServiceLocation?.Name ?? string.Empty));
 
 			return Successful();
 		}

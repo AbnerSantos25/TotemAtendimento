@@ -2,9 +2,10 @@ import { useEffect, useRef } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { AGShowMessage } from "./AGShowMessage";
+import type { Role } from "@/models/UserModels";
 
 interface PrivateRouteProps {
-    allowedRoles?: string[];
+    allowedRoles?: Role[];
 }
 
 export function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
@@ -16,7 +17,7 @@ export function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
 
     const hasPermission = !allowedRoles || allowedRoles.length === 0 ||
         (user?.roles && user.roles.some(userRole =>
-            allowedRoles.some(allowed => allowed.toLowerCase() === userRole.toLowerCase())
+            allowedRoles.some(allowed => allowed === userRole)
         ));
 
     useEffect(() => {

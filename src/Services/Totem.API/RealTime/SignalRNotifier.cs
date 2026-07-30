@@ -3,7 +3,7 @@ using Totem.Application.Events.Notifications;
 
 namespace Totem.API.RealTime
 {
-    public class SignalRNotifier : IRealTimeNotifier
+    public class SignalRNotifier : ISignalRNotifier
     {
         private readonly IHubContext<PasswordHub> _hub;
 

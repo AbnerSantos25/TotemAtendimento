@@ -36,7 +36,7 @@ export class ServiceLocationService extends BaseService implements IServiceLocat
     }
 
     public async recallCurrentPasswordAsync(id: string): Promise<ServiceResult<void>> {
-        return this.PostAsync<void, null>(`${this.basePath}/${id}/recall`, null);
+        return this.PostAsync<void, null>(`${this.basePath}/${id}/recall`, null, true);
     }
 }
 

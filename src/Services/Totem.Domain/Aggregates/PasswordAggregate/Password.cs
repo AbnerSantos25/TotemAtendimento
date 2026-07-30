@@ -19,9 +19,8 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		public bool CanBeReassigned => !Served;
 
 
-		//Propriedade EF Core - Relação
-		public Guid QueueId { get; private set; }  // Chave estrangeira
-		public Queue Queue { get; private set; }  // Propriedade de navegação
+		public Guid QueueId { get; private set; }
+		public Queue Queue { get; private set; }
 
 
 		protected Password() { }

@@ -1,6 +1,6 @@
 namespace Totem.Application.Events.Notifications
 {
-    public interface IRealTimeNotifier
+    public interface ISignalRNotifier
     {
         /// <summary>
         /// Notifies when a new password is created and added to the waiting queue.
