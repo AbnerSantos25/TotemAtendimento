@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { AGShowMessage } from "./AGShowMessage";
-import type { Role } from "@/models/UserModels";
+import { Role } from "@/models/UserModels";
 
 interface PrivateRouteProps {
     allowedRoles?: Role[];
@@ -12,13 +12,20 @@ export function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
     const { user, isLoading } = useAuth();
     const hasShownMessage = useRef(false);
 
-    if (!isLoading && user) {
-    }
+    const hasPermission = !allowedRoles || allowedRoles.length === 0 ? true :
+        (user?.roles && user.roles.some((userRole: any) => {
+            let roleNumeric = userRole;
+            if (typeof userRole === "string") {
+                if (Role && userRole in Role) {
+                    roleNumeric = Role[userRole as keyof typeof Role];
+                } else if (!isNaN(Number(userRole))) {
+                    roleNumeric = Number(userRole);
+                }
+            }
 
-    const hasPermission = !allowedRoles || allowedRoles.length === 0 ||
-        (user?.roles && user.roles.some(userRole =>
-            allowedRoles.some(allowed => allowed === userRole)
-        ));
+            const isAllowed = allowedRoles.includes(roleNumeric);
+            return isAllowed;
+        }));
 
     useEffect(() => {
         if (!isLoading && user && !hasPermission && !hasShownMessage.current) {

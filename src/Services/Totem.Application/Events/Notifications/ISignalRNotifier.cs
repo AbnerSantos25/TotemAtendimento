@@ -13,11 +13,6 @@ namespace Totem.Application.Events.Notifications
         Task NotifyPasswordAssignedAsync(Guid serviceLocationId, int code, DateTime createdAt);
 
         /// <summary>
-        /// Notifies when an attendant calls the next password at their workstation.
-        /// </summary>
-        Task NotifyPasswordCalledAsync(Guid serviceLocationId, int code, string patientName);
-
-        /// <summary>
         /// Notifies when an attendant re-calls the current password at their workstation.
         /// </summary>
         Task NotifyPasswordRecalledAsync(Guid serviceLocationId, int code, string patientName);

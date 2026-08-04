@@ -119,12 +119,6 @@ namespace Totem.Application.Services.PasswordServices
 				nextPassword.Code,
 				nextPassword.Preferential));
 
-			await _notifier.NotifyPasswordCalledAsync(
-				queueId,
-				nextPassword.Code,
-				newServiceLocationName,
-				nextPassword.Preferential);
-
 			return Successful<PasswordView>(nextPassword);
 		}
 

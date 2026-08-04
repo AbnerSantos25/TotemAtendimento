@@ -10,29 +10,43 @@ namespace Totem.Application.Events
     /// </summary>
     public sealed class PasswordCalledNotificationHandler : INotificationHandler<PasswordCalledEvent>
     {
-        private readonly ISignalRNotifier _notifier;
+        private readonly ISignalRNotifier _signalRNotifier;
 
         public PasswordCalledNotificationHandler(ISignalRNotifier notifier)
         {
-            _notifier = notifier;
+            _signalRNotifier = notifier;
         }
 
         public async Task Handle(PasswordCalledEvent notification, CancellationToken cancellationToken)
         {
-            // Notifica o guichê específico que uma senha foi atribuída a ele (matching automático)
-            await _notifier.NotifyPasswordAssignedAsync(
+			/// <summary>
+			/// Notifica o guichê específico que uma senha foi atribuída a ele (matching automático)
+			///</summary>
+			await _signalRNotifier.NotifyPasswordAssignedAsync(
                 notification.ServiceLocationId,
                 notification.Code,
                 DateTime.UtcNow);
 
-            // Notifica TODOS os atendentes da fila para que atualizem o painel em tempo real
-            await _notifier.NotifyQueuePasswordUpdatedAsync(
+			///<summary>
+			///Notifica o front que houve alteração na senha.
+			/// </summary>
+			await _signalRNotifier.NotifyQueuePasswordUpdatedAsync(
                 notification.QueueId,
                 notification.Code,
                 notification.Preferential,
                 notification.ServiceLocationId,
                 notification.ServiceLocationName,
                 served: false);
+
+
+			///<summary>
+			/// Notifica que uma senha foi chamada.
+			///</ summary >
+			await _signalRNotifier.NotifyPasswordCalledAsync(
+                notification.QueueId,
+                notification.Code,
+                notification.ServiceLocationName,
+				notification.Preferential);
         }
-    }
+	}
 }

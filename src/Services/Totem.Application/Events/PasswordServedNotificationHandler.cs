@@ -19,13 +19,17 @@ namespace Totem.Application.Events
 
         public async Task Handle(PasswordServedEvent notification, CancellationToken cancellationToken)
         {
-            // Notifica o guichê que atendeu que a senha foi concluída
+            ///<summary>
+            ///Notifica que a senha foi concluída
+            /// </summary>
             await _notifier.NotifyPasswordServedAsync(
                 notification.ServiceLocationId,
                 notification.Code);
 
-            // Notifica TODOS os atendentes da fila para que removam a senha do painel "Em Atendimento"
-            await _notifier.NotifyQueuePasswordUpdatedAsync(
+			///<summary>
+			///Notifica o front que houve alteração na senha.
+			/// </summary>
+			await _notifier.NotifyQueuePasswordUpdatedAsync(
                 notification.QueueId,
                 notification.Code,
                 notification.Preferential,

@@ -39,7 +39,7 @@ export function App() {
               <Route path="/minha-conta" element={<MyAccount />} />
               <Route path="/meu-guiche" element={<MeuGuiche />} />
 
-              <Route element={<PrivateRoute allowedRoles={[Role.Admin, Role.Manager]} />}>
+              <Route element={<PrivateRoute allowedRoles={[Role.Admin]} />}>
                 <Route path="/configurations" element={<Configuration />} />
                 <Route path="/gestao/filas" element={<QueueConfiguration />} />
                 <Route path="/gestao/locais" element={<ServiceLocationConfiguration />} />
@@ -49,7 +49,7 @@ export function App() {
             </Route>
           </Route>
 
-          <Route element={<PrivateRoute allowedRoles={["System"]} />}>
+          <Route element={<PrivateRoute allowedRoles={[Role.System]} />}>
             <Route path="/painel-senhas" element={<AttendanceDisplay />} />
           </Route>
 
