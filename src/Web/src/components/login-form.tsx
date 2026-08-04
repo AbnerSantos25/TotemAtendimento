@@ -55,21 +55,18 @@ export function LoginForm({
       const result = await authService.loginAsync({ email: data.email, password: data.password });
 
       if (result.success) {
-        AGShowMessage.success({
-          title: "Login realizado!",
-          description: "Bem-vindo de volta ao painel."
-        });
         await signIn(result.data.userView);
       } else {
         AGShowMessage.error({
           title: "Falha na autenticação",
-          description: result.error?.message || "E-mail ou senha incorretos."
+          description: result.error?.message || "Contate o suporte técnico, para verificar o ocorrido."
         });
       }
     } catch (err) {
       AGShowMessage.error({
         title: "Erro no servidor",
-        description: "Ocorreu um erro inesperado. Verifique sua conexão."
+        description: "1 - Ocorreu um erro inesperado. Verifique sua conexão.",
+        duration: Infinity
       });
     }
   };

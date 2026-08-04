@@ -3,7 +3,7 @@ using Totem.Application.Events.Notifications;
 
 namespace Totem.API.RealTime
 {
-    public class SignalRNotifier : IRealTimeNotifier
+    public class SignalRNotifier : ISignalRNotifier
     {
         private readonly IHubContext<PasswordHub> _hub;
 
@@ -24,13 +24,6 @@ namespace Totem.API.RealTime
             return _hub.Clients
                        .Group(serviceLocationId.ToString())
                        .SendAsync("NewPasswordAssigned", new { code, createdAt });
-        }
-
-        public Task NotifyPasswordCalledAsync(Guid serviceLocationId, int code, string patientName)
-        {
-            return _hub.Clients
-                       .Group(serviceLocationId.ToString())
-                       .SendAsync("PasswordCalled", new { code, patientName });
         }
 
         public Task NotifyPasswordRecalledAsync(Guid serviceLocationId, int code, string patientName)

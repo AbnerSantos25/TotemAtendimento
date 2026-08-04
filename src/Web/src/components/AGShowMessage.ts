@@ -1,36 +1,38 @@
 import { toast } from "sonner";
 
-// Definimos o que é obrigatório e opcional para as nossas mensagens
 export interface MessageOptions {
     title: string;
     description?: string;
+    duration?: number;
 }
 
-// O nosso serviço de abstração
 export const AGShowMessage = {
 
-    success: ({ title, description }: MessageOptions) => {
+    success: ({ title, description, duration }: MessageOptions) => {
         toast.success(title, {
             description: description,
+            duration: duration
         });
     },
 
-    error: ({ title, description }: MessageOptions) => {
+    error: ({ title, description, duration }: MessageOptions) => {
         toast.error(title, {
             description: description,
+            duration: duration
         });
-        // Futuramente, você pode adicionar aqui: logger.SendToBackend(title, description);
     },
 
-    warning: ({ title, description }: MessageOptions) => {
+    warning: ({ title, description, duration }: MessageOptions) => {
         toast.warning(title, {
             description: description,
+            duration: duration
         });
     },
 
-    info: ({ title, description }: MessageOptions) => {
+    info: ({ title, description, duration }: MessageOptions) => {
         toast.info(title, {
             description: description,
+            duration: duration
         });
     }
 };

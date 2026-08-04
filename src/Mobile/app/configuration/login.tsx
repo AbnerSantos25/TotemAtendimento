@@ -42,8 +42,6 @@ export default function LoginScreen() {
     setIsLoading(true);
 
     try {
-      // 1. Faz a requisição na API
-      // Nota: Ajusta o endpoint se necessário ("/totem/identity/login")
       const response = await BaseService.PostAsync<AuthData, UserRequest>(
         "/totem/identity/login",
         loginRequest

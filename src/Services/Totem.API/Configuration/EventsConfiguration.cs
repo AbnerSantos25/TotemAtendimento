@@ -1,4 +1,4 @@
-﻿using Totem.API.RealTime;
+using Totem.API.RealTime;
 using Totem.Application.Events;
 using Totem.Application.Events.Notifications;
 using Totem.Domain.Aggregates.PasswordAggregate.Events;
@@ -9,12 +9,12 @@ namespace Totem.API.Configuration
     {
         public static void AddEventsConfiguration(this IServiceCollection services)
         {
-            services.AddScoped<IRealTimeNotifier, SignalRNotifier>();
+            services.AddScoped<ISignalRNotifier, SignalRNotifier>();
 
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblyContaining<PasswordCreatedEvent>();
-                cfg.RegisterServicesFromAssemblyContaining<PasswordMarkedAsServedHistoryEvent>();
+                cfg.RegisterServicesFromAssemblyContaining<PasswordServedEvent>();
                 cfg.RegisterServicesFromAssembly(typeof(SaveRefreshTokenEventHandler).Assembly);
             });
         }

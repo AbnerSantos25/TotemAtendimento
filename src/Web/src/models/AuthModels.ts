@@ -1,3 +1,5 @@
+import type { Role } from "./UserModels";
+
 export interface UserRequest {
     FullName: string;
     email?: string;
@@ -16,7 +18,7 @@ export interface UserView {
     email: string;
     isActive?: boolean;
     profileImageUrl?: string;
-    roles?: string[];
+    roles?: Role[];
 }
 
 export interface AuthResult {

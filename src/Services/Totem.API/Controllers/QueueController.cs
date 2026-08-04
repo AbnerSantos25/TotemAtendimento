@@ -31,6 +31,8 @@ namespace Totem.API.Controllers
         [Authorize]
         public async Task<IActionResult> GetListAsync()
         {
+
+            //TODO: (abner) Rever essa logica, poderia estar no serviço?
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 

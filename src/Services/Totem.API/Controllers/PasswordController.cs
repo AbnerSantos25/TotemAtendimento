@@ -40,8 +40,8 @@ namespace Totem.API.Controllers
         public async Task<IActionResult> AddPassword([FromBody] PasswordRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
-            var teste = await _passwordService.AddPasswordAsync(request);
-            return CustomResponse(teste);
+            var response = await _passwordService.AddPasswordAsync(request);
+            return CustomResponse(response);
         }
 
         [HttpPost("{passwordId}/transfer")]

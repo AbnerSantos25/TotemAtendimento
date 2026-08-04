@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
     Form,
     FormControl,
@@ -49,14 +50,15 @@ import { TableSkeleton } from "@/components/TableSkeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label as UILabel } from "@/components/ui/label";
 import { z } from "zod";
+import { passwordSchema } from "@/lib/schemas/passwordSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const userSchema = z.object({
     fullName: z.string().min(1, "O nome completo é obrigatório."),
     email: z.string().min(1, "O e-mail é obrigatório.").email("E-mail inválido."),
-    password: z.string().min(6, "No mínimo 6 caracteres."),
-    confirmPassword: z.string().min(6, "No mínimo 6 caracteres."),
+    password: passwordSchema,
+    confirmPassword: z.string().min(1, "Confirme a senha."),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não conferem.",
     path: ["confirmPassword"],
@@ -185,18 +187,21 @@ export function UserConfiguration() {
     };
 
     const openAssignRoleDialog = (user: UserSummary) => {
-        // Inicializa com as roles que o usuário já possui
+        const roleValues = Object.values(Role) as number[];
+        const roleLabelsEntries = Object.entries(RoleLabels);
+
         const currentRoles = (user.roles || []).map(rName => {
-            const entryByLabel = Object.entries(RoleLabels).find(([_, label]) => label === rName);
-            if (entryByLabel) return Number(entryByLabel[0]) as Role;
+            if (rName in Role) {
+                return Role[rName as keyof typeof Role];
+            }
 
             const numericId = Number(rName);
-            if (!isNaN(numericId) && Object.values(Role).includes(numericId as any)) {
+            if (!isNaN(numericId) && roleValues.includes(numericId)) {
                 return numericId as Role;
             }
 
-            const entryByKey = Object.entries(Role).find(([key]) => key === rName);
-            if (entryByKey && typeof entryByKey[1] === "number") return entryByKey[1] as Role;
+            const entryByLabel = roleLabelsEntries.find(([_, label]) => label === rName);
+            if (entryByLabel) return Number(entryByLabel[0]) as Role;
 
             return null;
         }).filter((r): r is Role => r !== null);
@@ -235,7 +240,7 @@ export function UserConfiguration() {
 
     const openConfigQueuesDialog = async (user: UserSummary) => {
         setUserToConfigQueues(user);
-        
+
         const queuesResponse = await queueService.getAllQueuesAsync();
         if (queuesResponse.success && queuesResponse.data) {
             setAvailableQueues(queuesResponse.data.filter(q => q.isActive));
@@ -459,7 +464,7 @@ export function UserConfiguration() {
                                     <FormItem>
                                         <FormLabel>Senha de Acesso</FormLabel>
                                         <FormControl>
-                                            <Input type="password" placeholder="********" disabled={isSubmitting} {...field} />
+                                            <PasswordInput disabled={isSubmitting} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -472,7 +477,7 @@ export function UserConfiguration() {
                                     <FormItem>
                                         <FormLabel>Confirmar Senha</FormLabel>
                                         <FormControl>
-                                            <Input type="password" placeholder="********" disabled={isSubmitting} {...field} />
+                                            <PasswordInput disabled={isSubmitting} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

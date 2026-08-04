@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { passwordSchema } from "@/lib/schemas/passwordSchema";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -20,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { userService } from "@/services/UserService";
 import { useAuth } from "@/hooks/useAuth";
@@ -29,7 +31,7 @@ import { IconLock } from "@tabler/icons-react";
 const changePasswordSchema = z
   .object({
     oldPassword: z.string().min(1, "Senha atual é obrigatória"),
-    newPassword: z.string().min(6, "A nova senha deve ter pelo menos 6 caracteres"),
+    newPassword: passwordSchema,
     confirmNewPassword: z.string().min(1, "Confirmação de senha é obrigatória"),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
@@ -120,7 +122,7 @@ export const ChangePasswordDialog = () => {
                 <FormItem>
                   <FormLabel>Nova Senha</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <PasswordInput {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
