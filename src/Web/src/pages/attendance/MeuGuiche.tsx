@@ -129,8 +129,9 @@ export function MeuGuiche() {
   }, [fetchData]);
 
   const handlePasswordRecalled = useCallback((_data: PasswordCalledPayload) => {
-    // No frontend state needs to change when recalling since the current password remains the same.
-    // The SignalR event just acts as a hook if we wanted to trigger an audio alert again in the future.
+    //TODO: (Abner) https://github.com/AbnerSantos25/TotemAtendimento/issues/130
+    /* No frontend state needs to change when recalling since the current password remains the same.
+      The SignalR event just acts as a hook if we wanted to trigger an audio alert again in the future.*/
   }, []);
 
   const { isConnected } = useSignalR({

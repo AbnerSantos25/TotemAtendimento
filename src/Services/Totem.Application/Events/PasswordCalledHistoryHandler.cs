@@ -41,8 +41,10 @@ namespace Totem.Application.Events
                 await _historyRepository.AddAsync(history);
 
                 var success = await _historyRepository.UnitOfWork.CommitAsync();
-                if (!success)
-                    Console.WriteLine($"[ERROR] Falha ao salvar histórico da senha {notification.PasswordId}");
+
+				//TODO: (Abner) https://github.com/AbnerSantos25/TotemAtendimento/issues/129
+				if (!success)
+                    Console.WriteLine($"[ERROR] Falha ao salvar histórico da senha {notification.PasswordId}"); 
             }
             catch (Exception ex)
             {

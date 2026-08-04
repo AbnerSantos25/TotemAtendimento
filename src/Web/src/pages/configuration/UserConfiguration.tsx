@@ -191,18 +191,15 @@ export function UserConfiguration() {
         const roleLabelsEntries = Object.entries(RoleLabels);
 
         const currentRoles = (user.roles || []).map(rName => {
-            // 1. Tenta buscar pela chave (ex: "Admin")
             if (rName in Role) {
                 return Role[rName as keyof typeof Role];
             }
 
-            // 2. Tenta buscar pelo valor numérico (ex: "1" ou 1)
             const numericId = Number(rName);
             if (!isNaN(numericId) && roleValues.includes(numericId)) {
                 return numericId as Role;
             }
 
-            // 3. Tenta buscar pelo label descritivo (ex: "Administrador")
             const entryByLabel = roleLabelsEntries.find(([_, label]) => label === rName);
             if (entryByLabel) return Number(entryByLabel[0]) as Role;
 
