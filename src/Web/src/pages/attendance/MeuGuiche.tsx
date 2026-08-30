@@ -134,7 +134,7 @@ export function MeuGuiche() {
       The SignalR event just acts as a hook if we wanted to trigger an audio alert again in the future.*/
   }, []);
 
-  const { isConnected } = useSignalR({
+  const { isConnected, reconnect } = useSignalR({
     serviceLocationId: selectedWorkstationId,
     queueId: selectedQueueId || null,
     onPasswordCalled: handlePasswordCalled,
@@ -343,6 +343,12 @@ export function MeuGuiche() {
             </span>
             {isConnected ? "SignalR Ativo" : "Desconectado"}
           </Badge>
+          {!isConnected && (
+            <Button variant="outline" size="sm" className="h-9 px-3" onClick={() => void reconnect()} title="Sincronizar Novamente">
+              <RefreshCcw className="h-4 w-4 mr-2" />
+              Reconectar
+            </Button>
+          )}
         </div>
       </div>
 
