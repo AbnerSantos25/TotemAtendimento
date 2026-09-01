@@ -15,9 +15,11 @@ namespace Totem.API.Controllers
     {
 
         private readonly IIdentityService _identityService;
-        public IdentityController(INotificator notificator, IIdentityService identityService) : base(notificator)
+        private readonly IWebHostEnvironment _environment;
+        public IdentityController(INotificator notificator, IIdentityService identityService, IWebHostEnvironment environment) : base(notificator)
         {
             _identityService = identityService;
+            _environment = environment;
         }
 
 		[Authorize(Roles = $"{nameof(Role.Manager)}")]
@@ -142,10 +144,13 @@ namespace Totem.API.Controllers
 
         private void SetAuthCookies(string jwt, Guid refreshToken, Guid userId)
         {
+            // Fora de Development os cookies de sessao so trafegam sobre HTTPS.
+            var secure = !_environment.IsDevelopment();
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // TODO: Em produção, alterar para true
+                Secure = secure,
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddHours(1)
             };
@@ -153,7 +158,7 @@ namespace Totem.API.Controllers
             var refreshOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // TODO: Em produção, alterar para true
+                Secure = secure,
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddDays(7),
                 Path = "/api/totem/RefreshToken"
@@ -162,7 +167,7 @@ namespace Totem.API.Controllers
             var userIdOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // TODO: Em produção, alterar para true
+                Secure = secure,
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };

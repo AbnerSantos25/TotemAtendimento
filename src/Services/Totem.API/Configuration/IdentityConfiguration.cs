@@ -11,7 +11,7 @@ namespace Totem.API.Configuration
 {
     public static class IdentityConfiguration
     {
-        public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
             services.AddIdentity<User, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
@@ -32,7 +32,7 @@ namespace Totem.API.Configuration
 
             }).AddJwtBearer(x =>
             {
-                x.RequireHttpsMetadata = false; // TODO: Em produção, alterar para true (exige HTTPS)
+                x.RequireHttpsMetadata = !environment.IsDevelopment();
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {

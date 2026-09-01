@@ -11,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContexts(builder.Configuration);
-builder.Services.AddIdentityConfiguration(builder.Configuration);
+builder.Services.AddIdentityConfiguration(builder.Configuration, builder.Environment);
 
 builder.Services.TotemRegisterDependency();
 builder.Services.AddSwaggerConfiguration(builder.Configuration);
