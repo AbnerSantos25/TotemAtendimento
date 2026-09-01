@@ -340,6 +340,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a CORS: o curinga '*' em 'AllowedOrigins' so e permitido em Development.
+        /// </summary>
+        public static string CorsWildcardNotAllowed {
+            get {
+                return ResourceManager.GetString("CorsWildcardNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Apenas um administrador pode alterar o status de outro administrador.
         /// </summary>
         public static string CannotModifyAdminUser {

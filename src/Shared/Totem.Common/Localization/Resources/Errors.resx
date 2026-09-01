@@ -222,4 +222,7 @@
   <data name="CannotModifyAdminUser" xml:space="preserve">
     <value>Apenas um administrador pode alterar o status de outro administrador.</value>
   </data>
+  <data name="CorsWildcardNotAllowed" xml:space="preserve">
+    <value>CORS: o curinga '*' em 'AllowedOrigins' so e permitido em Development.</value>
+  </data>
 </root>
