@@ -16,13 +16,15 @@ namespace Totem.Infra.Data.Queries.PasswordQueries
 
 		public async Task<List<AttendanceDisplayView>> GetLatestCallsAsync()
 		{
-			return _context.Passwords
+			var passwords = await _context.Passwords
 				.Include(x => x.Queue)
 				.Include(x => x.ServiceLocation)
 				.Where(x => x.ServiceLocationId != null)
 				.OrderByDescending(x => x.CreatedAt)
 				.Take(6)
-				.AsEnumerable()
+				.ToListAsync();
+
+			return passwords
 				.Select((x, index) => new AttendanceDisplayView
 				{
 					PasswordCode = x.Code.ToString(),

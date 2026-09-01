@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Totem.Application.Services.QueueServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
+using Totem.Common.Enumerations;
 using Totem.Domain.Models.QueueModels;
 
 namespace Totem.API.Controllers
@@ -31,17 +32,15 @@ namespace Totem.API.Controllers
         [Authorize]
         public async Task<IActionResult> GetListAsync()
         {
-
-            //TODO: (abner) Rever essa logica, poderia estar no serviço?
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
-            
+
             if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
                 return Unauthorized();
 
-            var hasFullAccess = User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("System");
+            var hasFullAccess = User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.Manager)) || User.IsInRole(nameof(Role.System));
 
             return CustomResponse(await _queueServices.GetListByPermissionAsync(userId, hasFullAccess));
         }

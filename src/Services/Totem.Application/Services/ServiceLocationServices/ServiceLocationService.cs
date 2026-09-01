@@ -56,12 +56,12 @@ namespace Totem.Application.Services.ServiceLocationServices
 
 		public async Task<Result> DeleteAsync(Guid Id)
 		{
-			var serviceLocation = _repository.GetByIdAsync(Id);
+			var serviceLocation = await _repository.GetByIdAsync(Id);
 
-			if (serviceLocation == null)
+			if (serviceLocation is null)
 				return Unsuccessful(Errors.NotFound);
 
-			_repository.Delete(serviceLocation.Result);
+			_repository.Delete(serviceLocation);
 
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase);
@@ -83,8 +83,8 @@ namespace Totem.Application.Services.ServiceLocationServices
 			if (!validator.Validate(ServiceLocationValidator).IsValid)
 				return Unsuccessful();
 
-			var serviceLocation = _repository.GetByIdAsync(Id).Result;
-			if (serviceLocation == null)
+			var serviceLocation = await _repository.GetByIdAsync(Id);
+			if (serviceLocation is null)
 				return Unsuccessful();
 
 			serviceLocation.Update(request.Name, request.Number);

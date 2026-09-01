@@ -97,19 +97,17 @@ namespace Totem.Application.Services.QueueServices
 			return Successful(await _queries.GetListAsync());
 		}
 
-		public async Task<(Result result, List<QueueSummary> data)> GetListByPermissionAsync(Guid userId, bool isAdminOrManager)
+		public async Task<(Result result, List<QueueSummary> data)> GetListByPermissionAsync(Guid userId, bool hasFullAccess)
 		{
-			if (isAdminOrManager)
-			{
+			if (hasFullAccess)
 				return await GetListAsync();
-			}
+			
 
 			var allowedQueueIds = await _permissionRepository.GetAllowedQueueIdsAsync(userId);
 			
 			if (allowedQueueIds.Count == 0)
-			{
 				return Successful(new List<QueueSummary>());
-			}
+			
 
 			var queues = await _queries.GetListByIdsAsync(allowedQueueIds);
 			return Successful(queues);
