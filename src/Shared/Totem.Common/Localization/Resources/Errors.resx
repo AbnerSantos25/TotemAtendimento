@@ -225,4 +225,7 @@
   <data name="CorsWildcardNotAllowed" xml:space="preserve">
     <value>CORS: o curinga '*' em 'AllowedOrigins' so e permitido em Development.</value>
   </data>
+  <data name="QueueAccessDenied" xml:space="preserve">
+    <value>Voce nao tem permissao para acompanhar esta fila.</value>
+  </data>
 </root>

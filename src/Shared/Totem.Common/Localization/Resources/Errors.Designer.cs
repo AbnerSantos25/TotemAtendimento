@@ -349,6 +349,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Voce nao tem permissao para acompanhar esta fila.
+        /// </summary>
+        public static string QueueAccessDenied {
+            get {
+                return ResourceManager.GetString("QueueAccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Apenas um administrador pode alterar o status de outro administrador.
         /// </summary>
         public static string CannotModifyAdminUser {
