@@ -219,4 +219,7 @@
   <data name="CorsAllowedOriginsNotConfigured" xml:space="preserve">
     <value>CORS: 'AllowedOrigins' não está configurado no appsettings.json.</value>
   </data>
+  <data name="CannotModifyAdminUser" xml:space="preserve">
+    <value>Apenas um administrador pode alterar o status de outro administrador.</value>
+  </data>
 </root>

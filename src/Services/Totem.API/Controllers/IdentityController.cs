@@ -75,20 +75,22 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.UpdateEmailAsync(userId, request));
         }
 
+		[Authorize(Roles = nameof(Role.Manager))]
 		[HttpPatch("user/{userId}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid userId)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return CustomResponse(await _identityService.InactiveUser(userId));
+            return CustomResponse(await _identityService.InactiveUser(userId, User.IsInRole(nameof(Role.Admin))));
 		}
 
+		[Authorize(Roles = nameof(Role.Manager))]
 		[HttpPatch("user/{userId}/active")]
         public async Task<ActionResult> ActiveUser([FromRoute] Guid userId)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return CustomResponse(await _identityService.ActiveUser(userId));
+            return CustomResponse(await _identityService.ActiveUser(userId, User.IsInRole(nameof(Role.Admin))));
         }
 
         [Authorize(Roles = $"{nameof(Role.Manager)}")]

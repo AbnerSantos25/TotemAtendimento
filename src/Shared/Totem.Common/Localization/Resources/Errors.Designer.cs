@@ -340,6 +340,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Apenas um administrador pode alterar o status de outro administrador.
+        /// </summary>
+        public static string CannotModifyAdminUser {
+            get {
+                return ResourceManager.GetString("CannotModifyAdminUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário Inativo..
         /// </summary>
         public static string UserInactive {
