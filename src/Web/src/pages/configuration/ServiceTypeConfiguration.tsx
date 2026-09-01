@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels, Messages, Errors } from "@/shared/localization/keys";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { serviceTypeService } from "@/services/ServiceTypeService";
 import { queueService } from "@/services/QueueService";
@@ -71,13 +73,13 @@ export const ServiceTypeConfiguration = () => {
             if (servicesRes.success) {
                 setServiceTypes(servicesRes.data);
             } else {
-                AGShowMessage.error({ title: "Erro", description: servicesRes.error.message });
+                AGShowMessage.error({ title: GetLocalized(Errors.Error), description: servicesRes.error.message });
             }
 
             if (queuesRes.success) {
                 setQueues(queuesRes.data);
             } else {
-                AGShowMessage.error({ title: "Erro", description: queuesRes.error.message });
+                AGShowMessage.error({ title: GetLocalized(Errors.Error), description: queuesRes.error.message });
             }
         } finally {
             setLoading(false);
@@ -123,17 +125,17 @@ export const ServiceTypeConfiguration = () => {
             });
             setIsDialogOpen(true);
         } else {
-            AGShowMessage.error({ title: "Erro ao buscar detalhes", description: response.error.message });
+            AGShowMessage.error({ title: GetLocalized(Errors.ErrorFetchingDetails), description: response.error.message });
         }
     };
 
     const handleSave = async () => {
         if (!formData.title.trim()) {
-            AGShowMessage.warning({ title: "Atenção", description: "O título é obrigatório." });
+            AGShowMessage.warning({ title: GetLocalized(Messages.Warning), description: GetLocalized(Messages.TitleIsRequired) });
             return;
         }
         if (!formData.targetQueueId) {
-            AGShowMessage.warning({ title: "Atenção", description: "Selecione uma fila de destino." });
+            AGShowMessage.warning({ title: GetLocalized(Messages.Warning), description: GetLocalized(Messages.SelectTargetQueue) });
             return;
         }
 
@@ -149,14 +151,14 @@ export const ServiceTypeConfiguration = () => {
 
         if (response.success) {
             AGShowMessage.success({
-                title: "Sucesso",
-                description: `Tipo de serviço ${editingId ? 'atualizado' : 'criado'} com sucesso.`
+                title: GetLocalized(Messages.Success),
+                description: editingId ? GetLocalized(Messages.ServiceTypeUpdated) : GetLocalized(Messages.ServiceTypeCreated)
             });
             setIsDialogOpen(false);
             fetchData(); // Refresh list
         } else {
             AGShowMessage.error({
-                title: "Erro ao salvar",
+                title: GetLocalized(Errors.ErrorSaving),
                 description: response.error.message
             });
         }
@@ -166,12 +168,12 @@ export const ServiceTypeConfiguration = () => {
         const response = await serviceTypeService.toggleStatusAsync(id);
         if (response.success) {
             AGShowMessage.success({
-                title: "Status Atualizado",
-                description: `O serviço foi ${!currentStatus ? 'ativado' : 'desativado'}.`
+                title: GetLocalized(Messages.StatusUpdated),
+                description: !currentStatus ? GetLocalized(Messages.ServiceActivated) : GetLocalized(Messages.ServiceDeactivated)
             });
             setServiceTypes(prev => prev.map(s => s.serviceTypeId === id ? { ...s, isActive: !currentStatus } : s));
         } else {
-            AGShowMessage.error({ title: "Erro", description: response.error.message });
+            AGShowMessage.error({ title: GetLocalized(Errors.Error), description: response.error.message });
         }
     };
 
@@ -179,10 +181,10 @@ export const ServiceTypeConfiguration = () => {
         if (!serviceToDelete) return;
         const response = await serviceTypeService.deleteAsync(serviceToDelete.id);
         if (response.success) {
-            AGShowMessage.success({ title: "Excluído", description: "O tipo de serviço foi removido com sucesso." });
+            AGShowMessage.success({ title: GetLocalized(Messages.Deleted), description: GetLocalized(Messages.ServiceTypeRemoved) });
             setServiceTypes(prev => prev.filter(s => s.serviceTypeId !== serviceToDelete.id));
         } else {
-            AGShowMessage.error({ title: "Erro", description: response.error.message });
+            AGShowMessage.error({ title: GetLocalized(Errors.Error), description: response.error.message });
         }
         setServiceToDelete(null);
     };
@@ -191,24 +193,24 @@ export const ServiceTypeConfiguration = () => {
         <div className="flex flex-col gap-6 p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Tipos de Serviço</h2>
-                    <p className="text-muted-foreground">Configure os botões e categorias de atendimento do Totem.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">{GetLocalized(Labels.ServiceTypes)}</h2>
+                    <p className="text-muted-foreground">{GetLocalized(Labels.ServiceTypesDescription)}</p>
                 </div>
                 <Button onClick={handleOpenCreateDialog} className="w-full md:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Novo Serviço
+                    <Plus className="mr-2 h-4 w-4" /> {GetLocalized(Labels.NewService)}
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Serviços Cadastrados</CardTitle>
-                    <CardDescription>Defina as filas e aparências para cada tipo de senha.</CardDescription>
+                    <CardTitle>{GetLocalized(Labels.RegisteredServices)}</CardTitle>
+                    <CardDescription>{GetLocalized(Labels.RegisteredServicesDescription)}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
                         <div className="relative w-full md:max-w-md">
                             <Input
-                                placeholder="Buscar serviço por título ou prefixo..."
+                                placeholder={GetLocalized(Labels.SearchServiceType)}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="pr-10"
@@ -218,7 +220,7 @@ export const ServiceTypeConfiguration = () => {
                                     type="button"
                                     onClick={() => setSearchTerm("")}
                                     className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 opacity-70 hover:opacity-100 focus:outline-none focus:bg-accent"
-                                    title="Limpar busca"
+                                    title={GetLocalized(Labels.ClearSearch)}
                                 >
                                     <X className="h-4 w-4" />
                                 </button>
@@ -226,12 +228,12 @@ export const ServiceTypeConfiguration = () => {
                         </div>
                         <Select value={filterStatus} onValueChange={(val: any) => setFilterStatus(val)}>
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Status" />
+                                <SelectValue placeholder={GetLocalized(Labels.Status)} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">Todos</SelectItem>
-                                <SelectItem value="active">Ativos</SelectItem>
-                                <SelectItem value="inactive">Inativos</SelectItem>
+                                <SelectItem value="all">{GetLocalized(Labels.All)}</SelectItem>
+                                <SelectItem value="active">{GetLocalized(Labels.ActivePlural)}</SelectItem>
+                                <SelectItem value="inactive">{GetLocalized(Labels.InactivePlural)}</SelectItem>
                             </SelectContent>
                         </Select>
 
@@ -241,7 +243,7 @@ export const ServiceTypeConfiguration = () => {
                                 size="icon"
                                 onClick={fetchData}
                                 disabled={loading}
-                                title="Recarregar Grid"
+                                title={GetLocalized(Labels.ReloadGrid)}
                                 className="h-10 w-10"
                             >
                                 <RefreshCcw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
@@ -253,12 +255,12 @@ export const ServiceTypeConfiguration = () => {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Serviço</TableHead>
-                                    <TableHead>Cor</TableHead>
-                                    <TableHead>Prefixo</TableHead>
-                                    <TableHead>Fila Destino</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Ações</TableHead>
+                                    <TableHead>{GetLocalized(Labels.Service)}</TableHead>
+                                    <TableHead>{GetLocalized(Labels.Color)}</TableHead>
+                                    <TableHead>{GetLocalized(Labels.Prefix)}</TableHead>
+                                    <TableHead>{GetLocalized(Labels.TargetQueue)}</TableHead>
+                                    <TableHead>{GetLocalized(Labels.Status)}</TableHead>
+                                    <TableHead className="text-right">{GetLocalized(Labels.Actions)}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -268,8 +270,8 @@ export const ServiceTypeConfiguration = () => {
                                     <TableRow>
                                         <TableCell colSpan={6} className="p-0">
                                             <EmptyState
-                                                title="Nenhum serviço encontrado"
-                                                description="Nenhum resultado corresponde aos filtros atuais."
+                                                title={GetLocalized(Messages.NoServiceFound)}
+                                                description={GetLocalized(Messages.NoResultMatchesFilters)}
                                                 icon={<FolderSearch className="h-12 w-12 text-muted-foreground/50 mb-2" />}
                                             />
                                         </TableCell>
@@ -302,7 +304,7 @@ export const ServiceTypeConfiguration = () => {
                                             </TableCell>
                                             <TableCell>
                                                 <Badge variant={service.isActive ? "default" : "secondary"}>
-                                                    {service.isActive ? "Ativo" : "Inativo"}
+                                                    {service.isActive ? GetLocalized(Labels.Active) : GetLocalized(Labels.Inactive)}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
@@ -345,37 +347,37 @@ export const ServiceTypeConfiguration = () => {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
-                        <DialogTitle>{editingId ? 'Editar Serviço' : 'Criar Novo Serviço'}</DialogTitle>
+                        <DialogTitle>{editingId ? GetLocalized(Labels.EditService) : GetLocalized(Labels.CreateNewService)}</DialogTitle>
                         <DialogDescription>
-                            Configure a aparência e o comportamento do botão no Totem.
+                            {GetLocalized(Labels.ServiceDialogDescription)}
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4 items-start">
                         <div className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="title">Título do Serviço</Label>
+                                <Label htmlFor="title">{GetLocalized(Labels.ServiceTitle)}</Label>
                                 <Input
                                     id="title"
                                     value={formData.title}
                                     onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
-                                    placeholder="Ex: Consultas Médicas"
+                                    placeholder={GetLocalized(Labels.ExMedicalConsultations)}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="icon">Ícone Bootstrap (Classe)</Label>
+                                <Label htmlFor="icon">{GetLocalized(Labels.BootstrapIconClass)}</Label>
                                 <Input
                                     id="icon"
                                     value={formData.icon ?? ""}
                                     onChange={(e) => setFormData(p => ({ ...p, icon: e.target.value }))}
-                                    placeholder="Ex: bi bi-card-list"
+                                    placeholder={GetLocalized(Labels.ExBootstrapIcon)}
                                 />
                                 <p className="text-[10px] text-muted-foreground italic">
-                                    Acesse <a href="https://icons.getbootstrap.com/" target="_blank" rel="noreferrer" className="underline hover:text-primary">icons.getbootstrap.com</a> para ver todos.
+                                    {GetLocalized(Labels.Access)} <a href="https://icons.getbootstrap.com/" target="_blank" rel="noreferrer" className="underline hover:text-primary">icons.getbootstrap.com</a> {GetLocalized(Labels.ToSeeAll)}
                                 </p>
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="color">Cor de Destaque</Label>
+                                <Label htmlFor="color">{GetLocalized(Labels.HighlightColor)}</Label>
                                 <div className="flex gap-2">
                                     <Input
                                         id="color"
@@ -395,22 +397,22 @@ export const ServiceTypeConfiguration = () => {
 
                         <div className="grid gap-4 max-w-full">
                             <div className="grid gap-2">
-                                <Label htmlFor="prefix">Prefixo da Senha</Label>
+                                <Label htmlFor="prefix">{GetLocalized(Labels.TicketPrefix)}</Label>
                                 <Input
                                     id="prefix"
                                     value={formData.ticketPrefix ?? ""}
                                     onChange={(e) => setFormData(p => ({ ...p, ticketPrefix: e.target.value }))}
-                                    placeholder="Ex: CONS"
+                                    placeholder={GetLocalized(Labels.ExCons)}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="queue">Fila de Destino</Label>
+                                <Label htmlFor="queue">{GetLocalized(Labels.TargetQueue)}</Label>
                                 <Select
                                     value={formData.targetQueueId}
                                     onValueChange={(val) => setFormData(p => ({ ...p, targetQueueId: val }))}
                                 >
                                     <SelectTrigger id="queue">
-                                        <SelectValue placeholder="Selecione uma fila" />
+                                        <SelectValue placeholder={GetLocalized(Labels.SelectQueue)} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {queues.filter(q => q.isActive).map(q => (
@@ -428,7 +430,7 @@ export const ServiceTypeConfiguration = () => {
                                         {renderIcon(formData.icon, "text-3xl")}
                                     </span>
                                     <div className="flex flex-col">
-                                        <span className="leading-tight break-all text-xs">{formData.title || 'Novo Serviço'}</span>
+                                        <span className="leading-tight break-all text-xs">{formData.title || GetLocalized(Labels.NewService)}</span>
                                         <span className="text-xs opacity-75">{formData.ticketPrefix ? `${formData.ticketPrefix}001` : '001'}</span>
                                     </div>
                                 </div>
@@ -437,8 +439,8 @@ export const ServiceTypeConfiguration = () => {
                     </div>
 
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
-                        <Button onClick={handleSave}>Salvar Alterações</Button>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>{GetLocalized(Labels.Cancel)}</Button>
+                        <Button onClick={handleSave}>{GetLocalized(Labels.SaveChanges)}</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -446,10 +448,10 @@ export const ServiceTypeConfiguration = () => {
             <ConfirmDialog
                 open={!!serviceToDelete}
                 onOpenChange={(open) => !open && setServiceToDelete(null)}
-                title="Excluir Serviço"
-                description={`Tem certeza que deseja excluir o serviço "${serviceToDelete?.title}"?`}
+                title={GetLocalized(Labels.DeleteService)}
+                description={`${GetLocalized(Messages.ConfirmDeleteService)} "${serviceToDelete?.title}"?`}
                 onConfirm={handleDelete}
-                confirmText="Confirmar Exclusão"
+                confirmText={GetLocalized(Labels.ConfirmDeletion)}
             />
         </div>
     );

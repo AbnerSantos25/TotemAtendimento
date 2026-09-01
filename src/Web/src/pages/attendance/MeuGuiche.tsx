@@ -19,6 +19,8 @@ import type {
   PasswordCreatedPayload,
   QueuePasswordUpdatedPayload
 } from "@/services/interfaces/ISignalRService";
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels, Messages, Errors } from "@/shared/localization/keys";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -215,7 +217,7 @@ export function MeuGuiche() {
       <div className="flex min-h-[80vh] items-center justify-center p-4">
         <div className="flex flex-col items-center gap-4 text-muted-foreground animate-in fade-in duration-300">
           <Loader2 className="h-10 w-10 animate-spin" />
-          <p className="text-lg font-medium">Carregando informações do guichê...</p>
+          <p className="text-lg font-medium">{GetLocalized(Messages.LoadingWorkstationInfo)}</p>
         </div>
       </div>
     );
@@ -229,15 +231,15 @@ export function MeuGuiche() {
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-600">
               <Monitor className="h-6 w-6" />
             </div>
-            <CardTitle className="text-2xl font-bold">Identificação do Guichê</CardTitle>
-            <CardDescription>Selecione onde você irá realizar os atendimentos hoje.</CardDescription>
+            <CardTitle className="text-2xl font-bold">{GetLocalized(Labels.WorkstationIdentification)}</CardTitle>
+            <CardDescription>{GetLocalized(Messages.SelectWorkstationPrompt)}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Guichê Disponível</label>
+              <label className="text-sm font-medium text-muted-foreground">{GetLocalized(Labels.AvailableWorkstation)}</label>
               <Select onValueChange={handleSelectWorkstation}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecione um guichê..." />
+                  <SelectValue placeholder={GetLocalized(Labels.SelectWorkstationPlaceholder)} />
                 </SelectTrigger>
                 <SelectContent>
                   {availableWorkstations.map((w) => (
@@ -246,7 +248,7 @@ export function MeuGuiche() {
                     </SelectItem>
                   ))}
                   {availableWorkstations.length === 0 && (
-                    <div className="p-2 text-center text-sm text-muted-foreground">Nenhum guichê encontrado</div>
+                    <div className="p-2 text-center text-sm text-muted-foreground">{GetLocalized(Messages.NoWorkstationFound)}</div>
                   )}
                 </SelectContent>
               </Select>
@@ -258,7 +260,7 @@ export function MeuGuiche() {
               disabled={!selectedWorkstationId}
               onClick={() => fetchData()}
             >
-              Iniciar Sessão
+              {GetLocalized(Labels.StartSession)}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
@@ -274,15 +276,15 @@ export function MeuGuiche() {
         <Card className="w-full max-w-md shadow-lg border-amber-200 bg-amber-50/30 dark:bg-amber-950/20 dark:border-amber-900/50">
           <CardContent className="flex flex-col items-center justify-center p-10 text-center">
             <Users className="mb-4 h-12 w-12 text-amber-500" />
-            <h2 className="mb-2 text-2xl font-bold text-foreground">Acesso Restrito</h2>
+            <h2 className="mb-2 text-2xl font-bold text-foreground">{GetLocalized(Labels.RestrictedAccess)}</h2>
             <p className="mb-6 text-muted-foreground">
-              Você não possui permissão para acessar nenhuma fila de atendimento.
+              {GetLocalized(Messages.NoQueuePermission)}
             </p>
             <Button variant="outline" className="w-full" disabled>
-              Solicite acesso ao seu gestor
+              {GetLocalized(Labels.RequestManagerAccess)}
             </Button>
             <Button variant="ghost" className="mt-4 text-xs" onClick={handleLogoutWorkstation}>
-              Trocar Guichê
+              {GetLocalized(Labels.ChangeWorkstation)}
             </Button>
           </CardContent>
         </Card>
@@ -300,21 +302,21 @@ export function MeuGuiche() {
       <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">Painel de Atendimento</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">{GetLocalized(Labels.AttendancePanel)}</h1>
             <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground" onClick={handleLogoutWorkstation}>
-              Trocar Guichê
+              {GetLocalized(Labels.ChangeWorkstation)}
             </Button>
           </div>
-          <p className="text-lg text-muted-foreground">{workstation.name} {workstation.number ? `- Sala ${workstation.number}` : ""}</p>
+          <p className="text-lg text-muted-foreground">{workstation.name} {workstation.number ? `- ${GetLocalized(Labels.Room)} ${workstation.number}` : ""}</p>
         </div>
 
         <div className="flex items-center gap-4">
           {/* Queue Selector */}
           <div className="hidden items-center gap-2 sm:flex">
-            <span className="text-sm font-medium text-muted-foreground">Fila:</span>
+            <span className="text-sm font-medium text-muted-foreground">{GetLocalized(Labels.Queue)}</span>
             <Select value={selectedQueueId} onValueChange={setSelectedQueueId}>
               <SelectTrigger className="w-[180px] h-9">
-                <SelectValue placeholder="Selecione a fila" />
+                <SelectValue placeholder={GetLocalized(Labels.SelectQueuePlaceholder)} />
               </SelectTrigger>
               <SelectContent>
                 {availableQueues.map(q => (
@@ -341,12 +343,12 @@ export function MeuGuiche() {
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
               )}
             </span>
-            {isConnected ? "SignalR Ativo" : "Desconectado"}
+            {isConnected ? GetLocalized(Labels.SignalRActive) : GetLocalized(Labels.Disconnected)}
           </Badge>
         </div>
       </div>
 
-      {/* Main Grid */}
+{/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Column */}
         <div className="flex flex-col gap-6 lg:col-span-1">
@@ -355,7 +357,7 @@ export function MeuGuiche() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <Megaphone className="h-5 w-5" />
-                  Em Atendimento
+                  {GetLocalized(Labels.InAttendance)}
                 </CardTitle>
                 <Badge className="bg-slate-800 text-slate-200 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-800">
                   {workstation.name}
@@ -372,20 +374,20 @@ export function MeuGuiche() {
                     ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400"
                     : "bg-blue-500/10 text-blue-700 dark:text-blue-400"
                     }`}>
-                    {currentPassword.preferential ? "Preferencial" : "Convencional"}
+                    {currentPassword.preferential ? GetLocalized(Labels.Preferential) : GetLocalized(Labels.Conventional)}
                   </Badge>
                   <span className="text-8xl font-black tracking-tighter text-foreground sm:text-[9rem]">
                     {currentPassword.code}
                   </span>
                   <span className="mt-4 text-2xl font-medium text-muted-foreground">
-                    Senha em Atendimento
+                    {GetLocalized(Labels.PasswordInAttendance)}
                   </span>
                 </div>
               ) : (
                 <div className="flex flex-col items-center text-muted-foreground">
                   <MessageCircleWarning className="mb-4 h-16 w-16 opacity-20" />
-                  <span className="text-xl font-medium">Nenhum atendimento em andamento</span>
-                  <span className="text-sm">Clique abaixo para chamar a próxima senha da fila</span>
+                  <span className="text-xl font-medium">{GetLocalized(Messages.NoOngoingAttendance)}</span>
+                  <span className="text-sm">{GetLocalized(Messages.ClickBelowToCallNext)}</span>
                 </div>
               )}
             </CardContent>
@@ -399,7 +401,7 @@ export function MeuGuiche() {
                 disabled={!currentPassword || actionLoading}
               >
                 <RefreshCcw className={`mr-2 h-5 w-5 ${actionLoading ? 'animate-spin' : ''}`} />
-                Rechamar
+                {GetLocalized(Labels.Recall)}
               </Button>
               <Button
                 variant="secondary"
@@ -409,7 +411,7 @@ export function MeuGuiche() {
                 disabled={!currentPassword || actionLoading}
               >
                 <CheckCircle2 className="mr-2 h-5 w-5" />
-                Finalizar
+                {GetLocalized(Labels.Finish)}
               </Button>
             </CardFooter>
           </Card>
@@ -425,16 +427,16 @@ export function MeuGuiche() {
             ) : (
               <Play className="mr-3 h-8 w-8 fill-current" />
             )}
-            Chamar Próxima Senha
+            {GetLocalized(Labels.CallNextPassword)}
           </Button>
 
           {waitingPasswords.length === 0 && !currentPassword && !loading && (
-            <p className="text-center text-sm text-muted-foreground">A fila está vazia no momento.</p>
+            <p className="text-center text-sm text-muted-foreground">{GetLocalized(Messages.QueueIsEmpty)}</p>
           )}
 
           {currentPassword && (
             <p className="text-center text-sm text-amber-600 dark:text-amber-400 font-medium">
-              Finalize o atendimento atual antes de chamar a próxima senha.
+              {GetLocalized(Messages.FinishCurrentBeforeCallingNext)}
             </p>
           )}
         </div>
@@ -445,7 +447,7 @@ export function MeuGuiche() {
           <Card className="flex-1 flex flex-col shadow-sm overflow-hidden h-[600px]" style={{ padding: 0, gap: 0 }}>
             <CardHeader className="bg-muted/50 pt-2 border-b">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-semibold text-foreground">Fila de Espera</CardTitle>
+                <CardTitle className="text-lg font-semibold text-foreground">{GetLocalized(Labels.WaitingQueue)}</CardTitle>
                 <Badge variant="secondary">{waitingPasswords.length}</Badge>
               </div>
             </CardHeader>
@@ -469,22 +471,22 @@ export function MeuGuiche() {
                             </span>
                             {password.preferential && (
                               <Badge className="bg-amber-500 hover:bg-amber-500 text-[9px] uppercase px-1.5 py-0 text-white">
-                                Pref.
+                                {GetLocalized(Labels.Pref)}
                               </Badge>
                             )}
                           </div>
                           <span className="text-xs text-muted-foreground">
-                            Chegada: {new Date(password.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {GetLocalized(Labels.Arrival)} {new Date(password.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
                         {index === 0 && (
-                          <Badge variant="outline" className="text-blue-600 border-blue-600/20 bg-blue-600/5">Próxima</Badge>
+                          <Badge variant="outline" className="text-blue-600 border-blue-600/20 bg-blue-600/5">{GetLocalized(Labels.Next)}</Badge>
                         )}
                       </div>
                     ))
                   ) : (
                     <div className="p-8 text-center text-sm text-muted-foreground">
-                      {loading ? "Carregando fila..." : "Ninguém aguardando"}
+                      {loading ? GetLocalized(Messages.LoadingQueue) : GetLocalized(Messages.NobodyWaiting)}
                     </div>
                   )}
                 </div>
@@ -496,7 +498,7 @@ export function MeuGuiche() {
           <Card className="flex-1 flex flex-col shadow-sm overflow-hidden h-[600px]" style={{ padding: 0, gap: 0 }}>
             <CardHeader className="bg-muted/50 pt-2 border-b">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-semibold text-foreground">Meus Atendimentos</CardTitle>
+                <CardTitle className="text-lg font-semibold text-foreground">{GetLocalized(Labels.MyAttendances)}</CardTitle>
                 <Badge
                   variant="secondary"
                   className="bg-green-500/10 text-green-700 hover:bg-green-500/20 dark:text-green-400"
@@ -519,7 +521,7 @@ export function MeuGuiche() {
                             {password.code}
                           </span>
                           <span className="text-xs text-muted-foreground">
-                            Finalizado às: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {GetLocalized(Labels.FinishedAt)} {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
@@ -527,7 +529,7 @@ export function MeuGuiche() {
                     ))
                   ) : (
                     <div className="p-8 text-center text-sm text-muted-foreground">
-                      {loading ? "Carregando..." : "Nenhum atendimento finalizado"}
+                      {loading ? GetLocalized(Messages.Loading) : GetLocalized(Messages.NoAttendanceFinished)}
                     </div>
                   )}
                 </div>

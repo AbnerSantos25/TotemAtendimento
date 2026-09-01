@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -194,5 +194,479 @@
   </data>
   <data name="SettingsPrivacy" xml:space="preserve">
     <value>Políticas de Privacidade</value>
+  </data>
+  <data name="NavigationOperation" xml:space="preserve">
+    <value>Operação</value>
+  </data>
+  <data name="NavigationMyCounter" xml:space="preserve">
+    <value>Meu Guichê</value>
+  </data>
+  <data name="NavigationPasswordPanel" xml:space="preserve">
+    <value>Painel de Senhas</value>
+  </data>
+  <data name="NavigationManagement" xml:space="preserve">
+    <value>Gestão &amp; Cadastros</value>
+  </data>
+  <data name="NavigationQueues" xml:space="preserve">
+    <value>Filas</value>
+  </data>
+  <data name="NavigationServiceLocations" xml:space="preserve">
+    <value>Locais de Atendimento</value>
+  </data>
+  <data name="NavigationServiceTypes" xml:space="preserve">
+    <value>Tipos de Serviço</value>
+  </data>
+  <data name="NavigationUsers" xml:space="preserve">
+    <value>Usuários</value>
+  </data>
+  <data name="NavigationReports" xml:space="preserve">
+    <value>Relatórios</value>
+  </data>
+  <data name="NavigationMyAccount" xml:space="preserve">
+    <value>Minha Conta</value>
+  </data>
+  <data name="NavigationNotifications" xml:space="preserve">
+    <value>Notificações</value>
+  </data>
+  <data name="DefaultUser" xml:space="preserve">
+    <value>Usuário</value>
+  </data>
+  <data name="DashboardTitle" xml:space="preserve">
+    <value>Painel do Totem Atendimento</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Plataforma</value>
+  </data>
+  <data name="Projects" xml:space="preserve">
+    <value>Projetos</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Opções</value>
+  </data>
+  <data name="ViewProject" xml:space="preserve">
+    <value>Ver Projeto</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Compartilhar</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Mais</value>
+  </data>
+  <data name="Teams" xml:space="preserve">
+    <value>Equipes</value>
+  </data>
+  <data name="AddTeam" xml:space="preserve">
+    <value>Adicionar equipe</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Esqueceu sua senha?</value>
+  </data>
+  <data name="DontHaveAccount" xml:space="preserve">
+    <value>Não tem uma conta?</value>
+  </data>
+  <data name="ContactSupport" xml:space="preserve">
+    <value>Entre em contato com o suporte</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Sucesso</value>
+  </data>
+  <data name="StatusUpdated" xml:space="preserve">
+    <value>Status Atualizado</value>
+  </data>
+  <data name="Removed" xml:space="preserve">
+    <value>Removida</value>
+  </data>
+  <data name="QueueManagementTitle" xml:space="preserve">
+    <value>Gerenciamento de Filas</value>
+  </data>
+  <data name="NewQueue" xml:space="preserve">
+    <value>Nova Fila</value>
+  </data>
+  <data name="RegisteredQueues" xml:space="preserve">
+    <value>Filas Cadastradas</value>
+  </data>
+  <data name="SearchQueueByName" xml:space="preserve">
+    <value>Buscar fila por nome...</value>
+  </data>
+  <data name="ClearSearch" xml:space="preserve">
+    <value>Limpar busca</value>
+  </data>
+  <data name="QueueStatus" xml:space="preserve">
+    <value>Status da Fila</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Todas</value>
+  </data>
+  <data name="OnlyActive" xml:space="preserve">
+    <value>Apenas Ativas</value>
+  </data>
+  <data name="OnlyInactive" xml:space="preserve">
+    <value>Apenas Inativas</value>
+  </data>
+  <data name="QueueName" xml:space="preserve">
+    <value>Nome da Fila</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Ações</value>
+  </data>
+  <data name="NoQueueFound" xml:space="preserve">
+    <value>Nenhuma fila encontrada</value>
+  </data>
+  <data name="CreateQueue" xml:space="preserve">
+    <value>Criar Fila</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Ativa</value>
+  </data>
+  <data name="Inactive" xml:space="preserve">
+    <value>Inativa</value>
+  </data>
+  <data name="Deactivate" xml:space="preserve">
+    <value>Desativar</value>
+  </data>
+  <data name="Activate" xml:space="preserve">
+    <value>Ativar</value>
+  </data>
+  <data name="AddNewQueue" xml:space="preserve">
+    <value>Adicionar Nova Fila</value>
+  </data>
+  <data name="QueueNamePlaceholder" xml:space="preserve">
+    <value>Ex: Prioritário</value>
+  </data>
+  <data name="ActivateImmediately" xml:space="preserve">
+    <value>Ativar Imediatamente</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="SaveQueue" xml:space="preserve">
+    <value>Salvar Fila</value>
+  </data>
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>Confirmar Exclusão</value>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>Minha Conta</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Funções</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Nenhuma</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Segurança</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Senha</value>
+  </data>
+  <data name="ServiceLocationsTitle" xml:space="preserve">
+    <value>Locais de Atendimento</value>
+  </data>
+  <data name="ServiceLocationsSubtitle" xml:space="preserve">
+    <value>Adicione e remova guichês, salas e consultórios.</value>
+  </data>
+  <data name="NewLocationButton" xml:space="preserve">
+    <value>Novo Local</value>
+  </data>
+  <data name="RegisteredLocationsTitle" xml:space="preserve">
+    <value>Locais Cadastrados</value>
+  </data>
+  <data name="RegisteredLocationsSubtitle" xml:space="preserve">
+    <value>Gerencie seus pontos de atendimento físicos.</value>
+  </data>
+  <data name="SearchLocationPlaceholder" xml:space="preserve">
+    <value>Buscar local por nome...</value>
+  </data>
+  <data name="ClearSearchTitle" xml:space="preserve">
+    <value>Limpar busca</value>
+  </data>
+  <data name="NameColumn" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="NumberColumn" xml:space="preserve">
+    <value>Número</value>
+  </data>
+  <data name="ActionsColumn" xml:space="preserve">
+    <value>Ações</value>
+  </data>
+  <data name="CreateLocationButton" xml:space="preserve">
+    <value>Criar Local</value>
+  </data>
+  <data name="EditLocationDialogTitle" xml:space="preserve">
+    <value>Editar Local</value>
+  </data>
+  <data name="AddNewLocationDialogTitle" xml:space="preserve">
+    <value>Adicionar Novo Local</value>
+  </data>
+  <data name="EditLocationDialogDescription" xml:space="preserve">
+    <value>Altere os dados deste ponto de atendimento.</value>
+  </data>
+  <data name="AddLocationDialogDescription" xml:space="preserve">
+    <value>Configure o ponto de atendimento (Ex: Guichê, Sala, Consultório).</value>
+  </data>
+  <data name="LocationNameLabel" xml:space="preserve">
+    <value>Nome do Local</value>
+  </data>
+  <data name="LocationNamePlaceholder" xml:space="preserve">
+    <value>Ex: Guichê 1</value>
+  </data>
+  <data name="LocationNumberLabel" xml:space="preserve">
+    <value>Número do Local</value>
+  </data>
+  <data name="LocationNumberPlaceholder" xml:space="preserve">
+    <value>Ex: 5</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="SaveChangesButton" xml:space="preserve">
+    <value>Salvar Alterações</value>
+  </data>
+  <data name="SaveLocationButton" xml:space="preserve">
+    <value>Salvar Local</value>
+  </data>
+  <data name="ConfirmDeletionTitle" xml:space="preserve">
+    <value>Confirmar Exclusão</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="Queue" xml:space="preserve">
+    <value>Fila</value>
+  </data>
+  <data name="SignalRActive" xml:space="preserve">
+    <value>SignalR Ativo</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>Desconectado</value>
+  </data>
+  <data name="Queues" xml:space="preserve">
+    <value>Filas</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Sair</value>
+  </data>
+  <data name="LatestPasswords" xml:space="preserve">
+    <value>ÚLTIMAS SENHAS</value>
+  </data>
+  <data name="Desk" xml:space="preserve">
+    <value>GUICHÊ</value>
+  </data>
+  <data name="Waiting" xml:space="preserve">
+    <value>AGUARDANDO</value>
+  </data>
+  <data name="FilterQueues" xml:space="preserve">
+    <value>Filtrar Filas</value>
+  </data>
+  <data name="UserManagement" xml:space="preserve">
+    <value>Gestão de Usuários</value>
+  </data>
+  <data name="NewUser" xml:space="preserve">
+    <value>Novo Usuário</value>
+  </data>
+  <data name="SystemUsers" xml:space="preserve">
+    <value>Usuários do Sistema</value>
+  </data>
+  <data name="SearchByNameOrEmail" xml:space="preserve">
+    <value>Buscar por nome ou e-mail...</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Nome Completo</value>
+  </data>
+  <data name="AccessEmail" xml:space="preserve">
+    <value>E-Mail de Acesso</value>
+  </data>
+  <data name="RegisterUser" xml:space="preserve">
+    <value>Cadastrar Usuário</value>
+  </data>
+  <data name="ConfigureAllowedQueues" xml:space="preserve">
+    <value>Configurar filas permitidas</value>
+  </data>
+  <data name="AssignRole" xml:space="preserve">
+    <value>Atribuir perfil</value>
+  </data>
+  <data name="InactivateUser" xml:space="preserve">
+    <value>Inativar usuário</value>
+  </data>
+  <data name="ActivateUser" xml:space="preserve">
+    <value>Ativar usuário</value>
+  </data>
+  <data name="RegisterNewUser" xml:space="preserve">
+    <value>Cadastrar Novo Usuário</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="AccessPassword" xml:space="preserve">
+    <value>Senha de Acesso</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirmar Senha</value>
+  </data>
+  <data name="Registering" xml:space="preserve">
+    <value>Registrando...</value>
+  </data>
+  <data name="RegisterAccount" xml:space="preserve">
+    <value>Registrar Conta</value>
+  </data>
+  <data name="InactivateUserTitle" xml:space="preserve">
+    <value>Inativar Usuário</value>
+  </data>
+  <data name="Inactivating" xml:space="preserve">
+    <value>Inativando...</value>
+  </data>
+  <data name="Inactivate" xml:space="preserve">
+    <value>Inativar</value>
+  </data>
+  <data name="ActivateUserTitle" xml:space="preserve">
+    <value>Ativar Usuário</value>
+  </data>
+  <data name="Activating" xml:space="preserve">
+    <value>Ativando...</value>
+  </data>
+  <data name="ManageAccessRoles" xml:space="preserve">
+    <value>Gerenciar Perfis de Acesso</value>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Salvando...</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Salvar Alterações</value>
+  </data>
+  <data name="ConfigureAccessQueues" xml:space="preserve">
+    <value>Configurar Filas de Acesso</value>
+  </data>
+  <data name="InAttendance" xml:space="preserve">
+    <value>Em Atendimento</value>
+  </data>
+  <data name="Preferential" xml:space="preserve">
+    <value>Preferencial</value>
+  </data>
+  <data name="Conventional" xml:space="preserve">
+    <value>Convencional</value>
+  </data>
+  <data name="PasswordInAttendance" xml:space="preserve">
+    <value>Senha em Atendimento</value>
+  </data>
+  <data name="Recall" xml:space="preserve">
+    <value>Rechamar</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Finalizar</value>
+  </data>
+  <data name="CallNextPassword" xml:space="preserve">
+    <value>Chamar Próxima Senha</value>
+  </data>
+  <data name="WaitingQueue" xml:space="preserve">
+    <value>Fila de Espera</value>
+  </data>
+  <data name="Pref" xml:space="preserve">
+    <value>Pref.</value>
+  </data>
+  <data name="Arrival" xml:space="preserve">
+    <value>Chegada:</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Próxima</value>
+  </data>
+  <data name="MyAttendances" xml:space="preserve">
+    <value>Meus Atendimentos</value>
+  </data>
+  <data name="FinishedAt" xml:space="preserve">
+    <value>Finalizado às:</value>
+  </data>
+  <data name="ServiceTypes" xml:space="preserve">
+    <value>Tipos de Serviço</value>
+  </data>
+  <data name="ServiceTypesDescription" xml:space="preserve">
+    <value>Configure os botões e categorias de atendimento do Totem.</value>
+  </data>
+  <data name="NewService" xml:space="preserve">
+    <value>Novo Serviço</value>
+  </data>
+  <data name="RegisteredServices" xml:space="preserve">
+    <value>Serviços Cadastrados</value>
+  </data>
+  <data name="RegisteredServicesDescription" xml:space="preserve">
+    <value>Defina as filas e aparências para cada tipo de senha.</value>
+  </data>
+  <data name="SearchServiceType" xml:space="preserve">
+    <value>Buscar serviço por título ou prefixo...</value>
+  </data>
+  <data name="ActivePlural" xml:space="preserve">
+    <value>Ativos</value>
+  </data>
+  <data name="InactivePlural" xml:space="preserve">
+    <value>Inativos</value>
+  </data>
+  <data name="ReloadGrid" xml:space="preserve">
+    <value>Recarregar Grid</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Serviço</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Cor</value>
+  </data>
+  <data name="Prefix" xml:space="preserve">
+    <value>Prefixo</value>
+  </data>
+  <data name="TargetQueue" xml:space="preserve">
+    <value>Fila Destino</value>
+  </data>
+  <data name="EditService" xml:space="preserve">
+    <value>Editar Serviço</value>
+  </data>
+  <data name="CreateNewService" xml:space="preserve">
+    <value>Criar Novo Serviço</value>
+  </data>
+  <data name="ServiceDialogDescription" xml:space="preserve">
+    <value>Configure a aparência e o comportamento do botão no Totem.</value>
+  </data>
+  <data name="ServiceTitle" xml:space="preserve">
+    <value>Título do Serviço</value>
+  </data>
+  <data name="ExMedicalConsultations" xml:space="preserve">
+    <value>Ex: Consultas Médicas</value>
+  </data>
+  <data name="BootstrapIconClass" xml:space="preserve">
+    <value>Ícone Bootstrap (Classe)</value>
+  </data>
+  <data name="ExBootstrapIcon" xml:space="preserve">
+    <value>Ex: bi bi-card-list</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Acesse</value>
+  </data>
+  <data name="ToSeeAll" xml:space="preserve">
+    <value>para ver todos.</value>
+  </data>
+  <data name="HighlightColor" xml:space="preserve">
+    <value>Cor de Destaque</value>
+  </data>
+  <data name="TicketPrefix" xml:space="preserve">
+    <value>Prefixo da Senha</value>
+  </data>
+  <data name="ExCons" xml:space="preserve">
+    <value>Ex: CONS</value>
+  </data>
+  <data name="SelectQueue" xml:space="preserve">
+    <value>Selecione uma fila</value>
+  </data>
+  <data name="DeleteService" xml:space="preserve">
+    <value>Excluir Serviço</value>
   </data>
 </root>

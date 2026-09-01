@@ -24,6 +24,9 @@ import {
     Plus,
 } from "lucide-react"
 
+import { GetLocalized } from "@/shared/localization/i18n"
+import { Labels } from "@/shared/localization/keys"
+
 function TeamSwitcher({
     teams,
 }: {
@@ -67,7 +70,7 @@ function TeamSwitcher({
                     >
                         <DropdownMenuGroup>
                             <DropdownMenuLabel className="text-muted-foreground text-xs">
-                                Equipes
+                                {GetLocalized(Labels.Teams)}
                             </DropdownMenuLabel>
                             {teams.map((team, index) => (
                                 <DropdownMenuItem
@@ -90,7 +93,7 @@ function TeamSwitcher({
                                     <Plus className="size-4" />
                                 </div>
                                 <div className="text-muted-foreground font-medium">
-                                    Adicionar equipe
+                                    {GetLocalized(Labels.AddTeam)}
                                 </div>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>

@@ -19,8 +19,8 @@ import {
 import { BadgeCheck, Bell, LogOut, ChevronsUpDown, Moon, Sun } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/useAuth"
-
-
+import { GetLocalized } from "@/shared/localization/i18n"
+import { Labels, Messages } from "@/shared/localization/keys"
 function NavUser({
   user,
 }: {
@@ -90,23 +90,23 @@ function NavUser({
               <DropdownMenuItem asChild>
                 <Link to="/minha-conta">
                   <BadgeCheck />
-                  Minha Conta
+                  {GetLocalized(Labels.NavigationMyAccount)}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
-                Notificações
+                {GetLocalized(Labels.NavigationNotifications)}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={toggleTheme}>
                 {isDark ? <Sun /> : <Moon />}
-                {isDark ? "Modo Claro" : "Modo Escuro"}
+                {isDark ? GetLocalized(Labels.ThemeLight) : GetLocalized(Labels.ThemeDark)}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup onClick={signOut}>
               <DropdownMenuItem>
                 <LogOut />
-                Sair do Sistema
+                {GetLocalized(Messages.Logout)}
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
