@@ -71,10 +71,17 @@ namespace Totem.API.Controllers
 		}
 
 		[EnableRateLimiting("Auth")]
-		[HttpPut("user/{userId}/update-email")]
-        public async Task<ActionResult> UpdateEmail([FromRoute] Guid userId, [FromBody] UpdateEmailRequest request)
+		[HttpPut("user/update-email")]
+        public async Task<ActionResult> UpdateEmail([FromBody] UpdateEmailRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                              ?? User.FindFirstValue("sub");
+
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
             return CustomResponse(await _identityService.UpdateEmailAsync(userId, request));
         }
 
