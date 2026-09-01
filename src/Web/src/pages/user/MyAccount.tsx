@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChangePasswordDialog } from "@/components/user/ChangePasswordDialog";
 import { IconMail, IconBadge } from "@tabler/icons-react";
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels, Messages, Errors } from "@/shared/localization/keys";
 
 export const MyAccount = () => {
   const { user } = useAuth();
@@ -11,7 +13,7 @@ export const MyAccount = () => {
 
   return (
     <div className="container mx-auto py-10 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8">Minha Conta</h1>
+      <h1 className="text-3xl font-bold mb-8">{GetLocalized(Labels.MyAccount)}</h1>
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="border-sidebar-border/50">
@@ -34,21 +36,21 @@ export const MyAccount = () => {
             </div>
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <IconBadge size={18} className="text-primary/70" />
-              <span>Funções: {user.roles?.join(", ") || "Nenhuma"}</span>
+              <span>{GetLocalized(Labels.Roles)}: {user.roles?.join(", ") || GetLocalized(Labels.None)}</span>
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-sidebar-border/50">
           <CardHeader>
-            <CardTitle className="text-xl">Segurança</CardTitle>
+            <CardTitle className="text-xl">{GetLocalized(Labels.Security)}</CardTitle>
             <CardDescription>
-              Gerencie suas credenciais de acesso e segurança da conta.
+              {GetLocalized(Messages.ManageSecurityCredentials)}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-4">
             <div className="flex flex-col gap-3">
-              <label className="text-sm font-semibold">Senha</label>
+              <label className="text-sm font-semibold">{GetLocalized(Labels.Password)}</label>
               <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-sidebar-border/50">
                 <span className="text-sm text-muted-foreground font-mono tracking-widest">••••••••••••</span>
                 <ChangePasswordDialog />

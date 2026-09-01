@@ -15,6 +15,9 @@ import { NavProjects } from "./NavProjects"
 import { NavUser } from "./nav-user"
 import { useAuth } from "@/hooks/useAuth"
 
+import { GetLocalized } from "@/shared/localization/i18n"
+import { Labels } from "@/shared/localization/keys"
+
 const data = {
   user: {
     name: "Abner Santos",
@@ -28,45 +31,48 @@ const data = {
       plan: "Produção",
     },
   ],
-  navMain: [
-    {
-      title: "Inicio",
-      url: "/home",
-      icon: Home,
-      isActive: false,
-    },
-    {
-      title: "Operação",
-      url: "/operacao",
-      icon: Megaphone,
-      isActive: false,
-      items: [
-        { title: "Meu Guichê", url: "/meu-guiche" },
-        { title: "Painel de Senhas", url: "/painel-senhas" },
-      ],
-    },
-    {
-      title: "Gestão & Cadastros",
-      url: "/gestao",
-      icon: Settings,
-      isActive: false,
-      items: [
-        { title: "Filas", url: "/gestao/filas" },
-        { title: "Locais de Atendimento", url: "/gestao/locais" },
-        { title: "Tipos de Serviço", url: "/gestao/servicos" },
-        { title: "Usuários", url: "/gestao/usuarios" },
-        { title: "Configurações", url: "/configurations", isActive: true },
-      ],
-    }
-    // ... você pode adicionar mais menus aqui
-  ],
-  projects: [
-    {
-      name: "Relatórios",
-      url: "/relatorios",
-      icon: PieChart,
-    },
-  ],
+  get navMain() {
+    return [
+      {
+        title: GetLocalized(Labels.NavigationHome),
+        url: "/home",
+        icon: Home,
+        isActive: false,
+      },
+      {
+        title: GetLocalized(Labels.NavigationOperation),
+        url: "/operacao",
+        icon: Megaphone,
+        isActive: false,
+        items: [
+          { title: GetLocalized(Labels.NavigationMyCounter), url: "/meu-guiche" },
+          { title: GetLocalized(Labels.NavigationPasswordPanel), url: "/painel-senhas" },
+        ],
+      },
+      {
+        title: GetLocalized(Labels.NavigationManagement),
+        url: "/gestao",
+        icon: Settings,
+        isActive: false,
+        items: [
+          { title: GetLocalized(Labels.NavigationQueues), url: "/gestao/filas" },
+          { title: GetLocalized(Labels.NavigationServiceLocations), url: "/gestao/locais" },
+          { title: GetLocalized(Labels.NavigationServiceTypes), url: "/gestao/servicos" },
+          { title: GetLocalized(Labels.NavigationUsers), url: "/gestao/usuarios" },
+          { title: GetLocalized(Labels.NavigationSettings), url: "/configurations", isActive: true },
+        ],
+      }
+    ]
+  },
+  get projects() {
+    return [
+      {
+        name: GetLocalized(Labels.NavigationReports),
+        url: "/relatorios",
+        icon: PieChart,
+      },
+    ]
+  }
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -94,7 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={{
-          name: user?.name || "Usuário",
+          name: user?.name || GetLocalized(Labels.DefaultUser),
           email: user?.email || "",
           avatar: user?.profileImageUrl || "https://github.com/shadcn.png"
         }} />

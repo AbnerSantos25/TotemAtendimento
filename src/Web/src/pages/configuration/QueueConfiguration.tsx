@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { queueService } from "@/services/QueueService";
 import type { QueueView } from "@/models/QueueModels";
+import { GetLocalized } from '@/shared/localization/i18n';
+import { Labels, Messages, Errors } from '@/shared/localization/keys';
 import {
     Table,
     TableBody,
@@ -43,7 +45,7 @@ import { TableSkeleton } from "@/components/TableSkeleton";
 import { FolderSearch } from "lucide-react";
 
 const QueueSchema = z.object({
-    name: z.string().min(1, { message: "O nome da fila é obrigatório." }),
+    name: z.string().min(1, { message: GetLocalized(Errors.QueueNameRequired) }),
     isActive: z.boolean()
 });
 type QueueFormValues = z.infer<typeof QueueSchema>;
@@ -74,7 +76,7 @@ export function QueueConfiguration() {
         if (response.success && response.data) {
             setQueues(response.data);
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro na Busca", description: response.error.message || "Falha ao carregar filas." });
+            AGShowMessage.error({ title: GetLocalized(Errors.SearchError), description: response.error.message || GetLocalized(Errors.LoadQueuesFailed) });
         }
         setLoading(false);
     };
@@ -109,12 +111,12 @@ export function QueueConfiguration() {
                 isActive: dto.isActive,
             }
 
-            AGShowMessage.success({ title: "Sucesso", description: "Fila criada com sucesso." });
+            AGShowMessage.success({ title: GetLocalized(Labels.Success), description: GetLocalized(Messages.QueueCreatedSuccess) });
             setQueues(prev => [...prev, newQueue]);
             setIsAddDialogOpen(false);
             form.reset();
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro na Criação", description: response.error.message || "Não foi possível criar a fila." });
+            AGShowMessage.error({ title: GetLocalized(Errors.CreationError), description: response.error.message || GetLocalized(Errors.QueueCreationFailed) });
         }
     };
 
@@ -122,10 +124,10 @@ export function QueueConfiguration() {
         const response = await queueService.toggleQueueStatusAsync(queue.id);
 
         if (response.success) {
-            AGShowMessage.success({ title: "Status Atualizado", description: `A fila ${queue.name} foi ${newStatus ? 'ativada' : 'desativada'}.` });
+            AGShowMessage.success({ title: GetLocalized(Labels.StatusUpdated), description: newStatus ? GetLocalized(Messages.QueueStatusUpdatedActive, { name: queue.name }) : GetLocalized(Messages.QueueStatusUpdatedInactive, { name: queue.name }) });
             setQueues(prev => prev.map(q => q.id === queue.id ? { ...q, isActive: newStatus } : q));
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro na Atualização", description: response.error.message || "Não foi possível alterar o status." });
+            AGShowMessage.error({ title: GetLocalized(Errors.UpdateError), description: response.error.message || GetLocalized(Errors.StatusUpdateFailed) });
         }
     };
 
@@ -135,10 +137,10 @@ export function QueueConfiguration() {
         const response = await queueService.deleteQueueAsync(queueToDelete.id);
 
         if (response.success) {
-            AGShowMessage.success({ title: "Removida", description: "A fila foi removida com sucesso." });
+            AGShowMessage.success({ title: GetLocalized(Labels.Removed), description: GetLocalized(Messages.QueueRemovedSuccess) });
             setQueues(prev => prev.filter(q => q.id !== queueToDelete.id));
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro na Exclusão", description: response.error.message || "Não foi possível remover a fila." });
+            AGShowMessage.error({ title: GetLocalized(Errors.DeletionError), description: response.error.message || GetLocalized(Errors.QueueDeletionFailed) });
         }
         setQueueToDelete(null);
     };
@@ -147,24 +149,24 @@ export function QueueConfiguration() {
         <div className="flex flex-col gap-6 p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Gerenciamento de Filas</h2>
-                    <p className="text-muted-foreground">Adicione, remova e desative filas de atendimento.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">{GetLocalized(Labels.QueueManagementTitle)}</h2>
+                    <p className="text-muted-foreground">{GetLocalized(Messages.QueueManagementDescription)}</p>
                 </div>
                 <Button onClick={() => setIsAddDialogOpen(true)} className="w-full md:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Nova Fila
+                    <Plus className="mr-2 h-4 w-4" /> {GetLocalized(Labels.NewQueue)}
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Filas Cadastradas</CardTitle>
-                    <CardDescription>Gerencie as filas existentes e seus status operacionais.</CardDescription>
+                    <CardTitle>{GetLocalized(Labels.RegisteredQueues)}</CardTitle>
+                    <CardDescription>{GetLocalized(Messages.RegisteredQueuesDescription)}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
                         <div className="relative w-full md:max-w-md">
                             <Input
-                                placeholder="Buscar fila por nome..."
+                                placeholder={GetLocalized(Labels.SearchQueueByName)}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="pr-8"
@@ -174,7 +176,7 @@ export function QueueConfiguration() {
                                     type="button"
                                     onClick={() => setSearchTerm("")}
                                     className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 opacity-70 hover:opacity-100 focus:outline-none focus:bg-accent"
-                                    title="Limpar busca"
+                                    title={GetLocalized(Labels.ClearSearch)}
                                 >
                                     <X className="h-4 w-4" />
                                 </button>
@@ -182,12 +184,12 @@ export function QueueConfiguration() {
                         </div>
                         <Select value={filterStatus} onValueChange={(val: any) => setFilterStatus(val)}>
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Status da Fila" />
+                                <SelectValue placeholder={GetLocalized(Labels.QueueStatus)} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">Todas</SelectItem>
-                                <SelectItem value="active">Apenas Ativas</SelectItem>
-                                <SelectItem value="inactive">Apenas Inativas</SelectItem>
+                                <SelectItem value="all">{GetLocalized(Labels.All)}</SelectItem>
+                                <SelectItem value="active">{GetLocalized(Labels.OnlyActive)}</SelectItem>
+                                <SelectItem value="inactive">{GetLocalized(Labels.OnlyInactive)}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -196,9 +198,9 @@ export function QueueConfiguration() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Nome da Fila</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Ações</TableHead>
+                                    <TableHead>{GetLocalized(Labels.QueueName)}</TableHead>
+                                    <TableHead>{GetLocalized(Labels.Status)}</TableHead>
+                                    <TableHead className="text-right">{GetLocalized(Labels.Actions)}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -208,12 +210,12 @@ export function QueueConfiguration() {
                                     <TableRow>
                                         <TableCell colSpan={3} className="p-0">
                                             <EmptyState
-                                                title="Nenhuma fila encontrada"
-                                                description="Nenhum resultado corresponde aos filtros atuais ou o sistema ainda não possui filas cadastradas."
+                                                title={GetLocalized(Labels.NoQueueFound)}
+                                                description={GetLocalized(Messages.NoQueueFoundDescription)}
                                                 icon={<FolderSearch className="h-12 w-12 text-muted-foreground/50 mb-2" />}
                                                 action={
                                                     <Button variant="outline" onClick={() => setIsAddDialogOpen(true)}>
-                                                        <Plus className="mr-2 h-4 w-4" /> Criar Fila
+                                                        <Plus className="mr-2 h-4 w-4" /> {GetLocalized(Labels.CreateQueue)}
                                                     </Button>
                                                 }
                                             />
@@ -225,14 +227,14 @@ export function QueueConfiguration() {
                                             <TableCell className="font-medium">{queue.name}</TableCell>
                                             <TableCell>
                                                 <Badge variant={queue.isActive ? "default" : "secondary"}>
-                                                    {queue.isActive ? "Ativa" : "Inativa"}
+                                                    {queue.isActive ? GetLocalized(Labels.Active) : GetLocalized(Labels.Inactive)}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end items-center gap-2">
                                                     <div className="flex items-center gap-2 mr-4">
                                                         <Label className="text-xs text-muted-foreground cursor-pointer" htmlFor={`status-${queue.id}`}>
-                                                            {queue.isActive ? "Desativar" : "Ativar"}
+                                                            {queue.isActive ? GetLocalized(Labels.Deactivate) : GetLocalized(Labels.Activate)}
                                                         </Label>
                                                         <Switch
                                                             id={`status-${queue.id}`}
@@ -263,9 +265,9 @@ export function QueueConfiguration() {
             <Dialog open={isAddDialogOpen} onOpenChange={handleOpenChange}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Adicionar Nova Fila</DialogTitle>
+                        <DialogTitle>{GetLocalized(Labels.AddNewQueue)}</DialogTitle>
                         <DialogDescription>
-                            Configure os detalhes para a nova fila de atendimento.
+                            {GetLocalized(Messages.AddNewQueueDescription)}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -276,10 +278,10 @@ export function QueueConfiguration() {
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Nome da Fila</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.QueueName)}</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Ex: Prioritário"
+                                                placeholder={GetLocalized(Labels.QueueNamePlaceholder)}
                                                 autoFocus
                                                 {...field}
                                             />
@@ -300,14 +302,14 @@ export function QueueConfiguration() {
                                                 onCheckedChange={field.onChange}
                                             />
                                         </FormControl>
-                                        <FormLabel>Ativar Imediatamente</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.ActivateImmediately)}</FormLabel>
                                     </FormItem>
                                 )}
                             />
 
                             <DialogFooter className="pt-4">
-                                <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>Cancelar</Button>
-                                <Button type="submit">Salvar Fila</Button>
+                                <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>{GetLocalized(Labels.Cancel)}</Button>
+                                <Button type="submit">{GetLocalized(Labels.SaveQueue)}</Button>
                             </DialogFooter>
                         </form>
                     </Form>
@@ -317,10 +319,10 @@ export function QueueConfiguration() {
             <ConfirmDialog
                 open={!!queueToDelete}
                 onOpenChange={(open) => !open && setQueueToDelete(null)}
-                title="Confirmar Exclusão"
-                description={`Tem certeza que deseja remover a fila "${queueToDelete?.name}"? Esta ação não pode ser desfeita.`}
+                title={GetLocalized(Labels.ConfirmDeletion)}
+                description={queueToDelete ? GetLocalized(Messages.ConfirmQueueDeletion, { name: queueToDelete.name }) : ""}
                 onConfirm={handleDeleteQueue}
-                confirmText="Confirmar Exclusão"
+                confirmText={GetLocalized(Labels.ConfirmDeletion)}
             />
         </div>
     );

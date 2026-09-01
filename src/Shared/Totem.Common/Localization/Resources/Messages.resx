@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -173,5 +173,200 @@
   </data>
   <data name="WelcomeBack" xml:space="preserve">
     <value>Bem-vindo de volta!</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Login realizado!</value>
+  </data>
+  <data name="TermsAgreement" xml:space="preserve">
+    <value>Ao clicar em continuar, você concorda com nossos</value>
+  </data>
+  <data name="QueueCreatedSuccess" xml:space="preserve">
+    <value>Fila criada com sucesso.</value>
+  </data>
+  <data name="QueueStatusUpdatedActive" xml:space="preserve">
+    <value>A fila {name} foi ativada.</value>
+  </data>
+  <data name="QueueStatusUpdatedInactive" xml:space="preserve">
+    <value>A fila {name} foi desativada.</value>
+  </data>
+  <data name="QueueRemovedSuccess" xml:space="preserve">
+    <value>A fila foi removida com sucesso.</value>
+  </data>
+  <data name="QueueManagementDescription" xml:space="preserve">
+    <value>Adicione, remova e desative filas de atendimento.</value>
+  </data>
+  <data name="RegisteredQueuesDescription" xml:space="preserve">
+    <value>Gerencie as filas existentes e seus status operacionais.</value>
+  </data>
+  <data name="NoQueueFoundDescription" xml:space="preserve">
+    <value>Nenhum resultado corresponde aos filtros atuais ou o sistema ainda não possui filas cadastradas.</value>
+  </data>
+  <data name="AddNewQueueDescription" xml:space="preserve">
+    <value>Configure os detalhes para a nova fila de atendimento.</value>
+  </data>
+  <data name="ConfirmQueueDeletion" xml:space="preserve">
+    <value>Tem certeza que deseja remover a fila "{name}"? Esta ação não pode ser desfeita.</value>
+  </data>
+  <data name="ManageSecurityCredentials" xml:space="preserve">
+    <value>Gerencie suas credenciais de acesso e segurança da conta.</value>
+  </data>
+  <data name="SuccessTitle" xml:space="preserve">
+    <value>Sucesso</value>
+  </data>
+  <data name="LocationUpdatedSuccess" xml:space="preserve">
+    <value>Local atualizado com sucesso.</value>
+  </data>
+  <data name="LocationCreatedSuccess" xml:space="preserve">
+    <value>Local criado com sucesso.</value>
+  </data>
+  <data name="RemovedTitle" xml:space="preserve">
+    <value>Removido</value>
+  </data>
+  <data name="LocationRemovedSuccess" xml:space="preserve">
+    <value>O local foi removido com sucesso.</value>
+  </data>
+  <data name="NoLocationFound" xml:space="preserve">
+    <value>Nenhum local encontrado</value>
+  </data>
+  <data name="RegisterLocationsHint" xml:space="preserve">
+    <value>Cadastre guichês ou salas para o sistema fluir.</value>
+  </data>
+  <data name="ConfirmDeletePrefix" xml:space="preserve">
+    <value>Tem certeza que deseja remover o local</value>
+  </data>
+  <data name="ConfirmDeleteSuffix" xml:space="preserve">
+    <value>Esta ação não pode ser desfeita.</value>
+  </data>
+  <data name="FailedToLoadPasswords" xml:space="preserve">
+    <value>Não foi possível carregar as senhas.</value>
+  </data>
+  <data name="PleaseProceedTo" xml:space="preserve">
+    <value>Por favor, dirija-se ao</value>
+  </data>
+  <data name="ToBeServed" xml:space="preserve">
+    <value>para ser atendido.</value>
+  </data>
+  <data name="WaitingForCalls" xml:space="preserve">
+    <value>Aguardando chamadas...</value>
+  </data>
+  <data name="SelectQueuesToDisplay" xml:space="preserve">
+    <value>Selecione quais filas este painel deve exibir.</value>
+  </data>
+  <data name="SaveFeatureNotImplemented" xml:space="preserve">
+    <value>(A funcionalidade de salvar ainda não está implementada no back-end).</value>
+  </data>
+  <data name="CheckboxListWillAppearHere" xml:space="preserve">
+    <value>A lista de checkboxes aparecerá aqui no futuro.</value>
+  </data>
+  <data name="UserRegisteredSuccessfully" xml:space="preserve">
+    <value>Usuário registrado com sucesso.</value>
+  </data>
+  <data name="UserInactivatedSuccessfully" xml:space="preserve">
+    <value>Usuário "{0}" inativado com sucesso.</value>
+  </data>
+  <data name="UserActivatedSuccessfully" xml:space="preserve">
+    <value>Usuário "{0}" ativado com sucesso.</value>
+  </data>
+  <data name="RolesUpdatedSuccessfully" xml:space="preserve">
+    <value>Perfis atualizados para "{0}" com sucesso.</value>
+  </data>
+  <data name="QueuePermissionsUpdated" xml:space="preserve">
+    <value>Permissões de fila atualizadas para "{0}".</value>
+  </data>
+  <data name="UserManagementDescription" xml:space="preserve">
+    <value>Adicione e gerencie os parceiros e administradores do sistema.</value>
+  </data>
+  <data name="SystemUsersDescription" xml:space="preserve">
+    <value>Lista completa de operadores e gestores cadastrados.</value>
+  </data>
+  <data name="RegisterNewUsersDescription" xml:space="preserve">
+    <value>Cadastre novos usuários para habilitar o controle do Totem.</value>
+  </data>
+  <data name="RegisterNewUserDescription" xml:space="preserve">
+    <value>Preencha os dados do novo operador ou gestor. Este acesso servirá para logar na plataforma.</value>
+  </data>
+  <data name="ConfirmInactivateUserText1" xml:space="preserve">
+    <value>Tem certeza que deseja inativar o usuário </value>
+  </data>
+  <data name="ConfirmInactivateUserText2" xml:space="preserve">
+    <value>? Ele perderá o acesso ao sistema imediatamente.</value>
+  </data>
+  <data name="ConfirmActivateUserText1" xml:space="preserve">
+    <value>Tem certeza que deseja ativar o usuário </value>
+  </data>
+  <data name="ConfirmActivateUserText2" xml:space="preserve">
+    <value>? Ele voltará a ter acesso ao sistema.</value>
+  </data>
+  <data name="SelectRolesForUserText1" xml:space="preserve">
+    <value>Selecione os perfis que </value>
+  </data>
+  <data name="SelectRolesForUserText2" xml:space="preserve">
+    <value> terá no sistema.</value>
+  </data>
+  <data name="SelectQueuesForUserText1" xml:space="preserve">
+    <value>Selecione as filas que </value>
+  </data>
+  <data name="SelectQueuesForUserText2" xml:space="preserve">
+    <value> poderá atender no guichê.</value>
+  </data>
+  <data name="NoActiveQueueFound" xml:space="preserve">
+    <value>Nenhuma fila ativa encontrada.</value>
+  </data>
+  <data name="NoOngoingAttendance" xml:space="preserve">
+    <value>Nenhum atendimento em andamento</value>
+  </data>
+  <data name="ClickBelowToCallNext" xml:space="preserve">
+    <value>Clique abaixo para chamar a próxima senha da fila</value>
+  </data>
+  <data name="QueueIsEmpty" xml:space="preserve">
+    <value>A fila está vazia no momento.</value>
+  </data>
+  <data name="FinishCurrentBeforeCallingNext" xml:space="preserve">
+    <value>Finalize o atendimento atual antes de chamar a próxima senha.</value>
+  </data>
+  <data name="LoadingQueue" xml:space="preserve">
+    <value>Carregando fila...</value>
+  </data>
+  <data name="NobodyWaiting" xml:space="preserve">
+    <value>Ninguém aguardando</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Carregando...</value>
+  </data>
+  <data name="NoAttendanceFinished" xml:space="preserve">
+    <value>Nenhum atendimento finalizado</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Atenção</value>
+  </data>
+  <data name="TitleIsRequired" xml:space="preserve">
+    <value>O título é obrigatório.</value>
+  </data>
+  <data name="SelectTargetQueue" xml:space="preserve">
+    <value>Selecione uma fila de destino.</value>
+  </data>
+  <data name="ServiceTypeUpdated" xml:space="preserve">
+    <value>Tipo de serviço atualizado com sucesso.</value>
+  </data>
+  <data name="ServiceTypeCreated" xml:space="preserve">
+    <value>Tipo de serviço criado com sucesso.</value>
+  </data>
+  <data name="ServiceActivated" xml:space="preserve">
+    <value>O serviço foi ativado.</value>
+  </data>
+  <data name="ServiceDeactivated" xml:space="preserve">
+    <value>O serviço foi desativado.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Excluído</value>
+  </data>
+  <data name="ServiceTypeRemoved" xml:space="preserve">
+    <value>O tipo de serviço foi removido com sucesso.</value>
+  </data>
+  <data name="NoResultMatchesFilters" xml:space="preserve">
+    <value>Nenhum resultado corresponde aos filtros atuais.</value>
+  </data>
+  <data name="ConfirmDeleteService" xml:space="preserve">
+    <value>Tem certeza que deseja excluir o serviço</value>
   </data>
 </root>
