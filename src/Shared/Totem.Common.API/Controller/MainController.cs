@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.RateLimiting;
 using Totem.Common.API.Filters;
 using Totem.Common.Domain.Notification;
-using Totem.Common.Enumerations;
 
 namespace Totem.Common.API.Controller
 {
@@ -12,7 +11,7 @@ namespace Totem.Common.API.Controller
     [ApiController]
     [ValidateCookieAntiforgery]
     [EnableRateLimiting("Global")]
-    public abstract class MainController : ControllerBase
+	public abstract class MainController : ControllerBase
     {
         private readonly INotificator _notificador;
 		protected MainController(INotificator notificador)

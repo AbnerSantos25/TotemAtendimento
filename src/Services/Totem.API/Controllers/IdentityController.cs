@@ -21,18 +21,6 @@ namespace Totem.API.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("register")]
-        [EnableRateLimiting("Auth")]
-        public async Task<ActionResult> Register(RegisterUserView registerUser)
-        {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
-            var result = await _identityService.RegisterUserAsync(registerUser);
-            if (!result.Result.Success) return CustomResponse(result.Result);
-
-            return CustomResponse((result.Result, result.Data));
-        }
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -61,7 +49,6 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.GetMeAsync(userId));
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet("users")]
         public async Task<ActionResult> GetListUser()
         {
@@ -69,7 +56,6 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.GetListUserAsync());
 		}
   
-        [Authorize(Roles = "Admin")]
         [HttpPut("user/{userId}/update-email")]
         public async Task<ActionResult> UpdateEmail([FromRoute] Guid userId, [FromBody] UpdateEmailRequest request)
         {
@@ -77,7 +63,6 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.UpdateEmailAsync(userId, request));
         }
 
-        [Authorize(Roles = "Admin")]
 		[HttpPatch("user/{userId}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid userId)
         {
@@ -86,7 +71,6 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.InactiveUser(userId));
 		}
 
-        [Authorize(Roles = "Admin")]
 		[HttpPatch("user/{userId}/active")]
         public async Task<ActionResult> ActiveUser([FromRoute] Guid userId)
         {
@@ -95,7 +79,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.ActiveUser(userId));
         }
 
-        [Authorize(Roles = nameof(Role.Admin))]
+        [Authorize(Roles = $"{nameof(Role.Manager)}")]
         [HttpPost("assign-roles")]
         public async Task<ActionResult> UpdateUserRolesAsync([FromBody] AssignRolesRequest request)
         {
@@ -116,6 +100,7 @@ namespace Totem.API.Controllers
             return CustomResponse(result);
         }
 
+		[Authorize(Roles = $"{nameof(Role.User)},{nameof(Role.Manager)}")]
 		[HttpPost("user/{userId}/change-password")]
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> ChangePassword([FromRoute] Guid userId, [FromBody] ChangePasswordRequest request)
@@ -125,15 +110,15 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _identityService.ChangePasswordAsync(userId, request));
 		}
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = nameof(Role.Manager))]
         [HttpGet("user/{userId}/queue-permissions")]
         public async Task<ActionResult> GetUserQueuePermissions([FromRoute] Guid userId, [FromServices] IUserQueuePermissionService permissionService)
         {
             return CustomResponse(await permissionService.GetAllowedQueueIdsAsync(userId));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpPut("user/{userId}/queue-permissions")]
+		[Authorize(Roles = nameof(Role.Manager))]
+		[HttpPut("user/{userId}/queue-permissions")]
         public async Task<ActionResult> SetUserQueuePermissions([FromRoute] Guid userId, [FromBody] SetUserQueuePermissionsRequest request, [FromServices] IUserQueuePermissionService permissionService)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);

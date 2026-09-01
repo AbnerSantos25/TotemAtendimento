@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -60,6 +61,9 @@ namespace Totem.API.Configuration
             });
 
             services.AddAuthorization();
+
+            // Permite que usuários Admin satisfaçam qualquer [Authorize(Roles = "...")] automaticamente.
+            services.AddSingleton<IAuthorizationHandler, AdminBypassAuthorizationHandler>();
 
             return services;
         }
