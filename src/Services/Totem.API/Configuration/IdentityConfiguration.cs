@@ -52,8 +52,15 @@ namespace Totem.API.Configuration
                         // O middleware JWT já lê o header por padrão, então só intervimos se NÃO houver header.
                         if (string.IsNullOrEmpty(context.Token))
                         {
-                            // Prioridade 2: Cookie (Web - HttpOnly Cookie)
-                            context.Token = context.Request.Cookies["access_token"];
+                            // Prioridade 2: Query string (SignalR - o handshake WebSocket
+                            // nao permite header Authorization, entao o cliente envia o
+                            // token em ?access_token=). Restrito a rota do hub.
+                            if (context.HttpContext.Request.Path.StartsWithSegments("/api/passwordHub"))
+                                context.Token = context.Request.Query["access_token"];
+
+                            // Prioridade 3: Cookie (Web - HttpOnly Cookie)
+                            if (string.IsNullOrEmpty(context.Token))
+                                context.Token = context.Request.Cookies["access_token"];
                         }
                         return Task.CompletedTask;
                     }

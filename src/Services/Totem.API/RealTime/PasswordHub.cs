@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Totem.API.RealTime
 {
+    [Authorize]
     public class PasswordHub : Hub
     {
         internal static string QueueGroup(Guid queueId) => $"queue-{queueId}";
