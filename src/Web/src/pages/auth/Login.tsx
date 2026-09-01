@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { LoginForm } from "@/components/login-form";
-
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Messages } from "@/shared/localization/keys";
 export function Login() {
     const { isLoading, user } = useAuth();
 
@@ -10,7 +11,7 @@ export function Login() {
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-gray-50">
-                <p className="text-gray-500">Carregando sessão...</p>
+                <p className="text-gray-500">{GetLocalized(Messages.LoadingSystem)}</p>
             </div>
         );
     }

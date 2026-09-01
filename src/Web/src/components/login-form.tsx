@@ -23,13 +23,17 @@ import { Input } from "@/components/ui/input"
 import { AGShowMessage } from "@/components/AGShowMessage"
 import { useAuth } from "@/hooks/useAuth"
 import { authService } from "@/services/AuthServices/AuthService"
+import { GetLocalized } from "@/shared/localization/i18n"
+import { Labels, Messages } from "@/shared/localization/keys"
+
+import { Errors } from "@/shared/localization/keys"
 
 const loginSchema = z.object({
-  email: z.string().min(1, { message: "O e-mail é obrigatório." }).email({
-    message: "Formato de e-mail inválido.",
+  email: z.string().min(1, { message: GetLocalized(Errors.EmailRequired) }).email({
+    message: GetLocalized(Errors.InvalidEmailFormat),
   }),
   password: z.string().min(6, {
-    message: "A senha deve ter no mínimo 6 caracteres.",
+    message: GetLocalized(Errors.PasswordMinLength),
   }),
 })
 
@@ -55,17 +59,21 @@ export function LoginForm({
       const result = await authService.loginAsync({ email: data.email, password: data.password });
 
       if (result.success) {
+        AGShowMessage.success({
+          title: GetLocalized(Messages.LoginSuccess),
+          description: GetLocalized(Messages.WelcomeBack)
+        });
         await signIn(result.data.userView);
       } else {
         AGShowMessage.error({
-          title: "Falha na autenticação",
-          description: result.error?.message || "Contate o suporte técnico, para verificar o ocorrido."
+          title: GetLocalized(Errors.AuthFailure),
+          description: result.error?.message || GetLocalized(Errors.IncorrectUsernamePassword)
         });
       }
     } catch (err) {
       AGShowMessage.error({
-        title: "Erro no servidor",
-        description: "1 - Ocorreu um erro inesperado. Verifique sua conexão.",
+        title: GetLocalized(Errors.ServerError),
+        description: GetLocalized(Errors.UnexpectedConnectionError),
         duration: Infinity
       });
     }
@@ -79,9 +87,9 @@ export function LoginForm({
             <form className="p-6 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
               <FieldGroup>
                 <div className="flex flex-col items-center gap-2 text-center">
-                  <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
+                  <h1 className="text-2xl font-bold">{GetLocalized(Messages.WelcomeBack)}</h1>
                   <p className="text-balance text-muted-foreground">
-                    Faça login na sua conta do Totem Atendimento
+                    {GetLocalized(Labels.EnterCredentials)}
                   </p>
                 </div>
 
@@ -90,7 +98,7 @@ export function LoginForm({
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{GetLocalized(Labels.Email)}</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
@@ -110,12 +118,12 @@ export function LoginForm({
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex items-center">
-                        <FormLabel>Senha</FormLabel>
+                        <FormLabel>{GetLocalized(Labels.Password)}</FormLabel>
                         <a
                           href="#"
                           className="ml-auto text-sm underline-offset-2 hover:underline"
                         >
-                          Esqueceu sua senha?
+                          {GetLocalized(Labels.ForgotPassword)}
                         </a>
                       </div>
                       <FormControl>
@@ -132,12 +140,12 @@ export function LoginForm({
 
                 <Field>
                   <Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
-                    {isSubmitting ? "Autenticando..." : "Entrar"}
+                    {isSubmitting ? GetLocalized(Messages.LoadingSystem) : GetLocalized(Labels.EnterButton)}
                   </Button>
                 </Field>
                 <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card" />
                 <FieldDescription className="text-center">
-                  Não tem uma conta? <a href="#">Entre em contato com o suporte</a>
+                  {GetLocalized(Labels.DontHaveAccount)} <a href="#">{GetLocalized(Labels.ContactSupport)}</a>
                 </FieldDescription>
               </FieldGroup>
             </form>
@@ -152,8 +160,8 @@ export function LoginForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        Ao clicar em continuar, você concorda com nossos <a href="#">Termos de Serviço</a>{" "}
-        e <a href="#">Política de Privacidade</a>.
+        {GetLocalized(Messages.TermsAgreement)} <a href="#">{GetLocalized(Labels.SettingsTerms)}</a>{" "}
+        e <a href="#">{GetLocalized(Labels.SettingsPrivacy)}</a>.
       </FieldDescription>
     </div>
   )

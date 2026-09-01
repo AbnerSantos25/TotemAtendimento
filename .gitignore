@@ -297,3 +297,11 @@ __pycache__/
 appsettings.json
 appsettings.*.json
 auditoria_seguranca_premium.html
+
+# Generated localization files
+**/locales/**/*.json
+**/shared/localization/keys.ts
+/src/Mobile/locales/pt-BR/errors.json
+/src/Mobile/locales/pt-BR/labels.json
+/src/Mobile/locales/pt-BR/messages.json
+/src/Services/Totem.API/logs

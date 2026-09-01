@@ -3,6 +3,9 @@ import { AGShowMessage } from "@/components/AGShowMessage";
 import { serviceLocationService } from "@/services/ServiceLocationService";
 import type { ServiceLocationView } from "@/models/ServiceLocationModels";
 
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels, Messages, Errors } from "@/shared/localization/keys";
+
 //#region import zod
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -12,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 //#region Schema Zod
 const ServiceLocationSchema = z.object({
-    name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
+    name: z.string().min(3, GetLocalized(Errors.LocationNameMinLength)),
     number: z.number().nullable().optional(),
 });
 
@@ -71,7 +74,7 @@ export function ServiceLocationConfiguration() {
         if (response.success && response.data) {
             setLocations(response.data);
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro na Busca", description: response.error.message || "Falha ao carregar locais." });
+            AGShowMessage.error({ title: GetLocalized(Errors.SearchErrorTitle), description: response.error.message || GetLocalized(Errors.FailedToLoadLocations) });
         }
         setLoading(false);
     };
@@ -105,25 +108,25 @@ export function ServiceLocationConfiguration() {
         if (locationIDToEdit) {
             const response = await serviceLocationService.updateAsync(locationIDToEdit, dto);
             if (response.success && response.data) {
-                AGShowMessage.success({ title: "Sucesso", description: "Local atualizado com sucesso." });
+                AGShowMessage.success({ title: GetLocalized(Messages.SuccessTitle), description: GetLocalized(Messages.LocationUpdatedSuccess) });
                 setLocations(prev => prev.map(loc => loc.id === locationIDToEdit ? dto as ServiceLocationView : loc));
             } else if (!response.success && response.error) {
-                AGShowMessage.error({ title: "Erro na Atualização", description: response.error.message || "Não foi possível atualizar o local." });
+                AGShowMessage.error({ title: GetLocalized(Errors.UpdateErrorTitle), description: response.error.message || GetLocalized(Errors.FailedToUpdateLocation) });
             }
         } else {
             const response = await serviceLocationService.addAsync(dto);
             if (response.success && response.data) {
-                AGShowMessage.success({ title: "Sucesso", description: "Local criado com sucesso." });
+                AGShowMessage.success({ title: GetLocalized(Messages.SuccessTitle), description: GetLocalized(Messages.LocationCreatedSuccess) });
 
-                const novoLocal: ServiceLocationView = {
+                const newLocation: ServiceLocationView = {
                     id: response.data,
                     name: dto.name,
                     number: dto.number
                 };
 
-                setLocations(prev => [...prev, novoLocal]);
+                setLocations(prev => [...prev, newLocation]);
             } else if (!response.success && response.error) {
-                AGShowMessage.error({ title: "Erro na Criação", description: response.error.message || "Não foi possível criar o local." });
+                AGShowMessage.error({ title: GetLocalized(Errors.CreationErrorTitle), description: response.error.message || GetLocalized(Errors.FailedToCreateLocation) });
             }
         }
 
@@ -136,10 +139,10 @@ export function ServiceLocationConfiguration() {
         const response = await serviceLocationService.deleteAsync(locationToDelete.id);
 
         if (response.success) {
-            AGShowMessage.success({ title: "Removido", description: "O local foi removido com sucesso." });
+            AGShowMessage.success({ title: GetLocalized(Messages.RemovedTitle), description: GetLocalized(Messages.LocationRemovedSuccess) });
             setLocations(prev => prev.filter(loc => loc.id !== locationToDelete.id));
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro na Exclusão", description: response.error.message || "Não foi possível remover o local." });
+            AGShowMessage.error({ title: GetLocalized(Errors.DeletionErrorTitle), description: response.error.message || GetLocalized(Errors.FailedToDeleteLocation) });
         }
         setLocationToDelete(null);
     };
@@ -148,23 +151,23 @@ export function ServiceLocationConfiguration() {
         <div className="flex flex-col gap-6 p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Locais de Atendimento</h2>
-                    <p className="text-muted-foreground">Adicione e remova guichês, salas e consultórios.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">{GetLocalized(Labels.ServiceLocationsTitle)}</h2>
+                    <p className="text-muted-foreground">{GetLocalized(Labels.ServiceLocationsSubtitle)}</p>
                 </div>
                 <Button onClick={openAddDialog} className="w-full md:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Novo Local
+                    <Plus className="mr-2 h-4 w-4" /> {GetLocalized(Labels.NewLocationButton)}
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Locais Cadastrados</CardTitle>
-                    <CardDescription>Gerencie seus pontos de atendimento físicos.</CardDescription>
+                    <CardTitle>{GetLocalized(Labels.RegisteredLocationsTitle)}</CardTitle>
+                    <CardDescription>{GetLocalized(Labels.RegisteredLocationsSubtitle)}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="mb-6 max-w-md relative">
                         <Input
-                            placeholder="Buscar local por nome..."
+                            placeholder={GetLocalized(Labels.SearchLocationPlaceholder)}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="pr-8"
@@ -174,7 +177,7 @@ export function ServiceLocationConfiguration() {
                                 type="button"
                                 onClick={() => setSearchTerm("")}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 opacity-70 hover:opacity-100 focus:outline-none focus:bg-accent"
-                                title="Limpar busca"
+                                title={GetLocalized(Labels.ClearSearchTitle)}
                             >
                                 <X className="h-4 w-4" />
                             </button>
@@ -185,9 +188,9 @@ export function ServiceLocationConfiguration() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Nome</TableHead>
-                                    <TableHead>Número</TableHead>
-                                    <TableHead className="text-right">Ações</TableHead>
+                                    <TableHead>{GetLocalized(Labels.NameColumn)}</TableHead>
+                                    <TableHead>{GetLocalized(Labels.NumberColumn)}</TableHead>
+                                    <TableHead className="text-right">{GetLocalized(Labels.ActionsColumn)}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -197,12 +200,12 @@ export function ServiceLocationConfiguration() {
                                     <TableRow>
                                         <TableCell colSpan={3} className="p-0">
                                             <EmptyState
-                                                title="Nenhum local encontrado"
-                                                description="Cadastre guichês ou salas para o sistema fluir."
+                                                title={GetLocalized(Messages.NoLocationFound)}
+                                                description={GetLocalized(Messages.RegisterLocationsHint)}
                                                 icon={<MapPin className="h-12 w-12 text-muted-foreground/50 mb-2" />}
                                                 action={
                                                     <Button variant="outline" onClick={openAddDialog}>
-                                                        <Plus className="mr-2 h-4 w-4" /> Criar Local
+                                                        <Plus className="mr-2 h-4 w-4" /> {GetLocalized(Labels.CreateLocationButton)}
                                                     </Button>
                                                 }
                                             />
@@ -246,9 +249,9 @@ export function ServiceLocationConfiguration() {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>{locationIDToEdit ? "Editar Local" : "Adicionar Novo Local"}</DialogTitle>
+                        <DialogTitle>{locationIDToEdit ? GetLocalized(Labels.EditLocationDialogTitle) : GetLocalized(Labels.AddNewLocationDialogTitle)}</DialogTitle>
                         <DialogDescription>
-                            {locationIDToEdit ? "Altere os dados deste ponto de atendimento." : "Configure o ponto de atendimento (Ex: Guichê, Sala, Consultório)."}
+                            {locationIDToEdit ? GetLocalized(Labels.EditLocationDialogDescription) : GetLocalized(Labels.AddLocationDialogDescription)}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -259,9 +262,9 @@ export function ServiceLocationConfiguration() {
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Nome do Local</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.LocationNameLabel)}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Ex: Guichê 1" autoFocus {...field} />
+                                            <Input placeholder={GetLocalized(Labels.LocationNamePlaceholder)} autoFocus {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -273,10 +276,10 @@ export function ServiceLocationConfiguration() {
                                 name="number"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Número do Local</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.LocationNumberLabel)}</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Ex: 5"
+                                                placeholder={GetLocalized(Labels.LocationNumberPlaceholder)}
                                                 type="number"
                                                 {...field}
                                                 value={field.value ?? ""}
@@ -293,10 +296,10 @@ export function ServiceLocationConfiguration() {
 
                             <DialogFooter className="pt-4">
                                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                                    Cancelar
+                                    {GetLocalized(Labels.CancelButton)}
                                 </Button>
                                 <Button type="submit">
-                                    {locationIDToEdit ? "Salvar Alterações" : "Salvar Local"}
+                                    {locationIDToEdit ? GetLocalized(Labels.SaveChangesButton) : GetLocalized(Labels.SaveLocationButton)}
                                 </Button>
                             </DialogFooter>
                         </form>
@@ -307,10 +310,10 @@ export function ServiceLocationConfiguration() {
             <ConfirmDialog
                 open={!!locationToDelete}
                 onOpenChange={(open) => !open && setLocationToDelete(null)}
-                title="Confirmar Exclusão"
-                description={`Tem certeza que deseja remover o local "${locationToDelete?.name}"? Esta ação não pode ser desfeita.`}
+                title={GetLocalized(Labels.ConfirmDeletionTitle)}
+                description={`${GetLocalized(Messages.ConfirmDeletePrefix)} "${locationToDelete?.name}"? ${GetLocalized(Messages.ConfirmDeleteSuffix)}`}
                 onConfirm={handleDeleteLocation}
-                confirmText="Confirmar Exclusão"
+                confirmText={GetLocalized(Labels.ConfirmDeletionTitle)}
             />
         </div>
     );

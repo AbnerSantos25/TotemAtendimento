@@ -15,11 +15,14 @@ import { MeuGuiche } from "./pages/attendance/MeuGuiche";
 import { Role } from "./models/UserModels";
 import { AttendanceDisplay } from "./pages/attendance/AttendanceDisplay";
 
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels } from "@/shared/localization/keys";
+
 function DashboardTemporario() {
 
   return (
     <div className="p-2">
-      <h1 className="text-3xl font-bold">Painel do Totem Atendimento</h1>
+      <h1 className="text-3xl font-bold">{GetLocalized(Labels.DashboardTitle)}</h1>
     </div>
   );
 }
