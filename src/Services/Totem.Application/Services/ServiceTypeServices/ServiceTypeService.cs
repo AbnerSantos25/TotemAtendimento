@@ -23,7 +23,7 @@ namespace Totem.Application.Services.ServiceTypeServices
 			ServiceTypeValidator validator = new();
 			var serviceType = new ServiceType(request.Title, request.Icon, request.Color, request.TicketPrefix, request.TargetQueueId);
 
-			if (!validator.Validate(serviceType).IsValid)
+			if (!ExecuteValidation(validator, serviceType))
 				return Unsuccessful<Guid>();
 
 			_repository.Add(serviceType);
@@ -100,20 +100,17 @@ namespace Totem.Application.Services.ServiceTypeServices
 		public async Task<Result> UpdateAsync(Guid id, ServiceTypeRequest request)
 		{
 			var serviceType = await _repository.GetByIdAsync(id);
+
 			if(serviceType is null)
 				return Unsuccessful(Errors.ServiceTypeNotFound);
 
 			serviceType.Update(request.Title, request.Icon, request.Color, request.TargetQueueId, request.TicketPrefix);
 
 			ServiceTypeValidator validator = new();
-			var validationResult = validator.Validate(serviceType);
 
-			if (!validationResult.IsValid)
-			{
-				Notify(validationResult);
+			if (!ExecuteValidation(validator, serviceType))
 				return Unsuccessful();
-			}
-			
+
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase);
 

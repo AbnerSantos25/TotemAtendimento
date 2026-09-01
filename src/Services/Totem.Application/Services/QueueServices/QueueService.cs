@@ -44,7 +44,8 @@ namespace Totem.Application.Services.QueueServices
 		public async Task<Result> UpdateAsync(Guid Id, QueueRequest request)
 		{
 			var queueValidator = new QueueValidator();
-			if (!queueValidator.Validate(new Queue(request.Name)).IsValid)
+
+			if (!ExecuteValidation(queueValidator, new Queue(request.Name)))
 				return Unsuccessful();
 
 			var queue = await _repository.GetByIdAsync(Id);

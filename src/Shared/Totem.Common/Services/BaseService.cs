@@ -60,7 +60,7 @@ namespace Totem.Common.Services
 
 		protected (Result result, T data) Unsuccessful<T>(List<Notification> notifications)
 		{
-			return (Unsuccessful(), default(T));
+			return (Unsuccessful(notifications), default(T));
 		}
 
 		protected (Result result, T data) Unsuccessful<T>()

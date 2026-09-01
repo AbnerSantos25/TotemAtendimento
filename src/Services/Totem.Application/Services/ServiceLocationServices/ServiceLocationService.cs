@@ -80,7 +80,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 				return Unsuccessful();
 			}
 
-			if (!validator.Validate(ServiceLocationValidator).IsValid)
+			if (!ExecuteValidation(validator, ServiceLocationValidator))
 				return Unsuccessful();
 
 			var serviceLocation = await _repository.GetByIdAsync(Id);
