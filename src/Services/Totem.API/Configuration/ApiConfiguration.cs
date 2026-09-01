@@ -46,8 +46,8 @@ namespace Totem.API.Configuration
                     }
                     else
                     {
-                        policy.WithOrigins("https://seusiteoficial.com")
-                              .AllowAnyHeader()
+                        policy.WithOrigins("https://seusiteoficial.com") //Alterar em produção para o domínio oficial do site
+							  .AllowAnyHeader()
                               .AllowAnyMethod()
                               .AllowCredentials();
                     }
