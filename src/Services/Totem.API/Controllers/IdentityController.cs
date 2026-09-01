@@ -60,6 +60,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.GetMeAsync(userId));
         }
 
+        [Authorize(Roles = nameof(Role.Manager))]
         [HttpGet("users")]
         public async Task<ActionResult> GetListUser()
         {
