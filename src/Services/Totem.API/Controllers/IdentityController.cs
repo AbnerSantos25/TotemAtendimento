@@ -20,9 +20,20 @@ namespace Totem.API.Controllers
             _identityService = identityService;
         }
 
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpPost("register")]
+		[EnableRateLimiting("Auth")]
+		public async Task<ActionResult> Register(RegisterUserView registerUser)
+		{
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+			var result = await _identityService.RegisterUserAsync(registerUser);
+			if (!result.Result.Success) return CustomResponse(result.Result);
 
-        [AllowAnonymous]
+			return CustomResponse((result.Result, result.Data));
+		}
+
+		[AllowAnonymous]
         [HttpPost("login")]
         [EnableRateLimiting("Auth")]
         public async Task<ActionResult> Login(LoginUserView loginUser)
@@ -55,8 +66,9 @@ namespace Totem.API.Controllers
             if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _identityService.GetListUserAsync());
 		}
-  
-        [HttpPut("user/{userId}/update-email")]
+
+		[EnableRateLimiting("Auth")]
+		[HttpPut("user/{userId}/update-email")]
         public async Task<ActionResult> UpdateEmail([FromRoute] Guid userId, [FromBody] UpdateEmailRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);

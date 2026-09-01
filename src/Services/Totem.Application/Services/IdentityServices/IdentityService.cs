@@ -8,7 +8,6 @@ using System.Security.Claims;
 using System.Text;
 using Totem.Application.Models;
 using Totem.Common.Domain.Notification;
-using Totem.Common.Enumerations;
 using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
