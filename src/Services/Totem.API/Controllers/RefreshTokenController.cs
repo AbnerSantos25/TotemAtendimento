@@ -30,6 +30,7 @@ namespace Totem.API.Controllers
                 return Unauthorized();
 
             var result = await _refreshTokenService.RefreshTokenAsync(userId, tokenId);
+
             if (!result.result.Success) return CustomResponse(result.result);
 
             Response.Cookies.Append("access_token", result.data.Jwt, new CookieOptions

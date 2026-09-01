@@ -60,8 +60,9 @@ namespace Totem.API.Controllers
             if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _passwordService.MarkAsServed(passwordId));
         }
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpDelete]
+
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpDelete]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> RemovePassword(Guid id)
         {
@@ -69,8 +70,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _passwordService.RemovePasswordAsync(id));
         }
 
-        [Authorize(Roles = "System")]
-        [EnableRateLimiting("Global")]
+		[Authorize(Roles = $"{nameof(Role.System)}")]
+		[EnableRateLimiting("Global")]
         [HttpGet("latest-calls")]
 		public async Task<IActionResult> GetLatestCalls()
 		{

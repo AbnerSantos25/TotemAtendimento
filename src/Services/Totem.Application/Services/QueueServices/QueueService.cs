@@ -102,7 +102,6 @@ namespace Totem.Application.Services.QueueServices
 			if (hasFullAccess)
 				return await GetListAsync();
 			
-
 			var allowedQueueIds = await _permissionRepository.GetAllowedQueueIdsAsync(userId);
 			
 			if (allowedQueueIds.Count == 0)

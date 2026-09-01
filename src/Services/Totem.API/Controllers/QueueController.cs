@@ -29,8 +29,8 @@ namespace Totem.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> GetListAsync()
+		[Authorize(Roles = $"{nameof(Role.Manager)}, {nameof(Role.System)}, {nameof(Role.User)}")]
+		public async Task<IActionResult> GetListAsync()
         {
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
@@ -45,7 +45,7 @@ namespace Totem.API.Controllers
             return CustomResponse(await _queueServices.GetListByPermissionAsync(userId, hasFullAccess));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = $"{nameof(Role.Manager)}")]
         [HttpPost]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddAsync([FromBody] QueueRequest request)
@@ -56,8 +56,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _queueServices.AddAsync(request));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpPut("{id}")]
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpPut("{id}")]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] QueueRequest request)
         {
@@ -67,8 +67,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _queueServices.UpdateAsync(id, request));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpDelete("{id}")]
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpDelete("{id}")]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
@@ -78,8 +78,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _queueServices.DeleteAsync(id));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpPatch("{id}/toggleQueueStatus")]
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpPatch("{id}/toggleQueueStatus")]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> ToggleStatusQueue([FromRoute] Guid id)
         {

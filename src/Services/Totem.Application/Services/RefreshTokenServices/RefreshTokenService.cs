@@ -39,7 +39,7 @@ namespace Totem.Application.Services.RefreshTokenServices
 		public async Task<(Result result, AuthResult data)> RefreshTokenAsync(Guid userId, Guid oldToken)
 		{
 			var token = await _refreshTokenRepository.GetByTokenIdAsync(oldToken);
-			if (token == null || token.Revoked)
+			if (token == null || token.Revoked || token.UserId != userId)
 				return Unsuccessful<AuthResult>(Errors.InvalidRefreshToken);
 
 			if (token.ExpiryDate < DateTime.UtcNow)
