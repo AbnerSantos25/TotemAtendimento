@@ -79,7 +79,7 @@ namespace Totem.Application.Services.RefreshTokenServices
 			_refreshTokenRepository.Add(refreshToken);
 
 			if(!await _refreshTokenRepository.UnitOfWork.CommitAsync())
-				Unsuccessful(Errors.ErrorSavingDatabase);
+				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase);
 
 			return Successful(token);
 		}
