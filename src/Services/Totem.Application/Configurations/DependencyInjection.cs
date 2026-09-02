@@ -19,7 +19,7 @@ using Totem.Infra.Data.Queries.ServiceLocationQueries;
 using Totem.Infra.Data.Queries.ServiceTypeQueries;
 using Totem.Infra.Data.Repositories.PasswordRepository;
 using Totem.Infra.Data.Repositories.QueueRepository;
-using Totem.Infra.Data.Repositories.RefrashTokenRepository;
+using Totem.Infra.Data.Repositories.RefreshTokenRepository;
 using Totem.Infra.Data.Repositories.ServiceLocationRepository;
 using Totem.Infra.Data.Repositories.ServiceTypeRepository;
 using Totem.Infra.Data.Repositories.UserQueuePermissionRepository;
@@ -32,7 +32,6 @@ namespace Totem.Application.Configurations
 		public static void TotemRegisterDependency(this IServiceCollection services)
 		{
 			services.AddScoped<INotificator, Notificator>();
-			services.AddScoped<PasswordValidations>();
 
 			services.AddScoped<IPasswordRepository, PasswordRepository>();
 			services.AddScoped<IPasswordQueries, PasswordQueries>();
@@ -42,7 +41,7 @@ namespace Totem.Application.Configurations
 			services.AddScoped<IServiceLocationQueries, ServiceLocationQueries>();
 			services.AddScoped<IServiceLocationService, ServiceLocationService>();
 
-			services.AddScoped<IQueueRepository, QueueRespository>();
+			services.AddScoped<IQueueRepository, QueueRepository>();
 			services.AddScoped<IQueueQueries, QueueQueries>();
 			services.AddScoped<IQueueServices, QueueService>();
 

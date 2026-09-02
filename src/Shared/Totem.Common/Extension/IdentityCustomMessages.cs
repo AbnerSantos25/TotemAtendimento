@@ -2,7 +2,7 @@
 
 namespace Totem.Common.Extension
 {
-    public class IdentityCustomMenssages : IdentityErrorDescriber
+    public class IdentityCustomMessages : IdentityErrorDescriber
     {
         //TODO: (Abner) Globalizar mensagens de erro
         public override IdentityError DefaultError()

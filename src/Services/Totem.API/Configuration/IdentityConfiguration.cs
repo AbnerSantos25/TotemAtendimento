@@ -15,7 +15,7 @@ namespace Totem.API.Configuration
         {
             services.AddIdentity<User, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
-            .AddErrorDescriber<IdentityCustomMenssages>()
+            .AddErrorDescriber<IdentityCustomMessages>()
             .AddRoles<IdentityRole<Guid>>()
 			.AddDefaultTokenProviders();
 

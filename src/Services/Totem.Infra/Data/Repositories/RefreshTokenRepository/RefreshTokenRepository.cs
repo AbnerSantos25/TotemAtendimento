@@ -3,7 +3,7 @@ using Totem.Common.Data;
 using Totem.Domain.Aggregates.RefreshTokenAggregate;
 using Totem.Infra.Data.IdentityData;
 
-namespace Totem.Infra.Data.Repositories.RefrashTokenRepository
+namespace Totem.Infra.Data.Repositories.RefreshTokenRepository
 {
 	public class RefreshTokenRepository : IRefreshTokenRepository
 	{

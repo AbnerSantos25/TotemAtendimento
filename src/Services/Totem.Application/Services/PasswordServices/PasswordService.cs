@@ -4,7 +4,6 @@ using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.PasswordAggregate.Events;
-using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 using Totem.Domain.Models.PasswordModels;
 using Totem.SharedKernel.Models;
@@ -22,8 +21,6 @@ namespace Totem.Application.Services.PasswordServices
 			INotificator notificador,
 			IPasswordRepository passwordRepository,
 			IPasswordQueries passwordQueries,
-			PasswordValidations passwordValidation,
-			IServiceLocationRepository serviceLocationRepository,
 			IMediator mediator
 		) : base(notificador)
 		{

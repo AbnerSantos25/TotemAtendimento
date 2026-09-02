@@ -4,13 +4,13 @@ using Totem.Domain.Aggregates.QueueAggregate;
 
 namespace Totem.Infra.Data.Repositories.QueueRepository
 {
-	public class QueueRespository : IQueueRepository
+	public class QueueRepository : IQueueRepository
 	{
 		private readonly TotemDbContext _context;
 
 		public IUnitOfWork UnitOfWork => _context;
 
-		public QueueRespository(TotemDbContext context)
+		public QueueRepository(TotemDbContext context)
 		{
 			_context = context;
 		}
