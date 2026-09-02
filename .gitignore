@@ -296,4 +296,5 @@ __pycache__/
 **/node_modules
 appsettings.json
 appsettings.*.json
+!appsettings.Example.json
 auditoria_seguranca_premium.html
