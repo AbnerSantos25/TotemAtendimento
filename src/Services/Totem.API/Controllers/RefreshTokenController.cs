@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Totem.Common.Extension;
 using Totem.Application.Services.RefreshTokenServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -11,11 +13,13 @@ namespace Totem.API.Controllers
     {
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IWebHostEnvironment _environment;
+        private readonly JwtSettings _jwtSettings;
 
-        public RefreshTokenController(INotificator notificador, IRefreshTokenService refreshTokenService, IWebHostEnvironment environment) : base(notificador)
+        public RefreshTokenController(INotificator notificador, IRefreshTokenService refreshTokenService, IWebHostEnvironment environment, IOptions<JwtSettings> jwtSettings) : base(notificador)
         {
             _refreshTokenService = refreshTokenService;
             _environment = environment;
+            _jwtSettings = jwtSettings.Value;
         }
 
         [AllowAnonymous]
@@ -50,7 +54,7 @@ namespace Totem.API.Controllers
                 HttpOnly = true,
                 Secure = secure,
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Expires = DateTimeOffset.UtcNow.AddHours(_jwtSettings.RefreshTokenExpirationHours)
             });
 
             return CustomResponse((result.result, result.data.UserView));

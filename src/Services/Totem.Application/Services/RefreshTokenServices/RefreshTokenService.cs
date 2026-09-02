@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Totem.Common.Extension;
 using Totem.Application.Models;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
@@ -17,14 +18,14 @@ namespace Totem.Application.Services.RefreshTokenServices
 		private readonly IRefreshTokenRepository _refreshTokenRepository;
 		private readonly IIdentityIntegrationService _identityIntegrationService;
         private readonly UserManager<User> _userManager;
+        private readonly JwtSettings _jwtSettings;
 
-        private static readonly TimeSpan RefreshGracePeriod = TimeSpan.FromHours(2);
-
-        public RefreshTokenService(INotificator notificador, IRefreshTokenRepository refreshTokenRepository, IIdentityIntegrationService identityIntegrationService, UserManager<User> userManager) : base(notificador)
+        public RefreshTokenService(INotificator notificador, IRefreshTokenRepository refreshTokenRepository, IIdentityIntegrationService identityIntegrationService, UserManager<User> userManager, IOptions<JwtSettings> jwtSettings) : base(notificador)
         {
             _refreshTokenRepository = refreshTokenRepository;
             _identityIntegrationService = identityIntegrationService;
             _userManager = userManager;
+            _jwtSettings = jwtSettings.Value;
         }
 
         public async Task<(Result result, IRefreshTokenView data)> GetByTokenAsync(Guid token)
@@ -43,11 +44,7 @@ namespace Totem.Application.Services.RefreshTokenServices
 				return Unsuccessful<AuthResult>(Errors.InvalidRefreshToken);
 
 			if (token.ExpiryDate < DateTime.UtcNow)
-			{
-				var timeSinceExpiry = DateTime.UtcNow - token.ExpiryDate;
-				if (timeSinceExpiry > RefreshGracePeriod)
-					return Unsuccessful<AuthResult>(Errors.RefreshTokenExpired);
-			}
+				return Unsuccessful<AuthResult>(Errors.RefreshTokenExpired);
 
 			if (!await _identityIntegrationService.ExistsUser(userId))
 				return Unsuccessful<AuthResult>(Errors.UserNotFound);
@@ -74,7 +71,7 @@ namespace Totem.Application.Services.RefreshTokenServices
 		public async Task<(Result result, Guid data)> SaveRefreshTokenAsync(Guid userId)
 		{
 			var token = Guid.NewGuid();
-			var refreshToken = new RefreshToken(token, userId, DateTime.UtcNow.AddHours(1), false);
+			var refreshToken = new RefreshToken(token, userId, DateTime.UtcNow.AddHours(_jwtSettings.RefreshTokenExpirationHours), false);
 
 			_refreshTokenRepository.Add(refreshToken);
 

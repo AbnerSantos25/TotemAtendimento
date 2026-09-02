@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
+using Totem.Common.Extension;
 using System.Security.Claims;
 using Totem.Application.Services.IdentityServices;
 using Totem.Common.API.Controller;
@@ -16,10 +18,12 @@ namespace Totem.API.Controllers
 
         private readonly IIdentityService _identityService;
         private readonly IWebHostEnvironment _environment;
-        public IdentityController(INotificator notificator, IIdentityService identityService, IWebHostEnvironment environment) : base(notificator)
+        private readonly JwtSettings _jwtSettings;
+        public IdentityController(INotificator notificator, IIdentityService identityService, IWebHostEnvironment environment, IOptions<JwtSettings> jwtSettings) : base(notificator)
         {
             _identityService = identityService;
             _environment = environment;
+            _jwtSettings = jwtSettings.Value;
         }
 
 		[Authorize(Roles = $"{nameof(Role.Manager)}")]
@@ -154,6 +158,10 @@ namespace Totem.API.Controllers
             // Fora de Development os cookies de sessao so trafegam sobre HTTPS.
             var secure = !_environment.IsDevelopment();
 
+            // Os cookies de renovacao acompanham o prazo do refresh token: um cookie
+            // que sobrevive ao token so produz 401 depois de o usuario achar que segue logado.
+            var sessionExpiry = DateTimeOffset.UtcNow.AddHours(_jwtSettings.RefreshTokenExpirationHours);
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -167,7 +175,7 @@ namespace Totem.API.Controllers
                 HttpOnly = true,
                 Secure = secure,
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Expires = sessionExpiry,
                 Path = "/api/totem/RefreshToken"
             };
 
@@ -176,7 +184,7 @@ namespace Totem.API.Controllers
                 HttpOnly = true,
                 Secure = secure,
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Expires = sessionExpiry
             };
 
             Response.Cookies.Append("access_token", jwt, cookieOptions);
