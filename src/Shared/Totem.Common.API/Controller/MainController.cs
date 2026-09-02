@@ -62,7 +62,13 @@ namespace Totem.Common.API.Controller
         protected ActionResult CustomResponse(ModelStateDictionary modelState)
         {
             if (!modelState.IsValid) NotificarErroModelInvalida(modelState);
-            return CustomResponse(modelState);
+
+            // Delega para a sobrecarga de Result carregando as notificacoes recem
+            // registradas. Rechamar esta mesma sobrecarga era recursao infinita.
+            var result = new Result();
+            result.Handle(_notificador.GetNotifications());
+
+            return CustomResponse(result);
         }
 
         protected void NotificarErroModelInvalida(ModelStateDictionary modelState)
