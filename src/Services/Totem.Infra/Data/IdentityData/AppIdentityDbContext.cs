@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Totem.Common.API.Data;
 using Totem.Common.Data;
 using Totem.Common.Domain.Entity;
 using Totem.Domain.Aggregates.RefreshTokenAggregate;
@@ -22,32 +23,7 @@ namespace Totem.Infra.Data.IdentityData
 		public DbSet<RefreshToken> RefreshTokens { get; set; }
 		public DbSet<UserQueuePermission> UserQueuePermissions { get; set; }
 
-		public virtual async Task<bool> CommitAsync()
-		{
-			using var transaction = await Database.BeginTransactionAsync();
-
-			try
-			{
-				var result = await SaveChangesAsync() > 0;
-
-				if (result)
-				{
-					await transaction.CommitAsync();
-				}
-				else
-				{
-					await transaction.RollbackAsync();
-				}
-
-				return result;
-			}
-			catch (Exception ex)
-			{
-				await transaction.RollbackAsync();
-				_logger.LogError(ex, "Falha ao confirmar a transacao no contexto {DbContext}.", nameof(AppIdentityDbContext));
-				return false;
-			}
-		}
+		public virtual Task<bool> CommitAsync() => this.CommitWithTransactionAsync(_logger);
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
