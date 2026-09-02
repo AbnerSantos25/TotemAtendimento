@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Totem.Common.Enumerations;
 using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.PasswordAggregate;
@@ -13,10 +14,12 @@ namespace Totem.Application.Events
     public sealed class PasswordServedHistoryHandler : INotificationHandler<PasswordServedEvent>
     {
         private readonly IPasswordHistoryRepository _historyRepository;
+        private readonly ILogger<PasswordServedHistoryHandler> _logger;
 
-        public PasswordServedHistoryHandler(IPasswordHistoryRepository historyRepository)
+        public PasswordServedHistoryHandler(IPasswordHistoryRepository historyRepository, ILogger<PasswordServedHistoryHandler> logger)
         {
             _historyRepository = historyRepository;
+            _logger = logger;
         }
 
         public async Task Handle(PasswordServedEvent notification, CancellationToken cancellationToken)
@@ -40,11 +43,11 @@ namespace Totem.Application.Events
 
                 var success = await _historyRepository.UnitOfWork.CommitAsync();
                 if (!success)
-                    Console.WriteLine($"[ERROR] Falha ao salvar histórico da senha {notification.PasswordId}");
+                    _logger.LogError("Falha ao salvar o historico da senha {PasswordId}.", notification.PasswordId);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[EXCEPTION] Erro ao persistir histórico: {ex.Message}");
+                _logger.LogError(ex, "Erro ao persistir o historico da senha {PasswordId}.", notification.PasswordId);
             }
         }
     }

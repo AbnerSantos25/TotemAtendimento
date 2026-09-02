@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Totem.Common.API.Data;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
@@ -10,7 +11,8 @@ namespace Totem.Infra.Data
 {
 	public class TotemDbContext : SharedDbContext
 	{
-		public TotemDbContext(DbContextOptions<TotemDbContext> options) : base(options)
+		public TotemDbContext(DbContextOptions<TotemDbContext> options, ILogger<TotemDbContext> logger)
+			: base(options, logger)
 		{
 
 		}

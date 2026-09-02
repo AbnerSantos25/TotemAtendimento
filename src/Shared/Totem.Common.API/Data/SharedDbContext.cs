@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Totem.Common.Data;
 using Totem.Common.Domain.Entity;
 
@@ -6,9 +7,11 @@ namespace Totem.Common.API.Data
 {
 	public abstract class SharedDbContext : DbContext, IUnitOfWork
 	{
-		public SharedDbContext(DbContextOptions options) : base(options)
-		{
+		private readonly ILogger _logger;
 
+		protected SharedDbContext(DbContextOptions options, ILogger logger) : base(options)
+		{
+			_logger = logger;
 		}
 		protected virtual void ApplyConfigurations(ModelBuilder modelBuilder) { }
 
@@ -34,7 +37,7 @@ namespace Totem.Common.API.Data
 			catch (Exception ex)
 			{
 				await transaction.RollbackAsync();
-				Console.WriteLine($"Erro ao realizar commit: {ex.Message}");
+				_logger.LogError(ex, "Falha ao confirmar a transacao no contexto {DbContext}.", GetType().Name);
 				return false;
 			}
 		}
