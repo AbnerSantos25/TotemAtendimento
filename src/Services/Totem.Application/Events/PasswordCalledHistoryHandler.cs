@@ -1,9 +1,9 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Totem.Application.Events.Contracts;
 using Totem.Common.Enumerations;
 using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.PasswordAggregate;
-using Totem.Domain.Aggregates.PasswordAggregate.Events;
 
 namespace Totem.Application.Events
 {

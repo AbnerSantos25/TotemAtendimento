@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Totem.Application.Events.Contracts;
 using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.RefreshTokenAggregate;
-using Totem.Domain.Aggregates.RefreshTokenAggregate.Events;
 
 namespace Totem.Application.Events
 {

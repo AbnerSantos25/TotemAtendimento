@@ -1,6 +1,6 @@
 using MediatR;
+using Totem.Application.Events.Contracts;
 using Totem.Application.Events.Notifications;
-using Totem.Domain.Aggregates.PasswordAggregate.Events;
 
 namespace Totem.Application.Events
 {

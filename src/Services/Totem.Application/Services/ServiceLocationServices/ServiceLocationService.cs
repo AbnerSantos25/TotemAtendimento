@@ -1,9 +1,9 @@
 using MediatR;
+using Totem.Application.Events.Contracts;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
-using Totem.Domain.Aggregates.PasswordAggregate.Events;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Models.ServiceLocationModels;
 using Totem.SharedKernel.Models;
