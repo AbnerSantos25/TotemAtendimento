@@ -53,6 +53,10 @@ namespace Totem.Application.Configurations
 
             services.AddScoped<IPasswordMatchingService, PasswordMatchingService>();
 
+			// Estado efemero dos guiches em espera: precisa sobreviver entre requisicoes,
+			// ao contrario do handler, que e recriado a cada evento.
+			services.AddSingleton<IWaitingServiceLocationStore, WaitingServiceLocationStore>();
+
 			services.AddScoped<IPasswordHistoryRepository, PasswordHistoryRepository>();
 
 			services.AddScoped<IPasswordIntegrationService, PasswordService>();
