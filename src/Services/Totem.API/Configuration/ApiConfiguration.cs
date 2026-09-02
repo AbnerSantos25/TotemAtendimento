@@ -7,11 +7,7 @@ namespace Totem.API.Configuration
     {
         public static IServiceCollection AddApiConfiguration(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new Totem.Common.Security.HtmlSanitizerStringConverter());
-                });
+            services.AddControllers();
 
             services.AddAntiforgery(options =>
             {
