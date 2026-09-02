@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Totem.Application.Services.ServiceTypeServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
+using Totem.Common.Enumerations;
 using Totem.Domain.Models.ServiceTypeModels;
 
 namespace Totem.API.Controllers
@@ -36,7 +37,7 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _serviceTypeService.GetByIdAsync(id));
 		}
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Manager)}")]
 		[HttpPost]
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Create([FromBody] ServiceTypeRequest request)
@@ -46,7 +47,7 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _serviceTypeService.CreateAsync(request));
 		}
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Manager)}")]
 		[HttpPut("{id:guid}")]
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] ServiceTypeRequest request)
@@ -56,7 +57,7 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _serviceTypeService.UpdateAsync(id, request));
 		}
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Manager)}")]
 		[HttpDelete("{id:guid}")]
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Delete([FromRoute] Guid id)
@@ -66,7 +67,7 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _serviceTypeService.DeleteAsync(id));
 		}
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Manager)}")]
 		[HttpPatch("{id:guid}/toggle-status")]
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> ToggleStatus([FromRoute] Guid id)
@@ -76,7 +77,7 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _serviceTypeService.ToggleStatusAsync(id));
 		}
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Manager)}")]
 		[HttpPatch("{id:guid}/disable")]
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Disable([FromRoute] Guid id)
