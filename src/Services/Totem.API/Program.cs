@@ -1,10 +1,27 @@
+using Serilog;
+using Serilog.Events;
 using Totem.API.Configuration;
 using Totem.API.RealTime;
 using Totem.Application.Configurations;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Warning()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+    .WriteTo.File(
+        path: "logs/erros-totem-.txt",
+        rollingInterval: RollingInterval.Day,
+        restrictedToMinimumLevel: LogEventLevel.Error,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+    )
+    .CreateLogger();
 
-builder.Services.AddApiConfiguration(builder.Configuration, builder.Environment);
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host.UseSerilog();
+
+    builder.Services.AddApiConfiguration(builder.Configuration, builder.Environment);
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -57,10 +74,20 @@ app.UseAuthorization();
 
 app.UseCsrfMiddleware();
 
-app.MapControllers();
+    app.MapControllers();
 
 app.Run();
 
 // Program e implicitamente internal em top-level statements. Os projetos de teste
 // usam WebApplicationFactory<Program>, que exige o tipo acessivel.
 public partial class Program { }
+
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
