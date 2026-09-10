@@ -228,4 +228,7 @@
   <data name="QueueAccessDenied" xml:space="preserve">
     <value>Voce nao tem permissao para acompanhar esta fila.</value>
   </data>
+  <data name="QueueNotFound" xml:space="preserve">
+    <value>Fila não encontrada.</value>
+  </data>
 </root>

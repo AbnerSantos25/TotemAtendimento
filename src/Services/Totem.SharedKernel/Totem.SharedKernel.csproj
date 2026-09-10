@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Totem.Common\Totem.Common.csproj" />
+    <Compile Remove="Events\**" />
+    <EmbeddedResource Remove="Events\**" />
+    <None Remove="Events\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Events\" />
+    <ProjectReference Include="..\..\Shared\Totem.Common\Totem.Common.csproj" />
   </ItemGroup>
 
 </Project>

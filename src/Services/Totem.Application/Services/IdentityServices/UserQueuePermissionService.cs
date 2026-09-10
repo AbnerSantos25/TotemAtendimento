@@ -1,9 +1,9 @@
 using Totem.Common.Domain.Notification;
-using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Models.IdentityModels;
+using Totem.Common.Localization.Resources;
 
 namespace Totem.Application.Services.IdentityServices
 {
@@ -29,21 +29,20 @@ namespace Totem.Application.Services.IdentityServices
 
 		public async Task<Result> SetPermissionsAsync(Guid userId, SetUserQueuePermissionsRequest request)
 		{
+
 			foreach (var queueId in request.QueueIds)
 			{
 				var queue = await _queueRepository.GetByIdAsync(queueId);
+				
 				if (queue == null)
-				{
-					return Unsuccessful(Errors.NotFound);
-				}
+					return Unsuccessful(Errors.QueueNotFound);
+				
 			}
 
 			await _permissionRepository.SetPermissionsAsync(userId, request.QueueIds);
 
 			if (!await _permissionRepository.UnitOfWork.CommitAsync())
-			{
 				return Unsuccessful(Errors.ErrorSavingDatabase);
-			}
 
 			return Successful();
 		}
