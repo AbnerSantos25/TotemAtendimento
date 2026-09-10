@@ -78,10 +78,6 @@ app.UseCsrfMiddleware();
 
 app.Run();
 
-// Program e implicitamente internal em top-level statements. Os projetos de teste
-// usam WebApplicationFactory<Program>, que exige o tipo acessivel.
-public partial class Program { }
-
 }
 catch (Exception ex)
 {
