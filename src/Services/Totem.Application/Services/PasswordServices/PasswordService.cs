@@ -87,10 +87,11 @@ namespace Totem.Application.Services.PasswordServices
 		public async Task<(Result result, IPasswordView data)> ServiceLocationWaitingPasswordAsync(Guid queueId, Guid serviceLocationId, string newServiceLocationName)
 		{
 			var nextPassword = await _passwordRepository.GetNextUnassignedPasswordFromQueueAsync(queueId);
-			if (nextPassword == null)
+			
+			if (nextPassword is null)
 			{
 				await _mediator.Publish(new ServiceLocationWaitingPasswordEvent(serviceLocationId, queueId));
-				return Unsuccessful<IPasswordView>(Errors.PasswordNotFound.ToString());
+				return Successful<IPasswordView>(null);
 			}
 
 			var oldServiceLocation = nextPassword.ServiceLocationId;

@@ -53,7 +53,9 @@ Por isso a espera fica em um serviço **Singleton** separado, enquanto o handler
 |---|---|
 | `Enqueue(queueId, serviceLocationId)` | Coloca no fim da espera daquela fila; ignora se já estiver lá |
 | `TryDequeue(queueId, out serviceLocationId)` | Retira o guichê que espera há mais tempo (FIFO) |
-| `Remove(queueId, serviceLocationId)` | Tira o guichê da espera |
+| `Remove(queueId, serviceLocationId)` | Tira o guichê da espera de uma fila especifica |
+| `RemoveServiceLocation(serviceLocationId)` | Tira o guichê de qualquer fila em que esteja esperando; chamado por `ServiceLocationService.DeleteAsync` quando o guichê é excluído |
+| `ClearQueue(queueId)` | Esvazia a espera inteira de uma fila; chamado por `QueueService.DeleteAsync` e por `QueueService.ToggleStatusQueue` (quando desativa) |
 
 ---
 

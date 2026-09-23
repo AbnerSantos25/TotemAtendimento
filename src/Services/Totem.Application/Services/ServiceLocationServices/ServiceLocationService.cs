@@ -6,6 +6,7 @@ using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Application.Events.Contracts;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Models.ServiceLocationModels;
+using Totem.Application.Services.PasswordMatchingServices;
 using Totem.SharedKernel.Models;
 using Totem.SharedKernel.Services;
 
@@ -17,6 +18,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 		private readonly IServiceLocationQueries _queries;
 		private readonly IPasswordIntegrationService _passwordIntegrationService;
 		private readonly IPasswordRepository _passwordRepository;
+		private readonly IWaitingServiceLocationStore _waitingLocations;
 		private readonly IMediator _mediator;
 
 		public ServiceLocationService(
@@ -25,6 +27,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 			IServiceLocationQueries queries,
 			IPasswordIntegrationService passwordIntegrationService,
 			IPasswordRepository passwordRepository,
+			IWaitingServiceLocationStore waitingLocations,
 			IMediator mediator
 		) : base(notificador)
 		{
@@ -32,6 +35,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 			_queries = queries;
 			_passwordIntegrationService = passwordIntegrationService;
 			_passwordRepository = passwordRepository;
+			_waitingLocations = waitingLocations;
 			_mediator = mediator;
 		}
 
@@ -65,6 +69,9 @@ namespace Totem.Application.Services.ServiceLocationServices
 
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase);
+
+			// Guiche excluido nao pode continuar esperando senha indefinidamente.
+			_waitingLocations.RemoveServiceLocation(Id);
 
 			return Successful();
 		}

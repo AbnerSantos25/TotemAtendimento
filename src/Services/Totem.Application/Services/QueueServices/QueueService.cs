@@ -5,6 +5,7 @@ using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.QueueModels;
+using Totem.Application.Services.PasswordMatchingServices;
 namespace Totem.Application.Services.QueueServices
 {
 	public class QueueService : BaseService, IQueueServices
@@ -12,12 +13,14 @@ namespace Totem.Application.Services.QueueServices
 		private readonly IQueueRepository _repository;
 		private readonly IQueueQueries _queries;
 		private readonly IUserQueuePermissionRepository _permissionRepository;
+		private readonly IWaitingServiceLocationStore _waitingLocations;
 
-		public QueueService(INotificator notificador, IQueueRepository repository, IQueueQueries queries, IUserQueuePermissionRepository permissionRepository) : base(notificador)
+		public QueueService(INotificator notificador, IQueueRepository repository, IQueueQueries queries, IUserQueuePermissionRepository permissionRepository, IWaitingServiceLocationStore waitingLocations) : base(notificador)
 		{
 			_repository = repository;
 			_queries = queries;
 			_permissionRepository = permissionRepository;
+			_waitingLocations = waitingLocations;
 		}
 
 		public async Task<(Result result, Guid data)> AddAsync(QueueRequest request)
@@ -79,6 +82,9 @@ namespace Totem.Application.Services.QueueServices
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase);
 
+			// Fila excluida nao pode manter guiches esperando senha que nunca vai chegar.
+			_waitingLocations.ClearQueue(id);
+
 			return Successful();
 
 		}
@@ -126,6 +132,10 @@ namespace Totem.Application.Services.QueueServices
 
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase);
+
+			// Fila desativada nao pode manter guiches esperando senha que nao sera mais gerada.
+			if (!queue.IsActive)
+				_waitingLocations.ClearQueue(id);
 
 			return Successful();
 

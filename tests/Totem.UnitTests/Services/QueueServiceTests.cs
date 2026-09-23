@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Totem.Application.Services.PasswordMatchingServices;
 using Totem.Application.Services.QueueServices;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.UserAggregate;
@@ -14,6 +15,7 @@ namespace Totem.UnitTests.Services
 		private readonly Mock<INotificator> _notificationMock;
 		private readonly Mock<IQueueQueries> _queueQueriesMock;
 		private readonly Mock<IUserQueuePermissionRepository> _userQueuePermissionRepositoryMock;
+		private readonly Mock<IWaitingServiceLocationStore> _waitingLocationsMock;
 		private readonly QueueService _sut;
 
 		public QueueServiceTests()
@@ -22,8 +24,9 @@ namespace Totem.UnitTests.Services
 			_queueRepositoryMock = new Mock<IQueueRepository>();
 			_queueQueriesMock = new Mock<IQueueQueries>();
 			_userQueuePermissionRepositoryMock = new Mock<IUserQueuePermissionRepository>();
+			_waitingLocationsMock = new Mock<IWaitingServiceLocationStore>();
 
-			_sut = new QueueService(_notificationMock.Object, _queueRepositoryMock.Object, _queueQueriesMock.Object, _userQueuePermissionRepositoryMock.Object);
+			_sut = new QueueService(_notificationMock.Object, _queueRepositoryMock.Object, _queueQueriesMock.Object, _userQueuePermissionRepositoryMock.Object, _waitingLocationsMock.Object);
 		}
 
 		[Fact(DisplayName = "AddAsync - Quando cadastrar fila com nome repetido deve retornar erro")]

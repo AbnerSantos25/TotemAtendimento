@@ -46,5 +46,22 @@ namespace Totem.Application.Services.PasswordMatchingServices
 					waiting.Remove(serviceLocationId);
 			}
 		}
+
+		public void RemoveServiceLocation(Guid serviceLocationId)
+		{
+			lock (_gate)
+			{
+				foreach (var waiting in _waitingByQueue.Values)
+					waiting.Remove(serviceLocationId);
+			}
+		}
+
+		public void ClearQueue(Guid queueId)
+		{
+			lock (_gate)
+			{
+				_waitingByQueue.Remove(queueId);
+			}
+		}
 	}
 }
