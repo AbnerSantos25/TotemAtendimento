@@ -1,54 +1,17 @@
 import { useState, useEffect } from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { queueService } from "@/services/QueueService";
 import type { QueueView } from "@/models/QueueModels";
 import { GetLocalized } from '@/shared/localization/i18n';
 import { Labels, Messages, Errors } from '@/shared/localization/keys';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { EmptyState } from "@/components/EmptyState";
-import { TableSkeleton } from "@/components/TableSkeleton";
-import { FolderSearch } from "lucide-react";
-
-const QueueSchema = z.object({
-    name: z.string().min(1, { message: GetLocalized(Errors.QueueNameRequired) }),
-    isActive: z.boolean()
-});
-type QueueFormValues = z.infer<typeof QueueSchema>;
+import { QueueTable } from "@/components/queue/QueueTable";
+import { AddQueueDialog } from "@/components/queue/AddQueueDialog";
 
 export function QueueConfiguration() {
     const [queues, setQueues] = useState<QueueView[]>([]);
@@ -57,16 +20,7 @@ export function QueueConfiguration() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-
-    const form = useForm<QueueFormValues>({
-        resolver: zodResolver(QueueSchema),
-        defaultValues: {
-            name: "",
-            isActive: true,
-        },
-    });
-
-    const [queueToDelete, setQueueToDelete] = useState<{ id: string, name: string } | null>(null);
+    const [queueToDelete, setQueueToDelete] = useState<QueueView | null>(null);
 
     const fetchQueues = async () => {
         setLoading(true);
@@ -92,35 +46,8 @@ export function QueueConfiguration() {
         return true;
     });
 
-    const handleOpenChange = (open: boolean) => {
-        setIsAddDialogOpen(open);
-        if (!open) {
-            form.reset();
-        }
-    };
-
-    const onSubmit = async (values: QueueFormValues) => {
-        const dto = { name: values.name, isActive: values.isActive };
-        const response = await queueService.createQueueAsync(dto);
-
-        if (response.success && response.data) {
-
-            const newQueue: QueueView = {
-                id: response.data,
-                name: dto.name,
-                isActive: dto.isActive,
-            }
-
-            AGShowMessage.success({ title: GetLocalized(Labels.Success), description: GetLocalized(Messages.QueueCreatedSuccess) });
-            setQueues(prev => [...prev, newQueue]);
-            setIsAddDialogOpen(false);
-            form.reset();
-        } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: GetLocalized(Errors.CreationError), description: response.error.message || GetLocalized(Errors.QueueCreationFailed) });
-        }
-    };
-
-    const handleToggleStatus = async (queue: QueueView, newStatus: boolean) => {
+    const handleToggleStatus = async (queue: QueueView) => {
+        const newStatus = !queue.isActive;
         const response = await queueService.toggleQueueStatusAsync(queue.id);
 
         if (response.success) {
@@ -194,127 +121,21 @@ export function QueueConfiguration() {
                         </Select>
                     </div>
 
-                    <div className="rounded-md border">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>{GetLocalized(Labels.QueueName)}</TableHead>
-                                    <TableHead>{GetLocalized(Labels.Status)}</TableHead>
-                                    <TableHead className="text-right">{GetLocalized(Labels.Actions)}</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {loading ? (
-                                    <TableSkeleton columns={3} rows={5} />
-                                ) : filteredQueues.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={3} className="p-0">
-                                            <EmptyState
-                                                title={GetLocalized(Labels.NoQueueFound)}
-                                                description={GetLocalized(Messages.NoQueueFoundDescription)}
-                                                icon={<FolderSearch className="h-12 w-12 text-muted-foreground/50 mb-2" />}
-                                                action={
-                                                    <Button variant="outline" onClick={() => setIsAddDialogOpen(true)}>
-                                                        <Plus className="mr-2 h-4 w-4" /> {GetLocalized(Labels.CreateQueue)}
-                                                    </Button>
-                                                }
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    filteredQueues.map((queue) => (
-                                        <TableRow key={queue.id}>
-                                            <TableCell className="font-medium">{queue.name}</TableCell>
-                                            <TableCell>
-                                                <Badge variant={queue.isActive ? "default" : "secondary"}>
-                                                    {queue.isActive ? GetLocalized(Labels.Active) : GetLocalized(Labels.Inactive)}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="flex justify-end items-center gap-2">
-                                                    <div className="flex items-center gap-2 mr-4">
-                                                        <Label className="text-xs text-muted-foreground cursor-pointer" htmlFor={`status-${queue.id}`}>
-                                                            {queue.isActive ? GetLocalized(Labels.Deactivate) : GetLocalized(Labels.Activate)}
-                                                        </Label>
-                                                        <Switch
-                                                            id={`status-${queue.id}`}
-                                                            checked={queue.isActive}
-                                                            onCheckedChange={(checked) => handleToggleStatus(queue, checked)}
-                                                        />
-                                                    </div>
-
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                                        onClick={() => setQueueToDelete({ id: queue.id, name: queue.name })}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
+                    <QueueTable
+                        queues={filteredQueues}
+                        loading={loading}
+                        onAdd={() => setIsAddDialogOpen(true)}
+                        onToggleStatus={handleToggleStatus}
+                        onDelete={setQueueToDelete}
+                    />
                 </CardContent>
             </Card>
 
-            <Dialog open={isAddDialogOpen} onOpenChange={handleOpenChange}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{GetLocalized(Labels.AddNewQueue)}</DialogTitle>
-                        <DialogDescription>
-                            {GetLocalized(Messages.AddNewQueueDescription)}
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{GetLocalized(Labels.QueueName)}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={GetLocalized(Labels.QueueNamePlaceholder)}
-                                                autoFocus
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="isActive"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-row items-center space-x-2 space-y-0 mt-2">
-                                        <FormControl>
-                                            <Switch
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </FormControl>
-                                        <FormLabel>{GetLocalized(Labels.ActivateImmediately)}</FormLabel>
-                                    </FormItem>
-                                )}
-                            />
-
-                            <DialogFooter className="pt-4">
-                                <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>{GetLocalized(Labels.Cancel)}</Button>
-                                <Button type="submit">{GetLocalized(Labels.SaveQueue)}</Button>
-                            </DialogFooter>
-                        </form>
-                    </Form>
-                </DialogContent>
-            </Dialog>
+            <AddQueueDialog
+                open={isAddDialogOpen}
+                onOpenChange={setIsAddDialogOpen}
+                onCreated={(queue) => setQueues(prev => [...prev, queue])}
+            />
 
             <ConfirmDialog
                 open={!!queueToDelete}

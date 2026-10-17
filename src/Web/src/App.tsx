@@ -1,23 +1,29 @@
+import { Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
-import { Reports } from "./pages/dashboard/Reports";
 import { AuthProvider } from "./contexts/AuthContext";
 import { OrganizationSettingsProvider } from "./contexts/OrganizationSettingsContext";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Login } from "./pages/auth/Login";
 import { Layout } from "./components/Layout";
+import { PageLoader } from "./components/PageLoader";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Toaster } from "sonner";
-import { Configuration } from "./pages/configuration/configuration";
-import { QueueConfiguration } from "./pages/configuration/QueueConfiguration";
-import { ServiceLocationConfiguration } from "@/pages/configuration/ServiceLocationConfiguration";
-import { UserConfiguration } from "@/pages/configuration/UserConfiguration";
-import { ServiceTypeConfiguration } from "@/pages/configuration/ServiceTypeConfiguration";
-import { MyAccount } from "./pages/user/MyAccount";
-import { MeuGuiche } from "./pages/attendance/MeuGuiche";
 import { Role } from "./models/UserModels";
-import { AttendanceDisplay } from "./pages/attendance/AttendanceDisplay";
+import { lazyNamed } from "@/lib/lazyNamed";
 
 import { GetLocalized } from "@/shared/localization/i18n";
 import { Labels } from "@/shared/localization/keys";
+
+// Login fica no bundle inicial; as demais páginas são baixadas sob demanda
+const Reports = lazyNamed(() => import("./pages/dashboard/Reports"), "Reports");
+const Configuration = lazyNamed(() => import("./pages/configuration/configuration"), "Configuration");
+const QueueConfiguration = lazyNamed(() => import("./pages/configuration/QueueConfiguration"), "QueueConfiguration");
+const ServiceLocationConfiguration = lazyNamed(() => import("@/pages/configuration/ServiceLocationConfiguration"), "ServiceLocationConfiguration");
+const UserConfiguration = lazyNamed(() => import("@/pages/configuration/UserConfiguration"), "UserConfiguration");
+const ServiceTypeConfiguration = lazyNamed(() => import("@/pages/configuration/ServiceTypeConfiguration"), "ServiceTypeConfiguration");
+const MyAccount = lazyNamed(() => import("./pages/user/MyAccount"), "MyAccount");
+const MeuGuiche = lazyNamed(() => import("./pages/attendance/MeuGuiche"), "MeuGuiche");
+const AttendanceDisplay = lazyNamed(() => import("./pages/attendance/AttendanceDisplay"), "AttendanceDisplay");
 
 function DashboardTemporario() {
 
@@ -33,12 +39,14 @@ export function App() {
     <AuthProvider>
       <OrganizationSettingsProvider>
       <BrowserRouter>
+        {/* Suspense externo: rotas fora do Layout. O interno, dentro do Layout, evita o menu piscar ao navegar */}
+        <Suspense fallback={<PageLoader fullScreen />}>
         <Routes>
 
           <Route path="/login" element={<Login />} />
 
           <Route element={<PrivateRoute />}>
-            <Route element={<Layout><Outlet /></Layout>}>
+            <Route element={<Layout><Suspense fallback={<PageLoader />}><Outlet /></Suspense></Layout>}>
               <Route path="/home" element={<DashboardTemporario />} />
               <Route path="/relatorios" element={<Reports />} />
               <Route path="/minha-conta" element={<MyAccount />} />
@@ -55,12 +63,14 @@ export function App() {
           </Route>
 
           <Route element={<PrivateRoute allowedRoles={[Role.System]} />}>
-            <Route path="/painel-senhas" element={<AttendanceDisplay />} />
+            {/* Painel fica numa TV sem ninguém olhando: em caso de erro, recarrega sozinho */}
+            <Route path="/painel-senhas" element={<ErrorBoundary autoReloadMs={30_000}><AttendanceDisplay /></ErrorBoundary>} />
           </Route>
 
           <Route path="*" element={<Navigate to="/home" replace />} />
 
         </Routes>
+        </Suspense>
       </BrowserRouter>
       </OrganizationSettingsProvider>
       <Toaster position="bottom-right" richColors={false} theme="system" closeButton invert={false} />

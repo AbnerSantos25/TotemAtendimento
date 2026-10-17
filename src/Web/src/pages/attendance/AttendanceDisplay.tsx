@@ -28,6 +28,16 @@ export function AttendanceDisplay() {
     const { signOut } = useAuth();
     const { settings: organization } = useOrganizationSettings();
 
+    // O painel roda em TV e tablet: o rem passa a acompanhar a menor dimensao da tela,
+    // entao todo o layout escala junto. 1.48vmin = 16px em 1080p.
+    useEffect(() => {
+        const root = document.documentElement;
+        root.style.fontSize = "max(12px, 1.48vmin)";
+        return () => {
+            root.style.fontSize = "";
+        };
+    }, []);
+
     const fetchLatestCalls = useCallback(async () => {
         try {
             const result = await passwordService.getLatestCallsAsync();
@@ -110,7 +120,7 @@ export function AttendanceDisplay() {
 
     if (loading) {
         return (
-            <div className="flex h-screen w-screen items-center justify-center bg-[#051A2C] text-white">
+            <div className="fixed inset-0 flex items-center justify-center bg-[#051A2C] text-white">
                 <Loader2 className="h-12 w-12 animate-spin text-[#6FC5FF]" />
             </div>
         );
@@ -120,7 +130,7 @@ export function AttendanceDisplay() {
     const previousCalls = passwords.length > 1 ? passwords.slice(1) : [];
 
     return (
-        <div className="h-screen w-screen bg-[#051A2C] text-white flex overflow-hidden relative font-sans">
+        <div className="fixed inset-0 bg-[#051A2C] text-white flex portrait:flex-col overflow-hidden font-sans">
 
             {/* Hover Menu Top Right */}
             <div className="absolute top-0 right-0 p-4 opacity-0 hover:opacity-100 transition-opacity duration-300 flex gap-2 z-50 items-center">
@@ -151,7 +161,7 @@ export function AttendanceDisplay() {
             </div>
 
             {/* Left Column - History */}
-            <div className="w-[580px] bg-white border-r border-[#E6E6E6] flex flex-col z-10">
+            <div className="w-[36rem] portrait:w-full portrait:order-last bg-white border-r portrait:border-r-0 border-[#E6E6E6] flex flex-col z-10">
                 {/* Header da Coluna (Logo) */}
                 <div className="py-8 px-8 flex flex-col items-center justify-center">
                     {organization?.logoUrl ? (
@@ -177,17 +187,17 @@ export function AttendanceDisplay() {
                         <div key={idx} className="flex flex-col border-b border-[#E6E6E6] pb-3">
                             <div className="flex justify-between mb-1">
                                 <span className="bg-[#003A6D] text-white text-2xl font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    {GetLocalized(Labels.LatestPasswords)}
+                                    {GetLocalized(Labels.Password)}
                                 </span>
                                 <span className="bg-[#003A6D] text-white text-2xl font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                                     {GetLocalized(Labels.Desk)}
                                 </span>
                             </div>
                             <div className="flex justify-between items-baseline px-2">
-                                <span className="text-5xl font-bold text-[#003A6D]">
+                                <span className="text-6xl font-bold text-[#003A6D]">
                                     {call.passwordCode}
                                 </span>
-                                <span className="text-5xl font-bold text-[#0A6DB5]">
+                                <span className="text-6xl font-bold text-[#0A6DB5]">
                                     {call.serviceLocationName.replace(/\D/g, '') || "1"}
                                 </span>
                             </div>
@@ -198,16 +208,16 @@ export function AttendanceDisplay() {
                     {Array.from({ length: Math.max(0, 5 - previousCalls.length) }).map((_, idx) => (
                         <div key={`empty-${idx}`} className="flex flex-col border-b border-[#E6E6E6] pb-3 opacity-30">
                             <div className="flex justify-between mb-1">
-                                <span className="bg-[#003A6D] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    {GetLocalized(Labels.LatestPasswords)}
+                                <span className="bg-[#003A6D] text-white text-2xl font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                    {GetLocalized(Labels.Password)}
                                 </span>
-                                <span className="bg-[#003A6D] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                <span className="bg-[#003A6D] text-white text-2xl font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                                     {GetLocalized(Labels.Desk)}
                                 </span>
                             </div>
                             <div className="flex justify-between items-baseline px-2">
-                                <span className="text-4xl font-bold text-[#003A6D]">----</span>
-                                <span className="text-4xl font-bold text-[#0A6DB5]">-</span>
+                                <span className="text-6xl font-bold text-[#003A6D]">----</span>
+                                <span className="text-6xl font-bold text-[#0A6DB5]">-</span>
                             </div>
                         </div>
                     ))}
@@ -218,7 +228,7 @@ export function AttendanceDisplay() {
             <div className="flex-1 flex flex-col bg-[#051A2C]">
 
                 {/* Header - Senha Atual */}
-                <div className="h-[250px] bg-[#003A6D] flex">
+                <div className="h-[15.625rem] shrink-0 bg-[#003A6D] flex">
                     {/* Área Código */}
                     <div className="flex-1 flex flex-col items-start mx-20 justify-center">
                         <div className="bg-white text-[#003A6D] font-bold text-3xl py-1 px-8 rounded-xl mb-2 uppercase tracking-widest">
@@ -247,7 +257,7 @@ export function AttendanceDisplay() {
                     {currentCall ? (
                         <div className="relative z-10 flex w-full h-full items-center justify-between gap-12">
                             <div className="flex-1 max-w-2xl">
-                                <h1 className="text-8xl font-bold text-[#6FC5FF] mb-6 uppercase leading-[1.1]">
+                                <h1 className="text-8xl font-bold text-[#6FC5FF] mb-6 uppercase leading-[1.1] break-words">
                                     {currentCall.queueName}:
                                 </h1>
                                 <p className="text-3xl text-white leading-snug">
@@ -264,7 +274,7 @@ export function AttendanceDisplay() {
                 </div>
 
                 {/* Footer */}
-                <div className="h-[60px] bg-white flex items-center justify-center gap-6 z-10">
+                <div className="h-[3.75rem] shrink-0 bg-white flex items-center justify-center gap-6 z-10">
                     <span className="text-xl font-bold text-[#003A6D] tracking-wide">{organization?.websiteUrl}</span>
                     {organization?.cnpj && (
                         <span className="text-base font-medium text-[#003A6D]/70">CNPJ {formatCnpj(organization.cnpj)}</span>

@@ -4,53 +4,16 @@ import { Labels, Messages, Errors } from "@/shared/localization/keys";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { serviceTypeService } from "@/services/ServiceTypeService";
 import { queueService } from "@/services/QueueService";
-import type { ServiceTypeSummary, ServiceTypeRequest } from "@/models/ServiceTypeModels";
+import type { ServiceTypeSummary } from "@/models/ServiceTypeModels";
 import type { QueueView } from "@/models/QueueModels";
-import * as Icons from "lucide-react";
-
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { Plus, Trash2, X, Settings2, LayoutGrid, RefreshCcw } from "lucide-react";
+import { Plus, X, RefreshCcw } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { EmptyState } from "@/components/EmptyState";
-import { TableSkeleton } from "@/components/TableSkeleton";
-import { FolderSearch } from "lucide-react";
-
-const AVAILABLE_ICONS = [
-    { name: "LayoutGrid", label: "Padrão" },
-    { name: "User", label: "Usuário / Cadastro" },
-    { name: "Activity", label: "Saúde / Triagem" },
-    { name: "Calendar", label: "Agenda / Calendário" },
-    { name: "CreditCard", label: "Financeiro / Pagamentos" },
-    { name: "Briefcase", label: "Geral / Serviços" },
-    { name: "FileText", label: "Documentos" },
-    { name: "TriangleAlert", label: "Urgência / Emergência" },
-    { name: "HeartPulse", label: "Atendimento Médico" },
-    { name: "HelpCircle", label: "Informações / Dúvidas" },
-    { name: "Smartphone", label: "Digital / Aplicativo" },
-    { name: "Ticket", label: "Ingressos / Senhas" },
-];
+import { ServiceTypeTable } from "@/components/serviceType/ServiceTypeTable";
+import { ServiceTypeFormDialog, type ServiceTypeFormTarget } from "@/components/serviceType/ServiceTypeFormDialog";
 
 export const ServiceTypeConfiguration = () => {
     const [serviceTypes, setServiceTypes] = useState<ServiceTypeSummary[]>([]);
@@ -59,34 +22,8 @@ export const ServiceTypeConfiguration = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
 
-    // Dialog state
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [editingId, setEditingId] = useState<string | null>(null);
-    const [formData, setFormData] = useState<ServiceTypeRequest>({
-        title: "",
-        icon: "",
-        color: "#3b82f6",
-        ticketPrefix: "",
-        targetQueueId: ""
-    });
-
-    const [serviceToDelete, setServiceToDelete] = useState<{ id: string, title: string } | null>(null);
-
-    const renderIcon = (iconName: string | null | undefined, className: string = "") => {
-        if (!iconName) return <LayoutGrid className={className || "h-4 w-4 text-muted-foreground"} />;
-
-        const LucideIcon = (Icons as any)[iconName];
-        if (LucideIcon) {
-            return <LucideIcon className={className || "h-4 w-4 text-muted-foreground"} />;
-        }
-
-        if (iconName.includes("bi-") || iconName.startsWith("bi ")) {
-            const safeIcon = iconName.replace(/[^a-zA-Z0-9\s\-]/g, '');
-            return <i className={`${safeIcon} ${className}`} />;
-        }
-
-        return <LayoutGrid className={className || "h-4 w-4 text-muted-foreground"} />;
-    };
+    const [formTarget, setFormTarget] = useState<ServiceTypeFormTarget | null>(null);
+    const [serviceToDelete, setServiceToDelete] = useState<ServiceTypeSummary | null>(null);
 
     const fetchData = async () => {
         setLoading(true);
@@ -124,73 +61,41 @@ export const ServiceTypeConfiguration = () => {
     });
 
     const handleOpenCreateDialog = () => {
-        setEditingId(null);
-        setFormData({
-            title: "",
-            icon: "",
-            color: "#3b82f6",
-            ticketPrefix: "",
-            targetQueueId: queues.find(q => q.isActive)?.id || ""
+        setFormTarget({
+            id: null,
+            data: {
+                title: "",
+                icon: "",
+                color: "#3b82f6",
+                ticketPrefix: "",
+                targetQueueId: queues.find(q => q.isActive)?.id || ""
+            }
         });
-        setIsDialogOpen(true);
     };
 
-    const handleOpenEditDialog = async (id: string) => {
+    const handleOpenEditDialog = async (service: ServiceTypeSummary) => {
         setLoading(true);
-        const response = await serviceTypeService.getByIdAsync(id);
+        const response = await serviceTypeService.getByIdAsync(service.serviceTypeId);
         setLoading(false);
 
         if (response.success) {
-            setEditingId(id);
-            setFormData({
-                title: response.data.title,
-                icon: response.data.icon || "",
-                color: response.data.color || "#3b82f6",
-                ticketPrefix: response.data.ticketPrefix || "",
-                targetQueueId: response.data.targetQueueId
+            setFormTarget({
+                id: service.serviceTypeId,
+                data: {
+                    title: response.data.title,
+                    icon: response.data.icon || "",
+                    color: response.data.color || "#3b82f6",
+                    ticketPrefix: response.data.ticketPrefix || "",
+                    targetQueueId: response.data.targetQueueId
+                }
             });
-            setIsDialogOpen(true);
         } else {
             AGShowMessage.error({ title: GetLocalized(Errors.ErrorFetchingDetails), description: response.error.message });
         }
     };
 
-    const handleSave = async () => {
-        if (!formData.title.trim()) {
-            AGShowMessage.warning({ title: GetLocalized(Messages.Warning), description: GetLocalized(Messages.TitleIsRequired) });
-            return;
-        }
-        if (!formData.targetQueueId) {
-            AGShowMessage.warning({ title: GetLocalized(Messages.Warning), description: GetLocalized(Messages.SelectTargetQueue) });
-            return;
-        }
-
-        const requestData: ServiceTypeRequest = {
-            ...formData,
-            ticketPrefix: formData.ticketPrefix?.trim() || null,
-            icon: formData.icon?.trim() || null
-        };
-
-        const response = editingId
-            ? await serviceTypeService.updateAsync(editingId, requestData)
-            : await serviceTypeService.createAsync(requestData);
-
-        if (response.success) {
-            AGShowMessage.success({
-                title: GetLocalized(Labels.Success),
-                description: editingId ? GetLocalized(Messages.ServiceTypeUpdated) : GetLocalized(Messages.ServiceTypeCreated)
-            });
-            setIsDialogOpen(false);
-            fetchData(); // Refresh list
-        } else {
-            AGShowMessage.error({
-                title: GetLocalized(Errors.ErrorSaving),
-                description: response.error.message
-            });
-        }
-    };
-
-    const handleToggleStatus = async (id: string, currentStatus: boolean) => {
+    const handleToggleStatus = async (service: ServiceTypeSummary) => {
+        const { serviceTypeId: id, isActive: currentStatus } = service;
         const response = await serviceTypeService.toggleStatusAsync(id);
         if (response.success) {
             AGShowMessage.success({
@@ -205,10 +110,10 @@ export const ServiceTypeConfiguration = () => {
 
     const handleDelete = async () => {
         if (!serviceToDelete) return;
-        const response = await serviceTypeService.deleteAsync(serviceToDelete.id);
+        const response = await serviceTypeService.deleteAsync(serviceToDelete.serviceTypeId);
         if (response.success) {
             AGShowMessage.success({ title: GetLocalized(Messages.Deleted), description: GetLocalized(Messages.ServiceTypeRemoved) });
-            setServiceTypes(prev => prev.filter(s => s.serviceTypeId !== serviceToDelete.id));
+            setServiceTypes(prev => prev.filter(s => s.serviceTypeId !== serviceToDelete.serviceTypeId));
         } else {
             AGShowMessage.error({ title: GetLocalized(Labels.Error), description: response.error.message });
         }
@@ -277,211 +182,23 @@ export const ServiceTypeConfiguration = () => {
                         </div>
                     </div>
 
-                    <div className="rounded-md border">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>{GetLocalized(Labels.Service)}</TableHead>
-                                    <TableHead>{GetLocalized(Labels.Color)}</TableHead>
-                                    <TableHead>{GetLocalized(Labels.Prefix)}</TableHead>
-                                    <TableHead>{GetLocalized(Labels.TargetQueue)}</TableHead>
-                                    <TableHead>{GetLocalized(Labels.Status)}</TableHead>
-                                    <TableHead className="text-right">{GetLocalized(Labels.Actions)}</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {loading ? (
-                                    <TableSkeleton columns={6} rows={5} />
-                                ) : filteredServices.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={6} className="p-0">
-                                            <EmptyState
-                                                title={GetLocalized(Messages.NoServiceFound)}
-                                                description={GetLocalized(Messages.NoResultMatchesFilters)}
-                                                icon={<FolderSearch className="h-12 w-12 text-muted-foreground/50 mb-2" />}
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    filteredServices.map((service) => (
-                                        <TableRow key={service.serviceTypeId}>
-                                            <TableCell className="font-medium">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2 bg-muted rounded-lg flex items-center justify-center min-w-[40px]">
-                                                        {renderIcon(service.icon, "text-xl")}
-                                                    </div>
-                                                    {service.title}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div
-                                                    className="w-6 h-6 rounded-full border shadow-sm"
-                                                    style={{ backgroundColor: service.color }}
-                                                    title={service.color}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                {service.ticketPrefix && (
-                                                    <Badge variant="outline" className="font-mono">{service.ticketPrefix}</Badge>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                {queues.find(q => q.id === service.targetQueueId)?.name || 'N/A'}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={service.isActive ? "default" : "secondary"}>
-                                                    {service.isActive ? GetLocalized(Labels.Active) : GetLocalized(Labels.Inactive)}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="flex justify-end items-center gap-2">
-                                                    <div className="flex items-center gap-2 mr-4">
-                                                        <Switch
-                                                            id={`status-${service.serviceTypeId}`}
-                                                            checked={service.isActive}
-                                                            onCheckedChange={() => handleToggleStatus(service.serviceTypeId, service.isActive)}
-                                                        />
-                                                    </div>
-
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleOpenEditDialog(service.serviceTypeId)}
-                                                    >
-                                                        <Settings2 className="h-4 w-4" />
-                                                    </Button>
-
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                                        onClick={() => setServiceToDelete({ id: service.serviceTypeId, title: service.title })}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
+                    <ServiceTypeTable
+                        serviceTypes={filteredServices}
+                        queues={queues}
+                        loading={loading}
+                        onEdit={handleOpenEditDialog}
+                        onToggleStatus={handleToggleStatus}
+                        onDelete={setServiceToDelete}
+                    />
                 </CardContent>
             </Card>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="max-w-2xl">
-                    <DialogHeader>
-                        <DialogTitle>{editingId ? GetLocalized(Labels.EditService) : GetLocalized(Labels.CreateNewService)}</DialogTitle>
-                        <DialogDescription>
-                            {GetLocalized(Labels.ServiceDialogDescription)}
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4 items-start">
-                        <div className="grid gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="title">{GetLocalized(Labels.ServiceTitle)}</Label>
-                                <Input
-                                    id="title"
-                                    value={formData.title}
-                                    onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
-                                    placeholder={GetLocalized(Labels.ExMedicalConsultations)}
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="icon">{GetLocalized(Labels.BootstrapIconClass)}</Label>
-                                <Select
-                                    value={formData.icon ?? "LayoutGrid"}
-                                    onValueChange={(val) => setFormData(p => ({ ...p, icon: val }))}
-                                >
-                                    <SelectTrigger id="icon" className="w-full">
-                                        <SelectValue placeholder="Selecione um ícone" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {AVAILABLE_ICONS.map((item) => {
-                                            const IconComponent = (Icons as any)[item.name] || Icons.LayoutGrid;
-                                            return (
-                                                <SelectItem key={item.name} value={item.name}>
-                                                    <div className="flex items-center gap-2">
-                                                        <IconComponent className="h-4 w-4" />
-                                                        <span>{item.label}</span>
-                                                    </div>
-                                                </SelectItem>
-                                            );
-                                        })}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="color">{GetLocalized(Labels.HighlightColor)}</Label>
-                                <div className="flex gap-2">
-                                    <Input
-                                        id="color"
-                                        type="color"
-                                        className="w-12 p-1"
-                                        value={formData.color ?? "#000000"}
-                                        onChange={(e) => setFormData(p => ({ ...p, color: e.target.value }))}
-                                    />
-                                    <Input
-                                        value={formData.color ?? ""}
-                                        onChange={(e) => setFormData(p => ({ ...p, color: e.target.value }))}
-                                        className="flex-1 font-mono uppercase"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="grid gap-4 max-w-full">
-                            <div className="grid gap-2">
-                                <Label htmlFor="prefix">{GetLocalized(Labels.TicketPrefix)}</Label>
-                                <Input
-                                    id="prefix"
-                                    value={formData.ticketPrefix ?? ""}
-                                    onChange={(e) => setFormData(p => ({ ...p, ticketPrefix: e.target.value }))}
-                                    placeholder={GetLocalized(Labels.ExCons)}
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="queue">{GetLocalized(Labels.TargetQueue)}</Label>
-                                <Select
-                                    value={formData.targetQueueId}
-                                    onValueChange={(val) => setFormData(p => ({ ...p, targetQueueId: val }))}
-                                >
-                                    <SelectTrigger id="queue">
-                                        <SelectValue placeholder={GetLocalized(Labels.SelectQueue)} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {queues.filter(q => q.isActive).map(q => (
-                                            <SelectItem key={q.id} value={q.id}>{q.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="flex items-center justify-center p-6 border-2 border-dashed rounded-xl mt-2 bg-muted/30 overflow-hidden w-full">
-                                <div
-                                    className="px-6 py-4 rounded-xl shadow-lg border text-white font-bold flex items-center gap-3 transition-transform hover:scale-105 cursor-default max-w-full"
-                                    style={{ backgroundColor: formData.color || '#3b82f6' }}
-                                >
-                                    <span className="text-2xl flex items-center justify-center min-w-[32px]">
-                                        {renderIcon(formData.icon, "text-3xl")}
-                                    </span>
-                                    <div className="flex flex-col">
-                                        <span className="leading-tight break-all text-xs">{formData.title || GetLocalized(Labels.NewService)}</span>
-                                        <span className="text-xs opacity-75">{formData.ticketPrefix ? `${formData.ticketPrefix}001` : '001'}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>{GetLocalized(Labels.Cancel)}</Button>
-                        <Button onClick={handleSave}>{GetLocalized(Labels.SaveChanges)}</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <ServiceTypeFormDialog
+                target={formTarget}
+                queues={queues}
+                onClose={() => setFormTarget(null)}
+                onSaved={fetchData}
+            />
 
             <ConfirmDialog
                 open={!!serviceToDelete}
