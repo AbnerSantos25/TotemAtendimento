@@ -15,5 +15,11 @@ namespace Totem.Application.Services.PasswordMatchingServices
 
 		/// <summary>Tira o guiche da espera, usado quando ele deixa de aguardar.</summary>
 		void Remove(Guid queueId, Guid serviceLocationId);
+
+		/// <summary>Tira o guiche de qualquer fila em que esteja esperando, usado quando ele e excluido.</summary>
+		void RemoveServiceLocation(Guid serviceLocationId);
+
+		/// <summary>Esvazia a espera de uma fila, usada quando ela e excluida ou desativada.</summary>
+		void ClearQueue(Guid queueId);
 	}
 }

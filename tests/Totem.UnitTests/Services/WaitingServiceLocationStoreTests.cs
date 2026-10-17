@@ -66,4 +66,33 @@ public class WaitingServiceLocationStoreTests
 
         Assert.False(_sut.TryDequeue(queueId, out _));
     }
+
+    [Fact(DisplayName = "RemoveServiceLocation tira o guiche de qualquer fila em que esteja esperando")]
+    public void RemoveServiceLocation_ShouldTakeServiceLocationOutOfEveryQueue()
+    {
+        var queueId = Guid.NewGuid();
+        var otherQueueId = Guid.NewGuid();
+        var serviceLocationId = Guid.NewGuid();
+
+        _sut.Enqueue(queueId, serviceLocationId);
+        _sut.Enqueue(otherQueueId, serviceLocationId);
+
+        _sut.RemoveServiceLocation(serviceLocationId);
+
+        Assert.False(_sut.TryDequeue(queueId, out _));
+        Assert.False(_sut.TryDequeue(otherQueueId, out _));
+    }
+
+    [Fact(DisplayName = "ClearQueue esvazia a espera inteira de uma fila")]
+    public void ClearQueue_ShouldRemoveEveryWaitingServiceLocation()
+    {
+        var queueId = Guid.NewGuid();
+
+        _sut.Enqueue(queueId, Guid.NewGuid());
+        _sut.Enqueue(queueId, Guid.NewGuid());
+
+        _sut.ClearQueue(queueId);
+
+        Assert.False(_sut.TryDequeue(queueId, out _));
+    }
 }

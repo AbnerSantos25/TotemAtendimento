@@ -10,6 +10,9 @@ import {
 import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react"
 import { Link } from "react-router-dom"
 
+import { GetLocalized } from "@/shared/localization/i18n"
+import { Labels } from "@/shared/localization/keys"
+
 function NavProjects({
     projects,
 }: {
@@ -24,7 +27,7 @@ function NavProjects({
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Projetos</SidebarGroupLabel>
+            <SidebarGroupLabel>{GetLocalized(Labels.Projects)}</SidebarGroupLabel>
             <SidebarMenu>
                 {projects.map((item) => (
                     <SidebarMenuItem key={item.name}>
@@ -38,7 +41,7 @@ function NavProjects({
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuAction showOnHover>
                                     <MoreHorizontal />
-                                    <span className="sr-only">Opções</span>
+                                    <span className="sr-only">{GetLocalized(Labels.Options)}</span>
                                 </SidebarMenuAction>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
@@ -49,18 +52,18 @@ function NavProjects({
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem>
                                         <Folder className="text-muted-foreground" />
-                                        <span>Ver Projeto</span>
+                                        <span>{GetLocalized(Labels.ViewProject)}</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
                                         <Forward className="text-muted-foreground" />
-                                        <span>Compartilhar</span>
+                                        <span>{GetLocalized(Labels.Share)}</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem>
                                         <Trash2 className="text-muted-foreground" />
-                                        <span>Excluir</span>
+                                        <span>{GetLocalized(Labels.Delete)}</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                             </DropdownMenuContent>
@@ -70,7 +73,7 @@ function NavProjects({
                 <SidebarMenuItem>
                     <SidebarMenuButton className="text-sidebar-foreground/70">
                         <MoreHorizontal className="text-sidebar-foreground/70" />
-                        <span>Mais</span>
+                        <span>{GetLocalized(Labels.More)}</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>

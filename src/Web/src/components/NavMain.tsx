@@ -3,6 +3,9 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collap
 import { ChevronRight } from "lucide-react"
 import { Link } from "react-router-dom"
 
+import { GetLocalized } from "@/shared/localization/i18n"
+import { Labels } from "@/shared/localization/keys"
+
 function NavMain({
     items,
 }: {
@@ -19,7 +22,7 @@ function NavMain({
 }) {
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
+            <SidebarGroupLabel>{GetLocalized(Labels.Platform)}</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => (
                     item.items?.length ? (

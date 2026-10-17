@@ -7,11 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MediatR" Version="12.5.0" />
+	  <Compile Remove="Services\ServiceLocationServices\Events\**" />
+	  <EmbeddedResource Remove="Services\ServiceLocationServices\Events\**" />
+	  <None Remove="Services\ServiceLocationServices\Events\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Services\ServiceLocationServices\Events\" />
+		<PackageReference Include="MediatR" Version="12.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -7,6 +7,8 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels } from "@/shared/localization/keys";
 
 export interface ConfirmDialogProps {
     open: boolean;
@@ -27,8 +29,8 @@ export function ConfirmDialog({
     description,
     onConfirm,
     onCancel,
-    confirmText = "Confirmar",
-    cancelText = "Cancelar",
+    confirmText = GetLocalized(Labels.Confirm),
+    cancelText = GetLocalized(Labels.Cancel),
     destructive = true,
 }: ConfirmDialogProps) {
     const handleCancel = () => {

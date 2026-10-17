@@ -19,7 +19,7 @@ namespace Totem.Common.Localization.Resources {
     // através de uma ferramenta como ResGen ou Visual Studio.
     // Para adicionar ou remover um associado, edite o arquivo .ResX e execute ResGen novamente
     // com a opção /str, ou recrie o projeto do VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Errors {
@@ -61,11 +61,29 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Apenas um administrador pode alterar o status de outro administrador..
+        /// </summary>
+        public static string CannotModifyAdminUser {
+            get {
+                return ResourceManager.GetString("CannotModifyAdminUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a CORS: &apos;AllowedOrigins&apos; não está configurado no appsettings.json..
         /// </summary>
         public static string CorsAllowedOriginsNotConfigured {
             get {
                 return ResourceManager.GetString("CorsAllowedOriginsNotConfigured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a CORS: o curinga &apos;*&apos; em &apos;AllowedOrigins&apos; so e permitido em Development..
+        /// </summary>
+        public static string CorsWildcardNotAllowed {
+            get {
+                return ResourceManager.GetString("CorsWildcardNotAllowed", resourceCulture);
             }
         }
         
@@ -273,6 +291,24 @@ namespace Totem.Common.Localization.Resources {
         public static string PropertyNotFound {
             get {
                 return ResourceManager.GetString("PropertyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Voce nao tem permissao para acompanhar esta fila..
+        /// </summary>
+        public static string QueueAccessDenied {
+            get {
+                return ResourceManager.GetString("QueueAccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Fila não encontrada..
+        /// </summary>
+        public static string QueueNotFound {
+            get {
+                return ResourceManager.GetString("QueueNotFound", resourceCulture);
             }
         }
         

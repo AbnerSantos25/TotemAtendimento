@@ -5,6 +5,8 @@ import { queueService } from "@/services/QueueService";
 import type { UserSummary } from "@/models/UserModels";
 import type { QueueView } from "@/models/QueueModels";
 import { Role, RoleLabels } from "@/models/UserModels";
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels, Messages, Errors } from "@/shared/localization/keys";
 import {
     Table,
     TableBody,
@@ -55,12 +57,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const userSchema = z.object({
-    fullName: z.string().min(1, "O nome completo é obrigatório."),
-    email: z.string().min(1, "O e-mail é obrigatório.").email("E-mail inválido."),
+    fullName: z.string().min(1, GetLocalized(Errors.FullNameRequired)),
+    email: z.string().min(1, GetLocalized(Errors.EmailRequired)).email(GetLocalized(Errors.InvalidEmail)),
     password: passwordSchema,
-    confirmPassword: z.string().min(1, "Confirme a senha."),
+    confirmPassword: z.string().min(1, GetLocalized(Errors.PasswordMinLength)),
 }).refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas não conferem.",
+    message: GetLocalized(Errors.PasswordsDoNotMatch),
     path: ["confirmPassword"],
 });
 
@@ -105,7 +107,7 @@ export function UserConfiguration() {
         if (response.success && response.data) {
             setUsers(response.data);
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro na Busca", description: response.error.message || "Falha ao carregar usuários." });
+            AGShowMessage.error({ title: GetLocalized(Errors.SearchErrorTitle), description: response.error.message || GetLocalized(Errors.FailedToLoadUsers) });
         }
         setLoading(false);
     };
@@ -135,11 +137,11 @@ export function UserConfiguration() {
         const response = await userService.registerUserAsync(data);
 
         if (response.success) {
-            AGShowMessage.success({ title: "Sucesso", description: "Usuário registrado com sucesso." });
+            AGShowMessage.success({ title: GetLocalized(Labels.Success), description: GetLocalized(Messages.UserRegisteredSuccessfully) });
             setIsAddDialogOpen(false);
             fetchUsers();
         } else if (!response.success && response.error) {
-            let desc = response.error.message || "Não foi possível registrar o usuário.";
+            let desc = response.error.message || GetLocalized(Errors.UnableToRegisterUser);
 
             if (response.error.validationErrors) {
                 const errors = Object.values(response.error.validationErrors).flat();
@@ -148,7 +150,7 @@ export function UserConfiguration() {
                 }
             }
 
-            AGShowMessage.error({ title: "Falha no Registro", description: desc });
+            AGShowMessage.error({ title: GetLocalized(Errors.RegistrationFailureTitle), description: desc });
         }
     };
 
@@ -159,11 +161,11 @@ export function UserConfiguration() {
         const response = await userService.inactivateUserAsync(userToInactivate.id);
 
         if (response.success) {
-            AGShowMessage.success({ title: "Sucesso", description: `Usuário "${userToInactivate.fullName}" inativado com sucesso.` });
+            AGShowMessage.success({ title: GetLocalized(Labels.Success), description: GetLocalized(Messages.UserInactivatedSuccessfully).replace('{0}', userToInactivate.fullName) });
             setUserToInactivate(null);
             fetchUsers();
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro ao Inativar", description: response.error.message || "Não foi possível inativar o usuário." });
+            AGShowMessage.error({ title: GetLocalized(Errors.ErrorInactivatingTitle), description: response.error.message || GetLocalized(Errors.UnableToInactivateUser) });
         }
 
         setIsInactivating(false);
@@ -176,11 +178,11 @@ export function UserConfiguration() {
         const response = await userService.activateUserAsync(userToActivate.id);
 
         if (response.success) {
-            AGShowMessage.success({ title: "Sucesso", description: `Usuário "${userToActivate.fullName}" ativado com sucesso.` });
+            AGShowMessage.success({ title: GetLocalized(Labels.Success), description: GetLocalized(Messages.UserActivatedSuccessfully).replace('{0}', userToActivate.fullName) });
             setUserToActivate(null);
             fetchUsers();
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro ao Ativar", description: response.error.message || "Não foi possível ativar o usuário." });
+            AGShowMessage.error({ title: GetLocalized(Errors.ErrorActivatingTitle), description: response.error.message || GetLocalized(Errors.UnableToActivateUser) });
         }
 
         setIsActivating(false);
@@ -220,11 +222,11 @@ export function UserConfiguration() {
         });
 
         if (response.success) {
-            AGShowMessage.success({ title: "Sucesso", description: `Perfis atualizados para "${userToAssignRole.fullName}" com sucesso.` });
+            AGShowMessage.success({ title: GetLocalized(Labels.Success), description: GetLocalized(Messages.RolesUpdatedSuccessfully).replace('{0}', userToAssignRole.fullName) });
             setUserToAssignRole(null);
             fetchUsers();
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro ao Atribuir Perfis", description: response.error.message || "Não foi possível atribuir os perfis." });
+            AGShowMessage.error({ title: GetLocalized(Errors.ErrorAssigningRolesTitle), description: response.error.message || GetLocalized(Errors.UnableToAssignRoles) });
         }
 
         setIsAssigningRole(false);
@@ -261,10 +263,10 @@ export function UserConfiguration() {
         const response = await userService.setUserQueuePermissionsAsync(userToConfigQueues.id, selectedQueueIds);
 
         if (response.success) {
-            AGShowMessage.success({ title: "Sucesso", description: `Permissões de fila atualizadas para "${userToConfigQueues.fullName}".` });
+            AGShowMessage.success({ title: GetLocalized(Labels.Success), description: GetLocalized(Messages.QueuePermissionsUpdated).replace('{0}', userToConfigQueues.fullName) });
             setUserToConfigQueues(null);
         } else if (!response.success && response.error) {
-            AGShowMessage.error({ title: "Erro ao Atualizar Permissões", description: response.error.message || "Não foi possível atualizar as permissões de fila." });
+            AGShowMessage.error({ title: GetLocalized(Errors.ErrorUpdatingPermissionsTitle), description: response.error.message || GetLocalized(Errors.UnableToUpdateQueuePermissions) });
         }
 
         setIsConfiguringQueues(false);
@@ -282,23 +284,23 @@ export function UserConfiguration() {
         <div className="flex flex-col gap-6 p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Gestão de Usuários</h2>
-                    <p className="text-muted-foreground">Adicione e gerencie os parceiros e administradores do sistema.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">{GetLocalized(Labels.UserManagement)}</h2>
+                    <p className="text-muted-foreground">{GetLocalized(Messages.UserManagementDescription)}</p>
                 </div>
                 <Button onClick={openAddDialog} className="w-full md:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Novo Usuário
+                    <Plus className="mr-2 h-4 w-4" /> {GetLocalized(Labels.NewUser)}
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Usuários do Sistema</CardTitle>
-                    <CardDescription>Lista completa de operadores e gestores cadastrados.</CardDescription>
+                    <CardTitle>{GetLocalized(Labels.SystemUsers)}</CardTitle>
+                    <CardDescription>{GetLocalized(Messages.SystemUsersDescription)}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="mb-6 max-w-md relative">
                         <Input
-                            placeholder="Buscar por nome ou e-mail..."
+                            placeholder={GetLocalized(Labels.SearchByNameOrEmail)}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="pr-8"
@@ -308,7 +310,7 @@ export function UserConfiguration() {
                                 type="button"
                                 onClick={() => setSearchTerm("")}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 opacity-70 hover:opacity-100 focus:outline-none focus:bg-accent"
-                                title="Limpar busca"
+                                title={GetLocalized(Labels.ClearSearch)}
                             >
                                 <X className="h-4 w-4" />
                             </button>
@@ -319,11 +321,11 @@ export function UserConfiguration() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Nome Completo</TableHead>
-                                    <TableHead>E-Mail de Acesso</TableHead>
-                                    <TableHead className="w-[150px]">Perfis</TableHead>
-                                    <TableHead className="w-[100px]">Status</TableHead>
-                                    <TableHead className="w-[100px] text-right">Ações</TableHead>
+                                    <TableHead>{GetLocalized(Labels.FullName)}</TableHead>
+                                    <TableHead>{GetLocalized(Labels.AccessEmail)}</TableHead>
+                                    <TableHead className="w-[150px]">{GetLocalized(Labels.Roles)}</TableHead>
+                                    <TableHead className="w-[100px]">{GetLocalized(Labels.Status)}</TableHead>
+                                    <TableHead className="w-[100px] text-right">{GetLocalized(Labels.Actions)}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -333,12 +335,12 @@ export function UserConfiguration() {
                                     <TableRow>
                                         <TableCell colSpan={5} className="p-0">
                                             <EmptyState
-                                                title="Nenhum usuário encontrado"
-                                                description="Cadastre novos usuários para habilitar o controle do Totem."
+                                                title={GetLocalized(Labels.NoUserFound)}
+                                                description={GetLocalized(Messages.RegisterNewUsersDescription)}
                                                 icon={<Users className="h-12 w-12 text-muted-foreground/50 mb-2" />}
                                                 action={
                                                     <Button variant="outline" onClick={openAddDialog}>
-                                                        <Plus className="mr-2 h-4 w-4" /> Cadastrar Usuário
+                                                        <Plus className="mr-2 h-4 w-4" /> {GetLocalized(Labels.RegisterUser)}
                                                     </Button>
                                                 }
                                             />
@@ -358,22 +360,22 @@ export function UserConfiguration() {
                                                             </Badge>
                                                         ))
                                                     ) : (
-                                                        <span className="text-xs text-muted-foreground">Nenhum</span>
+                                                        <span className="text-xs text-muted-foreground">{GetLocalized(Labels.None)}</span>
                                                     )}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
                                                 {user.isActive ? (
-                                                    <Badge variant="outline" className="border-green-500 text-green-600">Ativo</Badge>
+                                                    <Badge variant="outline" className="border-green-500 text-green-600">{GetLocalized(Labels.Active)}</Badge>
                                                 ) : (
-                                                    <Badge variant="outline" className="border-red-400 text-red-500">Inativo</Badge>
+                                                    <Badge variant="outline" className="border-red-400 text-red-500">{GetLocalized(Labels.Inactive)}</Badge>
                                                 )}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    title="Configurar filas permitidas"
+                                                    title={GetLocalized(Labels.ConfigureAllowedQueues)}
                                                     className="text-muted-foreground hover:text-primary"
                                                     onClick={() => openConfigQueuesDialog(user)}
                                                 >
@@ -382,7 +384,7 @@ export function UserConfiguration() {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    title="Atribuir perfil"
+                                                    title={GetLocalized(Labels.AssignRole)}
                                                     className="text-muted-foreground hover:text-primary"
                                                     onClick={() => openAssignRoleDialog(user)}
                                                 >
@@ -392,7 +394,7 @@ export function UserConfiguration() {
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        title="Inativar usuário"
+                                                        title={GetLocalized(Labels.InactivateUser)}
                                                         className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                                         onClick={() => setUserToInactivate(user)}
                                                     >
@@ -402,7 +404,7 @@ export function UserConfiguration() {
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        title="Ativar usuário"
+                                                        title={GetLocalized(Labels.ActivateUser)}
                                                         className="text-green-600 hover:text-green-700 hover:bg-green-500/10"
                                                         onClick={() => setUserToActivate(user)}
                                                     >
@@ -423,9 +425,9 @@ export function UserConfiguration() {
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Cadastrar Novo Usuário</DialogTitle>
+                        <DialogTitle>{GetLocalized(Labels.RegisterNewUser)}</DialogTitle>
                         <DialogDescription>
-                            Preencha os dados do novo operador ou gestor. Este acesso servirá para logar na plataforma.
+                            {GetLocalized(Messages.RegisterNewUserDescription)}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -436,7 +438,7 @@ export function UserConfiguration() {
                                 name="fullName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Nome Completo</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.FullName)}</FormLabel>
                                         <FormControl>
                                             <Input placeholder="João da Silva" autoFocus disabled={isSubmitting} {...field} />
                                         </FormControl>
@@ -449,7 +451,7 @@ export function UserConfiguration() {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>E-mail</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.Email)}</FormLabel>
                                         <FormControl>
                                             <Input type="email" placeholder="joao@empresa.com" disabled={isSubmitting} {...field} />
                                         </FormControl>
@@ -462,7 +464,7 @@ export function UserConfiguration() {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Senha de Acesso</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.AccessPassword)}</FormLabel>
                                         <FormControl>
                                             <PasswordInput disabled={isSubmitting} {...field} />
                                         </FormControl>
@@ -475,7 +477,7 @@ export function UserConfiguration() {
                                 name="confirmPassword"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Confirmar Senha</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.ConfirmPassword)}</FormLabel>
                                         <FormControl>
                                             <PasswordInput disabled={isSubmitting} {...field} />
                                         </FormControl>
@@ -485,9 +487,9 @@ export function UserConfiguration() {
                             />
 
                             <DialogFooter className="mt-4">
-                                <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>Cancelar</Button>
+                                <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>{GetLocalized(Labels.Cancel)}</Button>
                                 <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? "Registrando..." : "Registrar Conta"}
+                                    {isSubmitting ? GetLocalized(Labels.Registering) : GetLocalized(Labels.RegisterAccount)}
                                 </Button>
                             </DialogFooter>
                         </form>
@@ -499,20 +501,19 @@ export function UserConfiguration() {
             <AlertDialog open={!!userToInactivate} onOpenChange={(open) => { if (!open) setUserToInactivate(null); }}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Inativar Usuário</AlertDialogTitle>
+                        <AlertDialogTitle>{GetLocalized(Labels.InactivateUserTitle)}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Tem certeza que deseja inativar o usuário <strong>{userToInactivate?.fullName}</strong>?
-                            Ele perderá o acesso ao sistema imediatamente.
+                            {GetLocalized(Messages.ConfirmInactivateUserText1)}<strong>{userToInactivate?.fullName}</strong>{GetLocalized(Messages.ConfirmInactivateUserText2)}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isInactivating}>Cancelar</AlertDialogCancel>
+                        <AlertDialogCancel disabled={isInactivating}>{GetLocalized(Labels.Cancel)}</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleConfirmInactivate}
                             disabled={isInactivating}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                            {isInactivating ? "Inativando..." : "Inativar"}
+                            {isInactivating ? GetLocalized(Labels.Inactivating) : GetLocalized(Labels.Inactivate)}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
@@ -522,20 +523,19 @@ export function UserConfiguration() {
             <AlertDialog open={!!userToActivate} onOpenChange={(open) => { if (!open) setUserToActivate(null); }}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Ativar Usuário</AlertDialogTitle>
+                        <AlertDialogTitle>{GetLocalized(Labels.ActivateUserTitle)}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Tem certeza que deseja ativar o usuário <strong>{userToActivate?.fullName}</strong>?
-                            Ele voltará a ter acesso ao sistema.
+                            {GetLocalized(Messages.ConfirmActivateUserText1)}<strong>{userToActivate?.fullName}</strong>{GetLocalized(Messages.ConfirmActivateUserText2)}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isActivating}>Cancelar</AlertDialogCancel>
+                        <AlertDialogCancel disabled={isActivating}>{GetLocalized(Labels.Cancel)}</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleConfirmActivate}
                             disabled={isActivating}
                             className="bg-green-600 text-white hover:bg-green-700"
                         >
-                            {isActivating ? "Ativando..." : "Ativar"}
+                            {isActivating ? GetLocalized(Labels.Activating) : GetLocalized(Labels.Activate)}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
@@ -545,9 +545,9 @@ export function UserConfiguration() {
             <Dialog open={!!userToAssignRole} onOpenChange={(open) => { if (!open) setUserToAssignRole(null); }}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Gerenciar Perfis de Acesso</DialogTitle>
+                        <DialogTitle>{GetLocalized(Labels.ManageAccessRoles)}</DialogTitle>
                         <DialogDescription>
-                            Selecione os perfis que <strong>{userToAssignRole?.fullName}</strong> terá no sistema.
+                            {GetLocalized(Messages.SelectRolesForUserText1)}<strong>{userToAssignRole?.fullName}</strong>{GetLocalized(Messages.SelectRolesForUserText2)}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -577,9 +577,9 @@ export function UserConfiguration() {
                     </div>
 
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setUserToAssignRole(null)} disabled={isAssigningRole}>Cancelar</Button>
+                        <Button variant="outline" onClick={() => setUserToAssignRole(null)} disabled={isAssigningRole}>{GetLocalized(Labels.Cancel)}</Button>
                         <Button onClick={handleAssignRole} disabled={isAssigningRole}>
-                            {isAssigningRole ? "Salvando..." : "Salvar Alterações"}
+                            {isAssigningRole ? GetLocalized(Labels.Saving) : GetLocalized(Labels.SaveChanges)}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -589,15 +589,15 @@ export function UserConfiguration() {
             <Dialog open={!!userToConfigQueues} onOpenChange={(open) => { if (!open) setUserToConfigQueues(null); }}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Configurar Filas de Acesso</DialogTitle>
+                        <DialogTitle>{GetLocalized(Labels.ConfigureAccessQueues)}</DialogTitle>
                         <DialogDescription>
-                            Selecione as filas que <strong>{userToConfigQueues?.fullName}</strong> poderá atender no guichê.
+                            {GetLocalized(Messages.SelectQueuesForUserText1)}<strong>{userToConfigQueues?.fullName}</strong>{GetLocalized(Messages.SelectQueuesForUserText2)}
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
                         {availableQueues.length === 0 ? (
-                            <p className="text-sm text-muted-foreground text-center py-4">Nenhuma fila ativa encontrada.</p>
+                            <p className="text-sm text-muted-foreground text-center py-4">{GetLocalized(Messages.NoActiveQueueFound)}</p>
                         ) : (
                             availableQueues.map((queue) => {
                                 const id = `queue-${queue.id}`;
@@ -624,9 +624,9 @@ export function UserConfiguration() {
                     </div>
 
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setUserToConfigQueues(null)} disabled={isConfiguringQueues}>Cancelar</Button>
+                        <Button variant="outline" onClick={() => setUserToConfigQueues(null)} disabled={isConfiguringQueues}>{GetLocalized(Labels.Cancel)}</Button>
                         <Button onClick={handleSaveQueuePermissions} disabled={isConfiguringQueues}>
-                            {isConfiguringQueues ? "Salvando..." : "Salvar Alterações"}
+                            {isConfiguringQueues ? GetLocalized(Labels.Saving) : GetLocalized(Labels.SaveChanges)}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

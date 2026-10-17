@@ -1,3 +1,5 @@
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels, Messages, Errors } from "@/shared/localization/keys";
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,8 +32,8 @@ export function AttendanceDisplay() {
                 setPasswords(result.data);
             } else {
                 AGShowMessage.error({
-                    title: "Erro",
-                    description: "Não foi possível carregar as senhas.",
+                    title: GetLocalized(Labels.Error),
+                    description: GetLocalized(Messages.FailedToLoadPasswords),
                 });
             }
         } catch (error) {
@@ -66,7 +68,7 @@ export function AttendanceDisplay() {
                         const newPassword: AttendanceDisplayView = {
                             passwordCode: data.code?.toString() || "",
                             serviceLocationName: data.serviceLocationName || "",
-                            queueName: "Fila " + (data.queueId ? data.queueId.substring(0, 4) : ""),
+                            queueName: GetLocalized(Labels.Queue) + " " + (data.queueId ? data.queueId.substring(0, 4) : ""),
                             index: 1
                         };
 
@@ -133,15 +135,15 @@ export function AttendanceDisplay() {
                             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
                         )}
                     </span>
-                    {isConnected ? "SignalR Ativo" : "Desconectado"}
+                    {isConnected ? GetLocalized(Labels.SignalRActive) : GetLocalized(Labels.Disconnected)}
                 </div>
                 <Button variant="secondary" onClick={() => setOpenSettings(true)}>
                     <Settings className="mr-2 h-4 w-4" />
-                    Filas
+                    {GetLocalized(Labels.Queues)}
                 </Button>
                 <Button variant="destructive" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    Sair
+                    {GetLocalized(Labels.Logout)}
                 </Button>
             </div>
 
@@ -158,7 +160,7 @@ export function AttendanceDisplay() {
                 {/* Título "Últimas Senhas" com linhas decorativas */}
                 <div className="flex items-center justify-center mb-4 px-8">
                     <div className="h-px bg-[#E6E6E6] flex-1"></div>
-                    <h3 className="mx-4 text-[#003A6D] font-bold text-lg tracking-wide uppercase">ÚLTIMAS SENHAS</h3>
+                    <h3 className="mx-4 text-[#003A6D] font-bold text-lg tracking-wide uppercase">{GetLocalized(Labels.LatestPasswords)}</h3>
                     <div className="h-px bg-[#E6E6E6] flex-1"></div>
                 </div>
 
@@ -168,10 +170,10 @@ export function AttendanceDisplay() {
                         <div key={idx} className="flex flex-col border-b border-[#E6E6E6] pb-3">
                             <div className="flex justify-between mb-1">
                                 <span className="bg-[#003A6D] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    ÚLTIMAS SENHAS
+                                    {GetLocalized(Labels.LatestPasswords)}
                                 </span>
                                 <span className="bg-[#003A6D] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    GUICHÊ
+                                    {GetLocalized(Labels.Desk)}
                                 </span>
                             </div>
                             <div className="flex justify-between items-baseline px-2">
@@ -190,10 +192,10 @@ export function AttendanceDisplay() {
                         <div key={`empty-${idx}`} className="flex flex-col border-b border-[#E6E6E6] pb-3 opacity-30">
                             <div className="flex justify-between mb-1">
                                 <span className="bg-[#003A6D] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    ÚLTIMAS SENHAS
+                                    {GetLocalized(Labels.LatestPasswords)}
                                 </span>
                                 <span className="bg-[#003A6D] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    GUICHÊ
+                                    {GetLocalized(Labels.Desk)}
                                 </span>
                             </div>
                             <div className="flex justify-between items-baseline px-2">
@@ -213,7 +215,7 @@ export function AttendanceDisplay() {
                     {/* Área Código */}
                     <div className="flex-1 flex flex-col items-center justify-center border-r border-[#0A6DB5]/50">
                         <div className="bg-white text-[#003A6D] font-bold text-xl py-1 px-8 rounded-full mb-2 uppercase tracking-widest">
-                            {currentCall ? currentCall.queueName : "AGUARDANDO"}
+                            {currentCall ? currentCall.queueName : GetLocalized(Labels.Waiting)}
                         </div>
                         <div className="text-[120px] font-bold leading-none tracking-tighter text-[#6FC5FF]">
                             {currentCall ? currentCall.passwordCode : "----"}
@@ -223,7 +225,7 @@ export function AttendanceDisplay() {
                     {/* Área Guichê */}
                     <div className="w-1/3 flex flex-col items-center justify-center bg-[#003A6D]">
                         <div className="bg-white text-[#003A6D] font-bold text-xl py-1 px-8 rounded-full mb-2 uppercase tracking-widest">
-                            GUICHÊ
+                            {GetLocalized(Labels.Desk)}
                         </div>
                         <div className="text-[120px] font-bold leading-none text-[#6FC5FF]">
                             {currentCall ? (currentCall.serviceLocationName.replace(/\D/g, '') || "1") : "-"}
@@ -240,7 +242,7 @@ export function AttendanceDisplay() {
                                     {currentCall.queueName}:
                                 </h1>
                                 <p className="text-[32px] text-white leading-snug">
-                                    Por favor, dirija-se ao {currentCall.serviceLocationName.toLowerCase()} para ser atendido.
+                                    {GetLocalized(Messages.PleaseProceedTo)} {currentCall.serviceLocationName.toLowerCase()} {GetLocalized(Messages.ToBeServed)}
                                 </p>
                             </div>
                             <div className="w-[400px] flex justify-center items-center">
@@ -251,7 +253,7 @@ export function AttendanceDisplay() {
                     ) : (
                         <div className="text-center opacity-50">
                             <Monitor className="h-32 w-32 mx-auto mb-6 text-[#6FC5FF]" />
-                            <p className="text-4xl font-bold text-[#6FC5FF]">Aguardando chamadas...</p>
+                            <p className="text-4xl font-bold text-[#6FC5FF]">{GetLocalized(Messages.WaitingForCalls)}</p>
                         </div>
                     )}
                 </div>
@@ -266,15 +268,15 @@ export function AttendanceDisplay() {
             <Dialog open={openSettings} onOpenChange={setOpenSettings}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Filtrar Filas</DialogTitle>
+                        <DialogTitle>{GetLocalized(Labels.FilterQueues)}</DialogTitle>
                         <DialogDescription>
-                            Selecione quais filas este painel deve exibir.
-                            (A funcionalidade de salvar ainda não está implementada no back-end).
+                            {GetLocalized(Messages.SelectQueuesToDisplay)}
+                            {GetLocalized(Messages.SaveFeatureNotImplemented)}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-6">
                         <p className="text-sm text-gray-500 text-center">
-                            A lista de checkboxes aparecerá aqui no futuro.
+                            {GetLocalized(Messages.CheckboxListWillAppearHere)}
                         </p>
                     </div>
                 </DialogContent>
