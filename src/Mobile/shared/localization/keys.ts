@@ -79,6 +79,13 @@ export const Errors = {
   "CorsWildcardNotAllowed": "errors:CorsWildcardNotAllowed",
   "QueueAccessDenied": "errors:QueueAccessDenied",
   "QueueNotFound": "errors:QueueNotFound",
+  "ClinicNameMinLength": "errors:ClinicNameMinLength",
+  "InvalidCnpj": "errors:InvalidCnpj",
+  "InvalidWebsite": "errors:InvalidWebsite",
+  "LogoTooLarge": "errors:LogoTooLarge",
+  "InvalidLogoFormat": "errors:InvalidLogoFormat",
+  "FailedToLoadClinicSettings": "errors:FailedToLoadClinicSettings",
+  "FailedToSaveClinicSettings": "errors:FailedToSaveClinicSettings",
 } as const;
 
 export const Labels = {
@@ -266,6 +273,17 @@ export const Labels = {
   "ExCons": "labels:ExCons",
   "SelectQueue": "labels:SelectQueue",
   "DeleteService": "labels:DeleteService",
+  "Settings": "labels:Settings",
+  "ClinicData": "labels:ClinicData",
+  "ClinicName": "labels:ClinicName",
+  "Cnpj": "labels:Cnpj",
+  "Website": "labels:Website",
+  "Logo": "labels:Logo",
+  "UploadLogo": "labels:UploadLogo",
+  "ChangeLogo": "labels:ChangeLogo",
+  "RemoveLogo": "labels:RemoveLogo",
+  "PanelPreview": "labels:PanelPreview",
+  "Discard": "labels:Discard",
 } as const;
 
 export const Messages = {
@@ -353,5 +371,10 @@ export const Messages = {
   "ServiceTypeRemoved": "messages:ServiceTypeRemoved",
   "NoResultMatchesFilters": "messages:NoResultMatchesFilters",
   "ConfirmDeleteService": "messages:ConfirmDeleteService",
+  "ClinicSettingsDescription": "messages:ClinicSettingsDescription",
+  "ClinicSettingsSaved": "messages:ClinicSettingsSaved",
+  "ClinicSettingsLocalStorageNotice": "messages:ClinicSettingsLocalStorageNotice",
+  "LogoUploadHint": "messages:LogoUploadHint",
+  "PanelPreviewDescription": "messages:PanelPreviewDescription",
 } as const;
 

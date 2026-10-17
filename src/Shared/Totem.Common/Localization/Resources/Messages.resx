@@ -369,4 +369,19 @@
   <data name="ConfirmDeleteService" xml:space="preserve">
     <value>Tem certeza que deseja excluir o serviço</value>
   </data>
+  <data name="ClinicSettingsDescription" xml:space="preserve">
+    <value>Informações exibidas no painel de senhas e em documentos da clínica.</value>
+  </data>
+  <data name="ClinicSettingsSaved" xml:space="preserve">
+    <value>Dados da clínica atualizados com sucesso.</value>
+  </data>
+  <data name="ClinicSettingsLocalStorageNotice" xml:space="preserve">
+    <value>Os dados estão sendo armazenados localmente neste navegador até a integração com o servidor.</value>
+  </data>
+  <data name="LogoUploadHint" xml:space="preserve">
+    <value>PNG, JPG, SVG ou WEBP até 1 MB.</value>
+  </data>
+  <data name="PanelPreviewDescription" xml:space="preserve">
+    <value>Como as informações aparecerão no painel de senhas.</value>
+  </data>
 </root>

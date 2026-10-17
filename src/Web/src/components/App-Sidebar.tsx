@@ -59,7 +59,7 @@ const data = {
           { title: GetLocalized(Labels.NavigationServiceLocations), url: "/gestao/locais" },
           { title: GetLocalized(Labels.NavigationServiceTypes), url: "/gestao/servicos" },
           { title: GetLocalized(Labels.NavigationUsers), url: "/gestao/usuarios" },
-          { title: GetLocalized(Labels.NavigationSettings), url: "/configurations", isActive: true },
+          { title: GetLocalized(Labels.NavigationSettings), url: "/configurations" },
         ],
       }
     ]

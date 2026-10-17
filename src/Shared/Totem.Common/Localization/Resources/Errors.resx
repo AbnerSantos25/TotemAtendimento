@@ -351,4 +351,25 @@
   <data name="QueueNotFound" xml:space="preserve">
     <value>Fila não encontrada.</value>
   </data>
+  <data name="ClinicNameMinLength" xml:space="preserve">
+    <value>O nome da clínica deve ter pelo menos 3 caracteres.</value>
+  </data>
+  <data name="InvalidCnpj" xml:space="preserve">
+    <value>CNPJ inválido.</value>
+  </data>
+  <data name="InvalidWebsite" xml:space="preserve">
+    <value>Informe um endereço de site válido (ex: minhaclinica.com.br).</value>
+  </data>
+  <data name="LogoTooLarge" xml:space="preserve">
+    <value>A logo deve ter no máximo 1 MB.</value>
+  </data>
+  <data name="InvalidLogoFormat" xml:space="preserve">
+    <value>Formato de imagem não suportado. Use PNG, JPG, SVG ou WEBP.</value>
+  </data>
+  <data name="FailedToLoadClinicSettings" xml:space="preserve">
+    <value>Não foi possível carregar os dados da clínica.</value>
+  </data>
+  <data name="FailedToSaveClinicSettings" xml:space="preserve">
+    <value>Não foi possível salvar os dados da clínica.</value>
+  </data>
 </root>

@@ -669,4 +669,37 @@
   <data name="DeleteService" xml:space="preserve">
     <value>Excluir Serviço</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="ClinicData" xml:space="preserve">
+    <value>Dados da Clínica</value>
+  </data>
+  <data name="ClinicName" xml:space="preserve">
+    <value>Nome da Clínica</value>
+  </data>
+  <data name="Cnpj" xml:space="preserve">
+    <value>CNPJ</value>
+  </data>
+  <data name="Website" xml:space="preserve">
+    <value>Site</value>
+  </data>
+  <data name="Logo" xml:space="preserve">
+    <value>Logo</value>
+  </data>
+  <data name="UploadLogo" xml:space="preserve">
+    <value>Enviar logo</value>
+  </data>
+  <data name="ChangeLogo" xml:space="preserve">
+    <value>Trocar</value>
+  </data>
+  <data name="RemoveLogo" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="PanelPreview" xml:space="preserve">
+    <value>Pré-visualização do Painel</value>
+  </data>
+  <data name="Discard" xml:space="preserve">
+    <value>Descartar</value>
+  </data>
 </root>
