@@ -6,6 +6,8 @@ import { serviceTypeService } from "@/services/ServiceTypeService";
 import { queueService } from "@/services/QueueService";
 import type { ServiceTypeSummary, ServiceTypeRequest } from "@/models/ServiceTypeModels";
 import type { QueueView } from "@/models/QueueModels";
+import * as Icons from "lucide-react";
+
 import {
     Table,
     TableBody,
@@ -35,6 +37,21 @@ import { EmptyState } from "@/components/EmptyState";
 import { TableSkeleton } from "@/components/TableSkeleton";
 import { FolderSearch } from "lucide-react";
 
+const AVAILABLE_ICONS = [
+    { name: "LayoutGrid", label: "Padrão" },
+    { name: "User", label: "Usuário / Cadastro" },
+    { name: "Activity", label: "Saúde / Triagem" },
+    { name: "Calendar", label: "Agenda / Calendário" },
+    { name: "CreditCard", label: "Financeiro / Pagamentos" },
+    { name: "Briefcase", label: "Geral / Serviços" },
+    { name: "FileText", label: "Documentos" },
+    { name: "TriangleAlert", label: "Urgência / Emergência" },
+    { name: "HeartPulse", label: "Atendimento Médico" },
+    { name: "HelpCircle", label: "Informações / Dúvidas" },
+    { name: "Smartphone", label: "Digital / Aplicativo" },
+    { name: "Ticket", label: "Ingressos / Senhas" },
+];
+
 export const ServiceTypeConfiguration = () => {
     const [serviceTypes, setServiceTypes] = useState<ServiceTypeSummary[]>([]);
     const [queues, setQueues] = useState<QueueView[]>([]);
@@ -55,11 +72,20 @@ export const ServiceTypeConfiguration = () => {
 
     const [serviceToDelete, setServiceToDelete] = useState<{ id: string, title: string } | null>(null);
 
-    const renderIcon = (icon: string | null | undefined, className: string = "") => {
-        if (!icon) return <LayoutGrid className={className || "h-4 w-4 text-muted-foreground"} />;
+    const renderIcon = (iconName: string | null | undefined, className: string = "") => {
+        if (!iconName) return <LayoutGrid className={className || "h-4 w-4 text-muted-foreground"} />;
 
-        const safeIcon = icon.replace(/[^a-zA-Z0-9\s\-]/g, '');
-        return <i className={`${safeIcon} ${className}`} />;
+        const LucideIcon = (Icons as any)[iconName];
+        if (LucideIcon) {
+            return <LucideIcon className={className || "h-4 w-4 text-muted-foreground"} />;
+        }
+
+        if (iconName.includes("bi-") || iconName.startsWith("bi ")) {
+            const safeIcon = iconName.replace(/[^a-zA-Z0-9\s\-]/g, '');
+            return <i className={`${safeIcon} ${className}`} />;
+        }
+
+        return <LayoutGrid className={className || "h-4 w-4 text-muted-foreground"} />;
     };
 
     const fetchData = async () => {
@@ -366,15 +392,27 @@ export const ServiceTypeConfiguration = () => {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="icon">{GetLocalized(Labels.BootstrapIconClass)}</Label>
-                                <Input
-                                    id="icon"
-                                    value={formData.icon ?? ""}
-                                    onChange={(e) => setFormData(p => ({ ...p, icon: e.target.value }))}
-                                    placeholder={GetLocalized(Labels.ExBootstrapIcon)}
-                                />
-                                <p className="text-[10px] text-muted-foreground italic">
-                                    {GetLocalized(Labels.Access)} <a href="https://icons.getbootstrap.com/" target="_blank" rel="noreferrer" className="underline hover:text-primary">icons.getbootstrap.com</a> {GetLocalized(Labels.ToSeeAll)}
-                                </p>
+                                <Select
+                                    value={formData.icon ?? "LayoutGrid"}
+                                    onValueChange={(val) => setFormData(p => ({ ...p, icon: val }))}
+                                >
+                                    <SelectTrigger id="icon" className="w-full">
+                                        <SelectValue placeholder="Selecione um ícone" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {AVAILABLE_ICONS.map((item) => {
+                                            const IconComponent = (Icons as any)[item.name] || Icons.LayoutGrid;
+                                            return (
+                                                <SelectItem key={item.name} value={item.name}>
+                                                    <div className="flex items-center gap-2">
+                                                        <IconComponent className="h-4 w-4" />
+                                                        <span>{item.label}</span>
+                                                    </div>
+                                                </SelectItem>
+                                            );
+                                        })}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="color">{GetLocalized(Labels.HighlightColor)}</Label>

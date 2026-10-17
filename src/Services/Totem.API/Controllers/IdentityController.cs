@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
+using Totem.Common.Extension;
 using System.Security.Claims;
 using Totem.Application.Services.IdentityServices;
 using Totem.Common.API.Controller;
@@ -15,26 +17,29 @@ namespace Totem.API.Controllers
     {
 
         private readonly IIdentityService _identityService;
-        public IdentityController(INotificator notificator, IIdentityService identityService) : base(notificator)
+        private readonly IWebHostEnvironment _environment;
+        private readonly JwtSettings _jwtSettings;
+        public IdentityController(INotificator notificator, IIdentityService identityService, IWebHostEnvironment environment, IOptions<JwtSettings> jwtSettings) : base(notificator)
         {
             _identityService = identityService;
+            _environment = environment;
+            _jwtSettings = jwtSettings.Value;
         }
 
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpPost("register")]
+		[EnableRateLimiting("Auth")]
+		public async Task<ActionResult> Register(RegisterUserView registerUser)
+		{
+			if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("register")]
-        [EnableRateLimiting("Auth")]
-        public async Task<ActionResult> Register(RegisterUserView registerUser)
-        {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
+			var result = await _identityService.RegisterUserAsync(registerUser);
+			if (!result.Result.Success) return CustomResponse(result.Result);
 
-            var result = await _identityService.RegisterUserAsync(registerUser);
-            if (!result.Result.Success) return CustomResponse(result.Result);
+			return CustomResponse((result.Result, result.Data));
+		}
 
-            return CustomResponse((result.Result, result.Data));
-        }
-
-        [AllowAnonymous]
+		[AllowAnonymous]
         [HttpPost("login")]
         [EnableRateLimiting("Auth")]
         public async Task<ActionResult> Login(LoginUserView loginUser)
@@ -61,41 +66,48 @@ namespace Totem.API.Controllers
             return CustomResponse(await _identityService.GetMeAsync(userId));
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = nameof(Role.Manager))]
         [HttpGet("users")]
         public async Task<ActionResult> GetListUser()
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _identityService.GetListUserAsync());
 		}
-  
-        [Authorize(Roles = "Admin")]
-        [HttpPut("user/{userId}/update-email")]
-        public async Task<ActionResult> UpdateEmail([FromRoute] Guid userId, [FromBody] UpdateEmailRequest request)
+
+		[EnableRateLimiting("Auth")]
+		[HttpPut("user/update-email")]
+        public async Task<ActionResult> UpdateEmail([FromBody] UpdateEmailRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                              ?? User.FindFirstValue("sub");
+
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
             return CustomResponse(await _identityService.UpdateEmailAsync(userId, request));
         }
 
-        [Authorize(Roles = "Admin")]
+		[Authorize(Roles = nameof(Role.Manager))]
 		[HttpPatch("user/{userId}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid userId)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return CustomResponse(await _identityService.InactiveUser(userId));
+            return CustomResponse(await _identityService.InactiveUser(userId, User.IsInRole(nameof(Role.Admin))));
 		}
 
-        [Authorize(Roles = "Admin")]
+		[Authorize(Roles = nameof(Role.Manager))]
 		[HttpPatch("user/{userId}/active")]
         public async Task<ActionResult> ActiveUser([FromRoute] Guid userId)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return CustomResponse(await _identityService.ActiveUser(userId));
+            return CustomResponse(await _identityService.ActiveUser(userId, User.IsInRole(nameof(Role.Admin))));
         }
 
-        [Authorize(Roles = nameof(Role.Admin))]
+        [Authorize(Roles = $"{nameof(Role.Manager)}")]
         [HttpPost("assign-roles")]
         public async Task<ActionResult> UpdateUserRolesAsync([FromBody] AssignRolesRequest request)
         {
@@ -116,6 +128,7 @@ namespace Totem.API.Controllers
             return CustomResponse(result);
         }
 
+		[Authorize(Roles = $"{nameof(Role.User)},{nameof(Role.Manager)}")]
 		[HttpPost("user/{userId}/change-password")]
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> ChangePassword([FromRoute] Guid userId, [FromBody] ChangePasswordRequest request)
@@ -125,15 +138,15 @@ namespace Totem.API.Controllers
 			return CustomResponse(await _identityService.ChangePasswordAsync(userId, request));
 		}
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = nameof(Role.Manager))]
         [HttpGet("user/{userId}/queue-permissions")]
         public async Task<ActionResult> GetUserQueuePermissions([FromRoute] Guid userId, [FromServices] IUserQueuePermissionService permissionService)
         {
             return CustomResponse(await permissionService.GetAllowedQueueIdsAsync(userId));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpPut("user/{userId}/queue-permissions")]
+		[Authorize(Roles = nameof(Role.Manager))]
+		[HttpPut("user/{userId}/queue-permissions")]
         public async Task<ActionResult> SetUserQueuePermissions([FromRoute] Guid userId, [FromBody] SetUserQueuePermissionsRequest request, [FromServices] IUserQueuePermissionService permissionService)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -142,10 +155,17 @@ namespace Totem.API.Controllers
 
         private void SetAuthCookies(string jwt, Guid refreshToken, Guid userId)
         {
+            // Fora de Development os cookies de sessao so trafegam sobre HTTPS.
+            var secure = !_environment.IsDevelopment();
+
+            // Os cookies de renovacao acompanham o prazo do refresh token: um cookie
+            // que sobrevive ao token so produz 401 depois de o usuario achar que segue logado.
+            var sessionExpiry = DateTimeOffset.UtcNow.AddHours(_jwtSettings.RefreshTokenExpirationHours);
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // TODO: Em produção, alterar para true
+                Secure = secure,
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddHours(1)
             };
@@ -153,18 +173,18 @@ namespace Totem.API.Controllers
             var refreshOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // TODO: Em produção, alterar para true
+                Secure = secure,
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Expires = sessionExpiry,
                 Path = "/api/totem/RefreshToken"
             };
 
             var userIdOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // TODO: Em produção, alterar para true
+                Secure = secure,
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Expires = sessionExpiry
             };
 
             Response.Cookies.Append("access_token", jwt, cookieOptions);

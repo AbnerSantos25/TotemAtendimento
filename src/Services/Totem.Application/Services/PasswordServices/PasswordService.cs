@@ -1,11 +1,9 @@
 using MediatR;
+using Totem.Application.Events.Contracts;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
-using Totem.Domain.Aggregates.PasswordAggregate.Events;
-using Totem.Domain.Aggregates.ServiceLocationAggregate;
-using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
 using Totem.Domain.Models.PasswordModels;
 using Totem.SharedKernel.Models;
 using Totem.SharedKernel.Services;
@@ -22,8 +20,6 @@ namespace Totem.Application.Services.PasswordServices
 			INotificator notificador,
 			IPasswordRepository passwordRepository,
 			IPasswordQueries passwordQueries,
-			PasswordValidations passwordValidation,
-			IServiceLocationRepository serviceLocationRepository,
 			IMediator mediator
 		) : base(notificador)
 		{
@@ -91,8 +87,12 @@ namespace Totem.Application.Services.PasswordServices
 		public async Task<(Result result, IPasswordView data)> ServiceLocationWaitingPasswordAsync(Guid queueId, Guid serviceLocationId, string newServiceLocationName)
 		{
 			var nextPassword = await _passwordRepository.GetNextUnassignedPasswordFromQueueAsync(queueId);
-			if (nextPassword == null)
+			
+			if (nextPassword is null)
+			{
 				await _mediator.Publish(new ServiceLocationWaitingPasswordEvent(serviceLocationId, queueId));
+				return Successful<IPasswordView>(null);
+			}
 
 			var oldServiceLocation = nextPassword.ServiceLocationId;
 			var oldDescription = nextPassword.ServiceLocation?.Name ?? Labels.NoServiceLocation;

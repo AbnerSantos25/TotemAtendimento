@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Totem.Domain.Aggregates.PasswordAggregate.Events
+namespace Totem.Application.Events.Contracts
 {
     /// <summary>
     /// Evento de domínio publicado quando uma senha é reconvocada em um local de atendimento.

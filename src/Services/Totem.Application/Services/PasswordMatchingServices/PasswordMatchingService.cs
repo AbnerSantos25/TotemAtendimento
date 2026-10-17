@@ -1,92 +1,85 @@
 using MediatR;
+using Totem.Application.Events.Contracts;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
-using Totem.Domain.Aggregates.PasswordAggregate.Events;
-using Totem.Domain.Aggregates.ServiceLocationAggregate.Events;
+using Totem.Domain.Aggregates.ServiceLocationAggregate;
 
 namespace Totem.Application.Services.PasswordMatchingServices
 {
-
-	public class PasswordMatchingService : BaseService, INotificationHandler<PasswordCreatedEvent>, INotificationHandler<ServiceLocationWaitingPasswordEvent>, IPasswordMatchingService
+	/// <summary>
+	/// Casa senhas recem-criadas com guiches que pediram atendimento e nao tinham
+	/// senha disponivel no momento.
+	///
+	/// ServiceLocationWaitingPasswordEvent so e publicado quando a fila esta vazia
+	/// (ver PasswordService.ServiceLocationWaitingPasswordAsync), entao basta guardar
+	/// os guiches em espera: a proxima senha criada na fila e atribuida ao primeiro
+	/// deles. O estado vive no IWaitingServiceLocationStore, que e Singleton -- este
+	/// handler e recriado a cada evento e nao pode guardar estado em campo proprio.
+	/// </summary>
+	public class PasswordMatchingService : BaseService,
+		INotificationHandler<PasswordCreatedEvent>,
+		INotificationHandler<ServiceLocationWaitingPasswordEvent>,
+		IPasswordMatchingService
 	{
-		private readonly Dictionary<Guid, Queue<Guid>> _waitingPasswords = new();
-		private readonly Dictionary<Guid, Queue<Guid>> _waitingLocations = new();
-
-		private readonly IPasswordRepository _repo;
+		private readonly IPasswordRepository _passwordRepository;
+		private readonly IServiceLocationRepository _serviceLocationRepository;
+		private readonly IWaitingServiceLocationStore _waitingLocations;
 		private readonly IMediator _mediator;
 
-		public PasswordMatchingService(INotificator notificador, IPasswordRepository repo, IMediator mediator) : base(notificador)
+		public PasswordMatchingService(
+			INotificator notificador,
+			IPasswordRepository passwordRepository,
+			IServiceLocationRepository serviceLocationRepository,
+			IWaitingServiceLocationStore waitingLocations,
+			IMediator mediator) : base(notificador)
 		{
-			_repo = repo;
+			_passwordRepository = passwordRepository;
+			_serviceLocationRepository = serviceLocationRepository;
+			_waitingLocations = waitingLocations;
 			_mediator = mediator;
 		}
 
-		private async Task<Result> TryMatch(Guid queueId, Guid id, bool isPassword)
+		public Task Handle(ServiceLocationWaitingPasswordEvent notification, CancellationToken cancellationToken)
 		{
-			var pwQueue = _waitingPasswords.GetOrAdd(queueId);
-			var slQueue = _waitingLocations.GetOrAdd(queueId);
-
-			if (isPassword)
-				pwQueue.Enqueue(id);
-			else
-				slQueue.Enqueue(id);
-
-			// enquanto houver senha E location na mesma fila, faça o match
-			while (pwQueue.Count > 0 && slQueue.Count > 0)
-			{
-				var pwdId = pwQueue.Dequeue();
-				var slId = slQueue.Dequeue();
-
-				// busca a entidade Password, atribui o ServiceLocation e salva
-				var pwd = await _repo.GetByIdAsync(pwdId);
-				var oldServiceLocationId = pwd.ServiceLocationId;
-				var oldServiceLocationName = pwd.ServiceLocation.Name;
-
-				if (!pwd.CanBeReassigned)
-				{
-					return Unsuccessful(Errors.PasswordCannotBeTransfered);
-				}
-
-				pwd.AssignToServiceLocation(slId);
-				_repo.Update(pwd);
-				await _repo.UnitOfWork.CommitAsync();
-
-				await _mediator.Publish(new PasswordCalledEvent(
-					pwd.Id,
-					pwd.QueueId,
-					slId,
-					pwd.ServiceLocation.Name,
-					oldServiceLocationId,
-					oldServiceLocationName,
-					pwd.Code,
-					pwd.Preferential));
-
-				//await _mediator.Publish(new PasswordServiceLocationChangedHistoryEvent(pwd.Id, oldServiceLocationId, slId, oldServiceLocationName, pwd.ServiceLocation.Name, pwd.Code));
-				//await _notifier.NotifyPasswordAssignedAsync(slId, pwd.Code, pwd.CreatedAt);
-				//await _notifier.NotifyPasswordCalledAsync(pwd.QueueId, pwd.Code, pwd.ServiceLocation.Name, pwd.Preferential);
-			}
-			return Successful();
+			_waitingLocations.Enqueue(notification.QueueId, notification.ServiceLocationId);
+			return Task.CompletedTask;
 		}
 
-		public async Task Handle(PasswordCreatedEvent evt, CancellationToken _) =>
-			await TryMatch(evt.QueueId, evt.PasswordId, isPassword: true);
-
-		public async Task Handle(ServiceLocationWaitingPasswordEvent evt, CancellationToken _) =>
-			await TryMatch(evt.QueueId, evt.ServiceLocationId, isPassword: false);
-	}
-
-	static class DictExtensions
-	{
-		public static Queue<T> GetOrAdd<K, T>(this Dictionary<K, Queue<T>> dict, K key)
+		public async Task Handle(PasswordCreatedEvent notification, CancellationToken cancellationToken)
 		{
-			if (!dict.TryGetValue(key, out var q))
+			if (!_waitingLocations.TryDequeue(notification.QueueId, out var serviceLocationId))
+				return;
+
+			var password = await _passwordRepository.GetByIdAsync(notification.PasswordId);
+			if (password is null || !password.CanBeReassigned)
+				return;
+
+			var serviceLocation = await _serviceLocationRepository.GetByIdAsync(serviceLocationId);
+			if (serviceLocation is null)
+				return;
+
+			password.AssignToServiceLocation(serviceLocationId);
+			_passwordRepository.Update(password);
+
+			if (!await _passwordRepository.UnitOfWork.CommitAsync())
 			{
-				q = new Queue<T>();
-				dict[key] = q;
+				// Devolve o guiche a espera para que ele nao perca a vez.
+				_waitingLocations.Enqueue(notification.QueueId, serviceLocationId);
+				return;
 			}
-			return q;
+
+			// Senha recem-criada nunca teve guiche anterior.
+			await _mediator.Publish(new PasswordCalledEvent(
+				password.Id,
+				password.QueueId,
+				serviceLocationId,
+				serviceLocation.Name,
+				null,
+				Labels.NoServiceLocation,
+				password.Code,
+				password.Preferential), cancellationToken);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Totem.Domain.Aggregates.ServiceLocationAggregate.Events
+namespace Totem.Application.Events.Contracts
 {
     /// <summary>
     /// Represents an event that occurs when a service location is waiting for a password to proceed.

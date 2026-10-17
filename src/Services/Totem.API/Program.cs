@@ -28,7 +28,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContexts(builder.Configuration);
-builder.Services.AddIdentityConfiguration(builder.Configuration);
+builder.Services.AddIdentityConfiguration(builder.Configuration, builder.Environment);
 
 builder.Services.TotemRegisterDependency();
 builder.Services.AddSwaggerConfiguration(builder.Configuration);
@@ -37,9 +37,14 @@ builder.Services.AddEventsConfiguration();
 builder.Services.AddSignalR();
 // Antiforgery e Cors configurados em ApiConfiguration
 
+builder.Services.AddForwardedHeadersConfiguration(builder.Configuration);
 builder.Services.AddRateLimitingConfiguration();
 
 var app = builder.Build();
+
+// Precisa vir antes de qualquer middleware que dependa do IP de origem -- entre
+// eles o rate limiter, que particiona por IP.
+app.UseForwardedHeaders();
 
 await app.Services.InitializeDatabaseAsync();
 
@@ -71,7 +76,8 @@ app.UseCsrfMiddleware();
 
     app.MapControllers();
 
-    app.Run();
+app.Run();
+
 }
 catch (Exception ex)
 {

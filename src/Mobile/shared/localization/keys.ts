@@ -75,6 +75,10 @@ export const Errors = {
   "UnableToUpdateQueuePermissions": "errors:UnableToUpdateQueuePermissions",
   "ErrorFetchingDetails": "errors:ErrorFetchingDetails",
   "ErrorSaving": "errors:ErrorSaving",
+  "CannotModifyAdminUser": "errors:CannotModifyAdminUser",
+  "CorsWildcardNotAllowed": "errors:CorsWildcardNotAllowed",
+  "QueueAccessDenied": "errors:QueueAccessDenied",
+  "QueueNotFound": "errors:QueueNotFound",
 } as const;
 
 export const Labels = {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Totem.Domain.Aggregates.RefreshTokenAggregate.Events
+namespace Totem.Application.Events.Contracts
 {
 	public record SaveRefreshTokenEvent(Guid token, Guid userId) : INotification; 
 }

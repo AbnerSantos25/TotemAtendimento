@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Totem.Application.Services.QueueServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
+using Totem.Common.Enumerations;
 using Totem.Domain.Models.QueueModels;
 
 namespace Totem.API.Controllers
@@ -28,25 +29,23 @@ namespace Totem.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> GetListAsync()
+		[Authorize(Roles = $"{nameof(Role.Manager)}, {nameof(Role.System)}, {nameof(Role.User)}")]
+		public async Task<IActionResult> GetListAsync()
         {
-
-            //TODO: (abner) Rever essa logica, poderia estar no serviço?
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
-            
+
             if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
                 return Unauthorized();
 
-            var hasFullAccess = User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("System");
+            var hasFullAccess = User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.Manager)) || User.IsInRole(nameof(Role.System));
 
             return CustomResponse(await _queueServices.GetListByPermissionAsync(userId, hasFullAccess));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = $"{nameof(Role.Manager)}")]
         [HttpPost]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddAsync([FromBody] QueueRequest request)
@@ -57,8 +56,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _queueServices.AddAsync(request));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpPut("{id}")]
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpPut("{id}")]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] QueueRequest request)
         {
@@ -68,8 +67,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _queueServices.UpdateAsync(id, request));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpDelete("{id}")]
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpDelete("{id}")]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
@@ -79,8 +78,8 @@ namespace Totem.API.Controllers
             return CustomResponse(await _queueServices.DeleteAsync(id));
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpPatch("{id}/toggleQueueStatus")]
+		[Authorize(Roles = $"{nameof(Role.Manager)}")]
+		[HttpPatch("{id}/toggleQueueStatus")]
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> ToggleStatusQueue([FromRoute] Guid id)
         {

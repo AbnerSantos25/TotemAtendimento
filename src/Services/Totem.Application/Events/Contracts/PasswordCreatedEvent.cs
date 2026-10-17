@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Totem.Domain.Aggregates.PasswordAggregate.Events
+namespace Totem.Application.Events.Contracts
 {
     public record PasswordCreatedEvent(
 		Guid PasswordId,

@@ -339,4 +339,16 @@
   <data name="ErrorSaving" xml:space="preserve">
     <value>Erro ao salvar</value>
   </data>
+  <data name="CannotModifyAdminUser" xml:space="preserve">
+    <value>Apenas um administrador pode alterar o status de outro administrador.</value>
+  </data>
+  <data name="CorsWildcardNotAllowed" xml:space="preserve">
+    <value>CORS: o curinga '*' em 'AllowedOrigins' so e permitido em Development.</value>
+  </data>
+  <data name="QueueAccessDenied" xml:space="preserve">
+    <value>Voce nao tem permissao para acompanhar esta fila.</value>
+  </data>
+  <data name="QueueNotFound" xml:space="preserve">
+    <value>Fila não encontrada.</value>
+  </data>
 </root>

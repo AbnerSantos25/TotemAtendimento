@@ -56,19 +56,18 @@ public class AuthenticationFlowTests : IClassFixture<WebApplicationFactory<Progr
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
-    [Fact(DisplayName = "E2E: Registro com dados inválidos (email nulo) deve retornar 400")]
-    public async Task Register_WithMissingEmail_ShouldReturn400()
+    [Fact(DisplayName = "E2E: Cadastro de usuário não é público — exige autenticação")]
+    public async Task Register_WhenAnonymous_ShouldReturn401()
     {
-        // Arrange
+        // O cadastro e restrito a Manager: quem nao esta autenticado deve ser barrado
+        // antes de qualquer validacao de payload, sem revelar se os dados eram validos.
         var payload = JsonSerializer.Serialize(new { fullName = "Teste", email = "", password = "Valid@123" });
 
-        // Act
         var response = await _client.PostAsync(
             "/api/totem/identity/register",
             new StringContent(payload, Encoding.UTF8, "application/json"));
 
-        // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact(DisplayName = "E2E: Headers de segurança devem estar presentes na resposta")]

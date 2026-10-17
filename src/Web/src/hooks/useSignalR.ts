@@ -22,6 +22,7 @@ export interface UseSignalROptions {
 export interface UseSignalRResult {
   isConnected: boolean;
   connectionError: string | null;
+  reconnect: () => Promise<void>;
 }
 
 export const useSignalR = (options: UseSignalROptions): UseSignalRResult => {
@@ -94,6 +95,12 @@ export const useSignalR = (options: UseSignalROptions): UseSignalRResult => {
     void signalRService.joinQueueAsync(options.queueId);
   }, [isConnected, options.queueId]);
 
-  return { isConnected, connectionError };
+  const reconnect = useCallback(async () => {
+    if (optionsRef.current.serviceLocationId) {
+      await connect(optionsRef.current.serviceLocationId, optionsRef.current.queueId);
+    }
+  }, [connect]);
+
+  return { isConnected, connectionError, reconnect };
 };
 

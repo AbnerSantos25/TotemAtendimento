@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Totem.Common.API.Data;
 using Totem.Common.Data;
 using Totem.Common.Domain.Entity;
 using Totem.Domain.Aggregates.RefreshTokenAggregate;
@@ -11,39 +13,17 @@ namespace Totem.Infra.Data.IdentityData
 {
 	public class AppIdentityDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IUnitOfWork
 	{
-        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
+        private readonly ILogger<AppIdentityDbContext> _logger;
+
+        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options, ILogger<AppIdentityDbContext> logger) : base(options)
         {
+            _logger = logger;
         }
 		private const string prefix = "Sys";
 		public DbSet<RefreshToken> RefreshTokens { get; set; }
 		public DbSet<UserQueuePermission> UserQueuePermissions { get; set; }
 
-		public virtual async Task<bool> CommitAsync()
-		{
-			using var transaction = await Database.BeginTransactionAsync();
-
-			try
-			{
-				var result = await SaveChangesAsync() > 0;
-
-				if (result)
-				{
-					await transaction.CommitAsync();
-				}
-				else
-				{
-					await transaction.RollbackAsync();
-				}
-
-				return result;
-			}
-			catch (Exception ex)
-			{
-				await transaction.RollbackAsync();
-				Console.WriteLine($"Erro ao realizar commit: {ex.Message}");
-				return false;
-			}
-		}
+		public virtual Task<bool> CommitAsync() => this.CommitWithTransactionAsync(_logger);
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

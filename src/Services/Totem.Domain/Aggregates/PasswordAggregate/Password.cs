@@ -29,7 +29,7 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		{
 			QueueId = queueId;
 			Preferential = preferential;
-			CreatedAt = DateTime.Now;
+			CreatedAt = DateTime.UtcNow;
 			Served = false;
 		}
 

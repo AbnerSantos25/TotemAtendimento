@@ -14,8 +14,8 @@ namespace Totem.Application.Services.IdentityServices
 		Task<Result> UpdateEmailAsync(Guid userId, UpdateEmailRequest request);
 		Task<Result> UpdateUserRolesAsync(AssignRolesRequest request);
 		Task<(Result Result, AuthResult Data)> LoginUserAsync(LoginUserView loginUserView);
-		Task<Result> InactiveUser(Guid userId);
-		Task<Result> ActiveUser(Guid userId);
+		Task<Result> InactiveUser(Guid userId, bool callerIsAdmin);
+		Task<Result> ActiveUser(Guid userId, bool callerIsAdmin);
         Task<Result> LogoutAsync(Guid userId);
 		Task<(Result Result, UserView Data)> GetMeAsync(Guid userId);
     }

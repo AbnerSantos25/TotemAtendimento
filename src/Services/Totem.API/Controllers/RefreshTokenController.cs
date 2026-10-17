@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Totem.Common.Extension;
 using Totem.Application.Services.RefreshTokenServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -10,10 +12,14 @@ namespace Totem.API.Controllers
     public class RefreshTokenController : MainController
     {
         private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IWebHostEnvironment _environment;
+        private readonly JwtSettings _jwtSettings;
 
-        public RefreshTokenController(INotificator notificador, IRefreshTokenService refreshTokenService) : base(notificador)
+        public RefreshTokenController(INotificator notificador, IRefreshTokenService refreshTokenService, IWebHostEnvironment environment, IOptions<JwtSettings> jwtSettings) : base(notificador)
         {
             _refreshTokenService = refreshTokenService;
+            _environment = environment;
+            _jwtSettings = jwtSettings.Value;
         }
 
         [AllowAnonymous]
@@ -30,21 +36,25 @@ namespace Totem.API.Controllers
                 return Unauthorized();
 
             var result = await _refreshTokenService.RefreshTokenAsync(userId, tokenId);
+
             if (!result.result.Success) return CustomResponse(result.result);
+
+            // Fora de Development os cookies de sessao so trafegam sobre HTTPS.
+            var secure = !_environment.IsDevelopment();
 
             Response.Cookies.Append("access_token", result.data.Jwt, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // TODO: Em produção, alterar para true
+                Secure = secure,
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddHours(1)
             });
             Response.Cookies.Append("refresh_token", result.data.RefreshToken.ToString(), new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // TODO: Em produção, alterar para true
+                Secure = secure,
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Expires = DateTimeOffset.UtcNow.AddHours(_jwtSettings.RefreshTokenExpirationHours)
             });
 
             return CustomResponse((result.result, result.data.UserView));

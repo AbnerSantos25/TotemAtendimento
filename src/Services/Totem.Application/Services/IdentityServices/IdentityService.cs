@@ -6,6 +6,7 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Totem.Application.Events.Contracts;
 using Totem.Application.Models;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Enumerations;
@@ -13,7 +14,6 @@ using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.RefreshTokenAggregate;
-using Totem.Domain.Aggregates.RefreshTokenAggregate.Events;
 using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.IdentityModels;
 using Totem.SharedKernel.Models;
@@ -165,11 +165,14 @@ namespace Totem.Application.Services.IdentityServices
             return Unsuccessful<AuthResult>();
         }
 
-        public async Task<Result> InactiveUser(Guid userId)
+        public async Task<Result> InactiveUser(Guid userId, bool callerIsAdmin)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 return Unsuccessful(Errors.UserNotFound);
+
+            if (!callerIsAdmin && await _userManager.IsInRoleAsync(user, nameof(Role.Admin)))
+                return Unsuccessful(Errors.CannotModifyAdminUser);
 
             user.InactiveUser();
 
@@ -187,11 +190,14 @@ namespace Totem.Application.Services.IdentityServices
             return Successful();
         }
 
-        public async Task<Result> ActiveUser(Guid userId)
+        public async Task<Result> ActiveUser(Guid userId, bool callerIsAdmin)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 return Unsuccessful(Errors.UserNotFound);
+
+            if (!callerIsAdmin && await _userManager.IsInRoleAsync(user, nameof(Role.Admin)))
+                return Unsuccessful(Errors.CannotModifyAdminUser);
 
             user.ActiveUser();
 
