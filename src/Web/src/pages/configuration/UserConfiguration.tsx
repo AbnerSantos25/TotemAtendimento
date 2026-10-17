@@ -335,7 +335,7 @@ export function UserConfiguration() {
                                     <TableRow>
                                         <TableCell colSpan={5} className="p-0">
                                             <EmptyState
-                                                title={GetLocalized(Labels.NoUserFound)}
+                                                title={GetLocalized(Errors.UserNotFound)}
                                                 description={GetLocalized(Messages.RegisterNewUsersDescription)}
                                                 icon={<Users className="h-12 w-12 text-muted-foreground/50 mb-2" />}
                                                 action={

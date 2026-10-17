@@ -10,7 +10,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
-import { useClinicSettings } from "@/hooks/useClinicSettings";
+import { useOrganizationSettings } from "@/hooks/useOrganizationSettings";
 import { formatCnpj } from "@/lib/formatters";
 import type { AttendanceDisplayView } from "@/models/PasswordModels";
 import type { PanelPasswordCalledPayload } from "@/services/interfaces/ISignalRService";
@@ -26,7 +26,7 @@ export function AttendanceDisplay() {
     const [openSettings, setOpenSettings] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
     const { signOut } = useAuth();
-    const { settings: clinic } = useClinicSettings();
+    const { settings: organization } = useOrganizationSettings();
 
     const fetchLatestCalls = useCallback(async () => {
         try {
@@ -154,13 +154,13 @@ export function AttendanceDisplay() {
             <div className="w-[580px] bg-white border-r border-[#E6E6E6] flex flex-col z-10">
                 {/* Header da Coluna (Logo) */}
                 <div className="py-8 px-8 flex flex-col items-center justify-center">
-                    {clinic?.logoUrl ? (
-                        <img src={clinic.logoUrl} alt={clinic.name} className="h-20 max-w-full object-contain mb-2" />
+                    {organization?.logoUrl ? (
+                        <img src={organization.logoUrl} alt={organization.name} className="h-20 max-w-full object-contain mb-2" />
                     ) : (
                         <ShieldPlus className="h-14 w-14 text-[#003A6D] mb-2" strokeWidth={1.5} />
                     )}
                     <h2 className="text-xl font-bold text-[#003A6D] text-center leading-tight uppercase break-words max-w-full">
-                        {clinic?.name}
+                        {organization?.name}
                     </h2>
                 </div>
 
@@ -265,9 +265,9 @@ export function AttendanceDisplay() {
 
                 {/* Footer */}
                 <div className="h-[60px] bg-white flex items-center justify-center gap-6 z-10">
-                    <span className="text-xl font-bold text-[#003A6D] tracking-wide">{clinic?.websiteUrl}</span>
-                    {clinic?.cnpj && (
-                        <span className="text-base font-medium text-[#003A6D]/70">CNPJ {formatCnpj(clinic.cnpj)}</span>
+                    <span className="text-xl font-bold text-[#003A6D] tracking-wide">{organization?.websiteUrl}</span>
+                    {organization?.cnpj && (
+                        <span className="text-base font-medium text-[#003A6D]/70">CNPJ {formatCnpj(organization.cnpj)}</span>
                     )}
                 </div>
             </div>

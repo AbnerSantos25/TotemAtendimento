@@ -373,35 +373,8 @@ namespace Totem.Common.Localization.Resources {
             get {
                 return ResourceManager.GetString("UserAlreadyHasRole", resourceCulture);
             }
-        }
         
-        /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a CORS: o curinga '*' em 'AllowedOrigins' so e permitido em Development.
-        /// </summary>
-        public static string CorsWildcardNotAllowed {
-            get {
-                return ResourceManager.GetString("CorsWildcardNotAllowed", resourceCulture);
-            }
         }
-        
-        /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Voce nao tem permissao para acompanhar esta fila.
-        /// </summary>
-        public static string QueueAccessDenied {
-            get {
-                return ResourceManager.GetString("QueueAccessDenied", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Apenas um administrador pode alterar o status de outro administrador.
-        /// </summary>
-        public static string CannotModifyAdminUser {
-            get {
-                return ResourceManager.GetString("CannotModifyAdminUser", resourceCulture);
-            }
-        }
-        
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário Inativo..
         /// </summary>
@@ -426,6 +399,51 @@ namespace Totem.Common.Localization.Resources {
         public static string UserTemporarilyBlocked {
             get {
                 return ResourceManager.GetString("UserTemporarilyBlocked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O nome da organização deve ter pelo menos 3 caracteres..
+        /// </summary>
+        public static string OrganizationNameMinLength {
+            get {
+                return ResourceManager.GetString("OrganizationNameMinLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a CNPJ inválido..
+        /// </summary>
+        public static string InvalidCnpj {
+            get {
+                return ResourceManager.GetString("InvalidCnpj", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Informe um endereço de site válido (ex: www.exemplo.com.br)..
+        /// </summary>
+        public static string InvalidWebsite {
+            get {
+                return ResourceManager.GetString("InvalidWebsite", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A logo deve ter no máximo 1 MB..
+        /// </summary>
+        public static string LogoTooLarge {
+            get {
+                return ResourceManager.GetString("LogoTooLarge", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Formato de imagem não suportado. Use PNG, JPG, SVG ou WEBP..
+        /// </summary>
+        public static string InvalidLogoFormat {
+            get {
+                return ResourceManager.GetString("InvalidLogoFormat", resourceCulture);
             }
         }
     }

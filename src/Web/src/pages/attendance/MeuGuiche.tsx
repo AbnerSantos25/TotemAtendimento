@@ -20,7 +20,7 @@ import type {
   QueuePasswordUpdatedPayload
 } from "@/services/interfaces/ISignalRService";
 import { GetLocalized } from "@/shared/localization/i18n";
-import { Labels, Messages, Errors } from "@/shared/localization/keys";
+import { Labels, Messages } from "@/shared/localization/keys";
 
 // ---------------------------------------------------------------------------
 // Constants

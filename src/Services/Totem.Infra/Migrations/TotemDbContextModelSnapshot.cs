@@ -23,6 +23,42 @@ namespace Totem.Infra.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Totem.Domain.Aggregates.OrganizationSettingsAggregate.OrganizationSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("OrganizationSettingsId");
+
+                    b.Property<string>("Cnpj")
+                        .IsRequired()
+                        .HasColumnType("char(14)");
+
+                    b.Property<byte[]>("Logo")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("LogoContentType")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WebsiteUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrganizationSettings", "Totem");
+                });
+
             modelBuilder.Entity("Totem.Domain.Aggregates.PasswordAggregate.Password", b =>
                 {
                     b.Property<Guid>("Id")

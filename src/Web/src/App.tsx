@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { Reports } from "./pages/dashboard/Reports";
 import { AuthProvider } from "./contexts/AuthContext";
-import { ClinicSettingsProvider } from "./contexts/ClinicSettingsContext";
+import { OrganizationSettingsProvider } from "./contexts/OrganizationSettingsContext";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Login } from "./pages/auth/Login";
 import { Layout } from "./components/Layout";
@@ -31,7 +31,7 @@ function DashboardTemporario() {
 export function App() {
   return (
     <AuthProvider>
-      <ClinicSettingsProvider>
+      <OrganizationSettingsProvider>
       <BrowserRouter>
         <Routes>
 
@@ -62,7 +62,7 @@ export function App() {
 
         </Routes>
       </BrowserRouter>
-      </ClinicSettingsProvider>
+      </OrganizationSettingsProvider>
       <Toaster position="bottom-right" richColors={false} theme="system" closeButton invert={false} />
     </AuthProvider>
   );

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Totem.Common.API.Data;
+using Totem.Domain.Aggregates.OrganizationSettingsAggregate;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
@@ -21,6 +22,7 @@ namespace Totem.Infra.Data
 		public DbSet<ServiceLocation> ServiceLocations { get; set; }
 		public DbSet<PasswordHistory> PasswordHistories { get; set; }
 		public DbSet<ServiceType> ServiceTypes { get; set; }
+		public DbSet<OrganizationSettings> OrganizationSettings { get; set; }
 
 		protected override string GetDefaultContextSchema() => "Totem";
 
@@ -33,6 +35,7 @@ namespace Totem.Infra.Data
 			modelBuilder.ApplyConfiguration(new QueueMappings());
 			modelBuilder.ApplyConfiguration(new ServiceLocationMappings());
 			modelBuilder.ApplyConfiguration(new ServiceTypeMapping());
+			modelBuilder.ApplyConfiguration(new OrganizationSettingsMappings());
 		}
 	}
 }

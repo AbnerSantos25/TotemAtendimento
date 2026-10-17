@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChangePasswordDialog } from "@/components/user/ChangePasswordDialog";
 import { IconMail, IconBadge } from "@tabler/icons-react";
 import { GetLocalized } from "@/shared/localization/i18n";
-import { Labels, Messages, Errors } from "@/shared/localization/keys";
+import { Labels, Messages } from "@/shared/localization/keys";
 
 export const MyAccount = () => {
   const { user } = useAuth();

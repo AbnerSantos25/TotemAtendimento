@@ -29,6 +29,7 @@ i18n
 
 export default i18n;
 
-export const GetLocalized = (key: string) => {
-    return i18n.t(key);
+/** `options` preenche os placeholders do texto, ex.: "A fila {{name}} foi ativada." */
+export const GetLocalized = (key: string, options?: Record<string, unknown>) => {
+    return i18n.t(key, options);
 };

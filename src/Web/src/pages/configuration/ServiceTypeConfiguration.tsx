@@ -99,13 +99,13 @@ export const ServiceTypeConfiguration = () => {
             if (servicesRes.success) {
                 setServiceTypes(servicesRes.data);
             } else {
-                AGShowMessage.error({ title: GetLocalized(Errors.Error), description: servicesRes.error.message });
+                AGShowMessage.error({ title: GetLocalized(Labels.Error), description: servicesRes.error.message });
             }
 
             if (queuesRes.success) {
                 setQueues(queuesRes.data);
             } else {
-                AGShowMessage.error({ title: GetLocalized(Errors.Error), description: queuesRes.error.message });
+                AGShowMessage.error({ title: GetLocalized(Labels.Error), description: queuesRes.error.message });
             }
         } finally {
             setLoading(false);
@@ -177,7 +177,7 @@ export const ServiceTypeConfiguration = () => {
 
         if (response.success) {
             AGShowMessage.success({
-                title: GetLocalized(Messages.Success),
+                title: GetLocalized(Labels.Success),
                 description: editingId ? GetLocalized(Messages.ServiceTypeUpdated) : GetLocalized(Messages.ServiceTypeCreated)
             });
             setIsDialogOpen(false);
@@ -194,12 +194,12 @@ export const ServiceTypeConfiguration = () => {
         const response = await serviceTypeService.toggleStatusAsync(id);
         if (response.success) {
             AGShowMessage.success({
-                title: GetLocalized(Messages.StatusUpdated),
+                title: GetLocalized(Labels.StatusUpdated),
                 description: !currentStatus ? GetLocalized(Messages.ServiceActivated) : GetLocalized(Messages.ServiceDeactivated)
             });
             setServiceTypes(prev => prev.map(s => s.serviceTypeId === id ? { ...s, isActive: !currentStatus } : s));
         } else {
-            AGShowMessage.error({ title: GetLocalized(Errors.Error), description: response.error.message });
+            AGShowMessage.error({ title: GetLocalized(Labels.Error), description: response.error.message });
         }
     };
 
@@ -210,7 +210,7 @@ export const ServiceTypeConfiguration = () => {
             AGShowMessage.success({ title: GetLocalized(Messages.Deleted), description: GetLocalized(Messages.ServiceTypeRemoved) });
             setServiceTypes(prev => prev.filter(s => s.serviceTypeId !== serviceToDelete.id));
         } else {
-            AGShowMessage.error({ title: GetLocalized(Errors.Error), description: response.error.message });
+            AGShowMessage.error({ title: GetLocalized(Labels.Error), description: response.error.message });
         }
         setServiceToDelete(null);
     };

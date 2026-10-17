@@ -90,7 +90,9 @@ export class BaseService implements IBaseService {
     ): Promise<ServiceResult<TResponse>> {
 
         const url = `${API_BASE_URL}${endpoint}`;
-        const headers: HeadersInit = {
+        // FormData (upload) define o proprio Content-Type multipart com o boundary.
+        const isFormData = body instanceof FormData;
+        const headers: HeadersInit = isFormData ? {} : {
             "Content-Type": "application/json",
         };
 
@@ -104,7 +106,7 @@ export class BaseService implements IBaseService {
             method,
             headers,
             credentials: 'include',
-            body: body ? JSON.stringify(body) : undefined,
+            body: isFormData ? body : body ? JSON.stringify(body) : undefined,
         };
 
 

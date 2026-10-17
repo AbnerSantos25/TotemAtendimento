@@ -348,9 +348,6 @@
   <data name="ActivateImmediately" xml:space="preserve">
     <value>Ativar Imediatamente</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
   <data name="SaveQueue" xml:space="preserve">
     <value>Salvar Fila</value>
   </data>
@@ -368,9 +365,6 @@
   </data>
   <data name="Security" xml:space="preserve">
     <value>Segurança</value>
-  </data>
-  <data name="Password" xml:space="preserve">
-    <value>Senha</value>
   </data>
   <data name="ServiceLocationsTitle" xml:space="preserve">
     <value>Locais de Atendimento</value>
@@ -507,9 +501,6 @@
   <data name="RegisterNewUser" xml:space="preserve">
     <value>Cadastrar Novo Usuário</value>
   </data>
-  <data name="Email" xml:space="preserve">
-    <value>E-mail</value>
-  </data>
   <data name="AccessPassword" xml:space="preserve">
     <value>Senha de Acesso</value>
   </data>
@@ -643,7 +634,7 @@
     <value>Ex: Consultas Médicas</value>
   </data>
   <data name="BootstrapIconClass" xml:space="preserve">
-    <value>Ícone Bootstrap (Classe)</value>
+    <value>Ícone</value>
   </data>
   <data name="ExBootstrapIcon" xml:space="preserve">
     <value>Ex: bi bi-card-list</value>
@@ -672,11 +663,11 @@
   <data name="Settings" xml:space="preserve">
     <value>Configurações</value>
   </data>
-  <data name="ClinicData" xml:space="preserve">
-    <value>Dados da Clínica</value>
+  <data name="OrganizationData" xml:space="preserve">
+    <value>Dados da Organização</value>
   </data>
-  <data name="ClinicName" xml:space="preserve">
-    <value>Nome da Clínica</value>
+  <data name="OrganizationName" xml:space="preserve">
+    <value>Nome da Organização</value>
   </data>
   <data name="Cnpj" xml:space="preserve">
     <value>CNPJ</value>
@@ -701,5 +692,41 @@
   </data>
   <data name="Discard" xml:space="preserve">
     <value>Descartar</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="WorkstationIdentification" xml:space="preserve">
+    <value>Identificação do Guichê</value>
+  </data>
+  <data name="AvailableWorkstation" xml:space="preserve">
+    <value>Guichê Disponível</value>
+  </data>
+  <data name="SelectWorkstationPlaceholder" xml:space="preserve">
+    <value>Selecione um guichê...</value>
+  </data>
+  <data name="StartSession" xml:space="preserve">
+    <value>Iniciar Sessão</value>
+  </data>
+  <data name="RestrictedAccess" xml:space="preserve">
+    <value>Acesso Restrito</value>
+  </data>
+  <data name="RequestManagerAccess" xml:space="preserve">
+    <value>Solicite acesso ao seu gestor</value>
+  </data>
+  <data name="ChangeWorkstation" xml:space="preserve">
+    <value>Trocar Guichê</value>
+  </data>
+  <data name="AttendancePanel" xml:space="preserve">
+    <value>Painel de Atendimento</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Sala</value>
+  </data>
+  <data name="SelectQueuePlaceholder" xml:space="preserve">
+    <value>Selecione a fila</value>
+  </data>
+  <data name="ReloadPage" xml:space="preserve">
+    <value>Recarregar página</value>
   </data>
 </root>

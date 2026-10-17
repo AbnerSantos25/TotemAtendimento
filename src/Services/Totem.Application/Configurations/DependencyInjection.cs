@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Totem.Application.Services.OrganizationSettingsServices;
 using Totem.Application.Services.IdentityServices;
 using Totem.Application.Services.PasswordMatchingServices;
 using Totem.Application.Services.PasswordServices;
@@ -7,16 +8,19 @@ using Totem.Application.Services.RefreshTokenServices;
 using Totem.Application.Services.ServiceLocationServices;
 using Totem.Application.Services.ServiceTypeServices;
 using Totem.Common.Domain.Notification;
+using Totem.Domain.Aggregates.OrganizationSettingsAggregate;
 using Totem.Domain.Aggregates.PasswordAggregate;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.RefreshTokenAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 using Totem.Domain.Aggregates.ServiceTypeAggregate;
 using Totem.Domain.Aggregates.UserAggregate;
+using Totem.Infra.Data.Queries.OrganizationSettingsQueries;
 using Totem.Infra.Data.Queries.PasswordQueries;
 using Totem.Infra.Data.Queries.QueueQueries;
 using Totem.Infra.Data.Queries.ServiceLocationQueries;
 using Totem.Infra.Data.Queries.ServiceTypeQueries;
+using Totem.Infra.Data.Repositories.OrganizationSettingsRepository;
 using Totem.Infra.Data.Repositories.PasswordRepository;
 using Totem.Infra.Data.Repositories.QueueRepository;
 using Totem.Infra.Data.Repositories.RefreshTokenRepository;
@@ -40,6 +44,10 @@ namespace Totem.Application.Configurations
 			services.AddScoped<IServiceLocationRepository, ServiceLocationRepository>();
 			services.AddScoped<IServiceLocationQueries, ServiceLocationQueries>();
 			services.AddScoped<IServiceLocationService, ServiceLocationService>();
+
+			services.AddScoped<IOrganizationSettingsRepository, OrganizationSettingsRepository>();
+			services.AddScoped<IOrganizationSettingsQueries, OrganizationSettingsQueries>();
+			services.AddScoped<IOrganizationSettingsService, OrganizationSettingsService>();
 
 			services.AddScoped<IQueueRepository, QueueRepository>();
 			services.AddScoped<IQueueQueries, QueueQueries>();

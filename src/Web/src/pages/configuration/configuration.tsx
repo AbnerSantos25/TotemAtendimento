@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building2, Globe, ImageUp, Info, Loader2, RotateCcw, Save, ShieldPlus, Trash2 } from "lucide-react";
+import { Building2, Globe, ImageUp, Loader2, RotateCcw, Save, ShieldPlus, Trash2 } from "lucide-react";
 
 import { AGShowMessage } from "@/components/AGShowMessage";
 import { Button } from "@/components/ui/button";
@@ -9,18 +9,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useClinicSettings } from "@/hooks/useClinicSettings";
-import { formatCnpj, normalizeWebsite, onlyDigits } from "@/lib/formatters";
+import { useOrganizationSettings } from "@/hooks/useOrganizationSettings";
+import { formatCnpj, normalizeCnpj, normalizeWebsite } from "@/lib/formatters";
 import {
-    createClinicSettingsSchema,
+    createOrganizationSettingsSchema,
     LOGO_ACCEPTED_TYPES,
     LOGO_MAX_BYTES,
-    type ClinicSettingsFormValues,
-} from "@/lib/schemas/clinicSettingsSchema";
+    type OrganizationSettingsFormValues,
+} from "@/lib/schemas/organizationSettingsSchema";
 import { GetLocalized } from "@/shared/localization/i18n";
 import { Errors, Labels, Messages } from "@/shared/localization/keys";
 
-const EMPTY_VALUES: ClinicSettingsFormValues = { name: "", cnpj: "", websiteUrl: "", logoUrl: null };
+const EMPTY_VALUES: OrganizationSettingsFormValues = { name: "", cnpj: "", websiteUrl: "", logoUrl: null };
 
 const readFileAsDataUrl = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -31,12 +31,12 @@ const readFileAsDataUrl = (file: File) =>
     });
 
 export function Configuration() {
-    const { settings, loading, update } = useClinicSettings();
+    const { settings, loading, update } = useOrganizationSettings();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [logoError, setLogoError] = useState<string | null>(null);
 
-    const schema = useMemo(() => createClinicSettingsSchema(), []);
-    const form = useForm<ClinicSettingsFormValues>({
+    const schema = useMemo(() => createOrganizationSettingsSchema(), []);
+    const form = useForm<OrganizationSettingsFormValues>({
         resolver: zodResolver(schema),
         defaultValues: EMPTY_VALUES,
     });
@@ -79,10 +79,10 @@ export function Configuration() {
         if (settings) form.reset({ ...settings, cnpj: formatCnpj(settings.cnpj) });
     };
 
-    const onSubmit = async (values: ClinicSettingsFormValues) => {
+    const onSubmit = async (values: OrganizationSettingsFormValues) => {
         const result = await update({
             name: values.name.trim(),
-            cnpj: onlyDigits(values.cnpj),
+            cnpj: normalizeCnpj(values.cnpj),
             websiteUrl: normalizeWebsite(values.websiteUrl),
             logoUrl: values.logoUrl,
         });
@@ -90,12 +90,12 @@ export function Configuration() {
         if (result.success) {
             AGShowMessage.success({
                 title: GetLocalized(Labels.Success),
-                description: GetLocalized(Messages.ClinicSettingsSaved),
+                description: GetLocalized(Messages.OrganizationSettingsSaved),
             });
         } else {
             AGShowMessage.error({
                 title: GetLocalized(Labels.Error),
-                description: GetLocalized(Errors.FailedToSaveClinicSettings),
+                description: GetLocalized(Errors.FailedToSaveOrganizationSettings),
             });
         }
     };
@@ -114,11 +114,7 @@ export function Configuration() {
 
     return (
         <div className="container mx-auto py-10 max-w-6xl">
-            <h1 className="text-3xl font-bold mb-2">{GetLocalized(Labels.Settings)}</h1>
-            <div className="mb-8 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
-                <Info className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>{GetLocalized(Messages.ClinicSettingsLocalStorageNotice)}</span>
-            </div>
+            <h1 className="text-3xl font-bold mb-8">{GetLocalized(Labels.Settings)}</h1>
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 lg:grid-cols-3">
@@ -127,9 +123,9 @@ export function Configuration() {
                         <CardHeader>
                             <CardTitle className="text-xl flex items-center gap-2">
                                 <Building2 className="h-5 w-5 text-primary" />
-                                {GetLocalized(Labels.ClinicData)}
+                                {GetLocalized(Labels.OrganizationData)}
                             </CardTitle>
-                            <CardDescription>{GetLocalized(Messages.ClinicSettingsDescription)}</CardDescription>
+                            <CardDescription>{GetLocalized(Messages.OrganizationSettingsDescription)}</CardDescription>
                         </CardHeader>
 
                         <CardContent className="space-y-6">
@@ -143,7 +139,8 @@ export function Configuration() {
                                         <div className="flex items-center gap-5">
                                             <button
                                                 type="button"
-                                                id="clinic-logo-dropzone"
+                                                id="organization-logo-dropzone"
+                                                aria-label={field.value ? GetLocalized(Labels.ChangeLogo) : GetLocalized(Labels.UploadLogo)}
                                                 onClick={() => fileInputRef.current?.click()}
                                                 className="group relative flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/30 transition-colors hover:border-primary hover:bg-primary/5"
                                             >
@@ -156,12 +153,12 @@ export function Configuration() {
 
                                             <div className="space-y-2">
                                                 <div className="flex gap-2">
-                                                    <Button type="button" id="clinic-logo-upload" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                                                    <Button type="button" id="organization-logo-upload" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                                                         <ImageUp className="mr-2 h-4 w-4" />
                                                         {field.value ? GetLocalized(Labels.ChangeLogo) : GetLocalized(Labels.UploadLogo)}
                                                     </Button>
                                                     {field.value && (
-                                                        <Button type="button" id="clinic-logo-remove" variant="ghost" size="sm" onClick={handleRemoveLogo} className="text-destructive hover:text-destructive">
+                                                        <Button type="button" id="organization-logo-remove" variant="ghost" size="sm" onClick={handleRemoveLogo} className="text-destructive hover:text-destructive">
                                                             <Trash2 className="mr-2 h-4 w-4" />
                                                             {GetLocalized(Labels.RemoveLogo)}
                                                         </Button>
@@ -189,9 +186,9 @@ export function Configuration() {
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{GetLocalized(Labels.ClinicName)}</FormLabel>
+                                        <FormLabel>{GetLocalized(Labels.OrganizationName)}</FormLabel>
                                         <FormControl>
-                                            <Input id="clinic-name" placeholder="Clínica São Bento" {...field} />
+                                            <Input id="organization-name" placeholder="Minha Organização" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -208,8 +205,7 @@ export function Configuration() {
                                             <FormLabel>{GetLocalized(Labels.Cnpj)}</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    id="clinic-cnpj"
-                                                    inputMode="numeric"
+                                                    id="organization-cnpj"
                                                     placeholder="00.000.000/0000-00"
                                                     {...field}
                                                     onChange={(e) => field.onChange(formatCnpj(e.target.value))}
@@ -234,8 +230,8 @@ export function Configuration() {
                                                         https://
                                                     </span>
                                                     <Input
-                                                        id="clinic-website"
-                                                        placeholder="minhaclinica.com.br"
+                                                        id="organization-website"
+                                                        placeholder="www.exemplo.com.br"
                                                         className="rounded-l-none focus-visible:ring-0"
                                                         {...field}
                                                         onBlur={(e) => {
@@ -252,11 +248,11 @@ export function Configuration() {
                             </div>
 
                             <div className="flex justify-end gap-2 border-t pt-6">
-                                <Button type="button" id="clinic-discard" variant="outline" onClick={handleDiscard} disabled={!isDirty || isSubmitting}>
+                                <Button type="button" id="organization-discard" variant="outline" onClick={handleDiscard} disabled={!isDirty || isSubmitting}>
                                     <RotateCcw className="mr-2 h-4 w-4" />
                                     {GetLocalized(Labels.Discard)}
                                 </Button>
-                                <Button type="submit" id="clinic-save" disabled={!isDirty || isSubmitting}>
+                                <Button type="submit" id="organization-save" disabled={!isDirty || isSubmitting}>
                                     {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                                     {isSubmitting ? GetLocalized(Labels.Saving) : GetLocalized(Labels.SaveChanges)}
                                 </Button>

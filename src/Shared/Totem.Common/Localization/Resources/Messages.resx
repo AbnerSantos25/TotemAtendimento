@@ -184,10 +184,10 @@
     <value>Fila criada com sucesso.</value>
   </data>
   <data name="QueueStatusUpdatedActive" xml:space="preserve">
-    <value>A fila {name} foi ativada.</value>
+    <value>A fila {{name}} foi ativada.</value>
   </data>
   <data name="QueueStatusUpdatedInactive" xml:space="preserve">
-    <value>A fila {name} foi desativada.</value>
+    <value>A fila {{name}} foi desativada.</value>
   </data>
   <data name="QueueRemovedSuccess" xml:space="preserve">
     <value>A fila foi removida com sucesso.</value>
@@ -205,7 +205,7 @@
     <value>Configure os detalhes para a nova fila de atendimento.</value>
   </data>
   <data name="ConfirmQueueDeletion" xml:space="preserve">
-    <value>Tem certeza que deseja remover a fila "{name}"? Esta ação não pode ser desfeita.</value>
+    <value>Tem certeza que deseja remover a fila "{{name}}"? Esta ação não pode ser desfeita.</value>
   </data>
   <data name="ManageSecurityCredentials" xml:space="preserve">
     <value>Gerencie suas credenciais de acesso e segurança da conta.</value>
@@ -369,19 +369,34 @@
   <data name="ConfirmDeleteService" xml:space="preserve">
     <value>Tem certeza que deseja excluir o serviço</value>
   </data>
-  <data name="ClinicSettingsDescription" xml:space="preserve">
-    <value>Informações exibidas no painel de senhas e em documentos da clínica.</value>
+  <data name="OrganizationSettingsDescription" xml:space="preserve">
+    <value>Informações exibidas no painel de senhas e em documentos da organização.</value>
   </data>
-  <data name="ClinicSettingsSaved" xml:space="preserve">
-    <value>Dados da clínica atualizados com sucesso.</value>
-  </data>
-  <data name="ClinicSettingsLocalStorageNotice" xml:space="preserve">
-    <value>Os dados estão sendo armazenados localmente neste navegador até a integração com o servidor.</value>
+  <data name="OrganizationSettingsSaved" xml:space="preserve">
+    <value>Dados da organização atualizados com sucesso.</value>
   </data>
   <data name="LogoUploadHint" xml:space="preserve">
     <value>PNG, JPG, SVG ou WEBP até 1 MB.</value>
   </data>
   <data name="PanelPreviewDescription" xml:space="preserve">
     <value>Como as informações aparecerão no painel de senhas.</value>
+  </data>
+  <data name="NoServiceFound" xml:space="preserve">
+    <value>Nenhum serviço encontrado</value>
+  </data>
+  <data name="LoadingWorkstationInfo" xml:space="preserve">
+    <value>Carregando informações do guichê...</value>
+  </data>
+  <data name="SelectWorkstationPrompt" xml:space="preserve">
+    <value>Selecione onde você irá realizar os atendimentos hoje.</value>
+  </data>
+  <data name="NoWorkstationFound" xml:space="preserve">
+    <value>Nenhum guichê encontrado</value>
+  </data>
+  <data name="NoQueuePermission" xml:space="preserve">
+    <value>Você não possui permissão para acessar nenhuma fila de atendimento.</value>
+  </data>
+  <data name="AutoReloadNotice" xml:space="preserve">
+    <value>A tela será recarregada automaticamente em instantes.</value>
   </data>
 </root>
