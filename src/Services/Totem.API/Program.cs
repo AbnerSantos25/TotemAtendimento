@@ -22,61 +22,70 @@ try
     builder.Host.UseSerilog();
 
     builder.Services.AddApiConfiguration(builder.Configuration, builder.Environment);
-builder.Services.AddOpenApi();
+    builder.Services.AddOpenApi();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContexts(builder.Configuration);
-builder.Services.AddIdentityConfiguration(builder.Configuration, builder.Environment);
+    builder.Services.AddDbContexts(builder.Configuration);
+    builder.Services.AddIdentityConfiguration(builder.Configuration, builder.Environment);
 
-builder.Services.TotemRegisterDependency();
-builder.Services.AddSwaggerConfiguration(builder.Configuration);
-builder.Services.AddEventsConfiguration();
+    builder.Services.TotemRegisterDependency();
+    builder.Services.AddSwaggerConfiguration(builder.Configuration);
+    builder.Services.AddEventsConfiguration();
 
-builder.Services.AddSignalR();
-// Antiforgery e Cors configurados em ApiConfiguration
+    builder.Services.AddSignalR();
+    // Antiforgery e Cors configurados em ApiConfiguration
 
-builder.Services.AddForwardedHeadersConfiguration(builder.Configuration);
-builder.Services.AddRateLimitingConfiguration();
+    builder.Services.AddForwardedHeadersConfiguration(builder.Configuration);
+    builder.Services.AddRateLimitingConfiguration();
 
-var app = builder.Build();
+    var app = builder.Build();
 
-// Precisa vir antes de qualquer middleware que dependa do IP de origem -- entre
-// eles o rate limiter, que particiona por IP.
-app.UseForwardedHeaders();
+    // Precisa vir antes de qualquer middleware que dependa do IP de origem -- entre
+    // eles o rate limiter, que particiona por IP.
+    app.UseForwardedHeaders();
 
-await app.Services.InitializeDatabaseAsync();
+    await app.Services.InitializeDatabaseAsync();
 
-app.UseMiddleware<Totem.API.Middleware.GlobalExceptionMiddleware>();
+    app.UseMiddleware<Totem.API.Middleware.GlobalExceptionMiddleware>();
 
-app.MapHub<PasswordHub>("/api/passwordHub");
+    app.MapHub<PasswordHub>("/api/passwordHub");
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    if (app.Environment.IsDevelopment())
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
-    });
-}
+        app.MapOpenApi();
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
+        });
+    }
 
-app.UseCors();
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection(); // Em dev, o certificado auto-assinado impede conexões de dispositivos mobile
-}
-app.UseRateLimiter();
+    app.UseCors();
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseHttpsRedirection(); // Em dev, o certificado auto-assinado impede conexões de dispositivos mobile
+    }
+    app.UseRateLimiter();
 
-app.UseAuthentication();
-app.UseAuthorization();
+    app.UseAuthentication();
+    app.UseAuthorization();
 
-app.UseCsrfMiddleware();
+    app.UseCsrfMiddleware();
 
     app.MapControllers();
 
-app.Run();
+    app.Run();
+}
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    Log.Fatal(ex, "A API foi encerrada de forma inesperada.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
 
 // Program e implicitamente internal em top-level statements. Os projetos de teste
 // usam WebApplicationFactory<Program>, que exige o tipo acessivel.
