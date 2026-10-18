@@ -69,7 +69,7 @@ export const ChangePasswordDialog = () => {
       } else {
         toast.error(result.error?.message || "Erro ao alterar senha.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Ocorreu um erro inesperado.");
     } finally {
       setIsSubmitting(false);

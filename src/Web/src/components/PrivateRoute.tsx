@@ -13,17 +13,18 @@ export function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
     const hasShownMessage = useRef(false);
 
     const hasPermission = !allowedRoles || allowedRoles.length === 0 ? true :
-        (user?.roles && user.roles.some((userRole: any) => {
-            let roleNumeric = userRole;
+        // O backend envia os perfis como nome ("Admin") ou número em texto, apesar do tipo Role[]
+        (user?.roles && user.roles.some((userRole: Role | string) => {
+            let roleNumeric: Role | string = userRole;
             if (typeof userRole === "string") {
                 if (Role && userRole in Role) {
                     roleNumeric = Role[userRole as keyof typeof Role];
                 } else if (!isNaN(Number(userRole))) {
-                    roleNumeric = Number(userRole);
+                    roleNumeric = Number(userRole) as Role;
                 }
             }
 
-            const isAllowed = allowedRoles.includes(roleNumeric);
+            const isAllowed = allowedRoles.includes(roleNumeric as Role);
             return isAllowed;
         }));
 

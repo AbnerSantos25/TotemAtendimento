@@ -12,13 +12,6 @@ import { queueService } from "@/services/QueueService";
 import type { PasswordView } from "@/models/PasswordModels";
 import type { ServiceLocationView } from "@/models/ServiceLocationModels";
 import type { QueueView } from "@/models/QueueModels";
-import type {
-  PasswordCalledPayload,
-  PasswordServedPayload,
-  NewPasswordAssignedPayload,
-  PasswordCreatedPayload,
-  QueuePasswordUpdatedPayload
-} from "@/services/interfaces/ISignalRService";
 import { GetLocalized } from "@/shared/localization/i18n";
 import { Labels, Messages } from "@/shared/localization/keys";
 
@@ -69,17 +62,10 @@ export function MeuGuiche() {
         }
       }
 
-      const promises: Promise<any>[] = [
-        serviceLocationService.getListAsync()
-      ];
-
-      if (currentQueueId) {
-        promises.push(passwordService.getPasswordsAsync(currentQueueId));
-      }
-
-      const results = await Promise.all(promises);
-      const workResult = results[0];
-      const passResult = currentQueueId ? results[1] : null;
+      const [workResult, passResult] = await Promise.all([
+        serviceLocationService.getListAsync(),
+        currentQueueId ? passwordService.getPasswordsAsync(currentQueueId) : null,
+      ]);
 
       if (passResult && passResult.success) {
         setPasswords(passResult.data);
@@ -90,7 +76,7 @@ export function MeuGuiche() {
       if (workResult.success) {
         setAvailableWorkstations(workResult.data);
         if (selectedWorkstationId) {
-          const found = workResult.data.find((w: any) => w.id === selectedWorkstationId);
+          const found = workResult.data.find((w) => w.id === selectedWorkstationId);
           if (found) setWorkstation(found);
         }
       }
@@ -106,31 +92,31 @@ export function MeuGuiche() {
   }, [fetchData]);
 
   // ---------------------------------------------------------------------------
-  // SignalR event handlers
+  // SignalR event handlers (o payload não é usado: cada evento recarrega a lista inteira)
   // ---------------------------------------------------------------------------
-  const handlePasswordCalled = useCallback((_data: PasswordCalledPayload) => {
+  const handlePasswordCalled = useCallback(() => {
     // Refresh full list to ensure consistency
     fetchData();
   }, [fetchData]);
 
-  const handlePasswordServed = useCallback((_data: PasswordServedPayload) => {
+  const handlePasswordServed = useCallback(() => {
     fetchData();
   }, [fetchData]);
 
-  const handleNewPasswordAssigned = useCallback((_data: NewPasswordAssignedPayload) => {
+  const handleNewPasswordAssigned = useCallback(() => {
     fetchData();
   }, [fetchData]);
 
-  const handlePasswordCreated = useCallback((_data: PasswordCreatedPayload) => {
+  const handlePasswordCreated = useCallback(() => {
     fetchData();
   }, [fetchData]);
 
-  const handleQueuePasswordUpdated = useCallback((_data: QueuePasswordUpdatedPayload) => {
+  const handleQueuePasswordUpdated = useCallback(() => {
     // Refresh the full password list so "Em Outros Guiches" updates in real-time
     fetchData();
   }, [fetchData]);
 
-  const handlePasswordRecalled = useCallback((_data: PasswordCalledPayload) => {
+  const handlePasswordRecalled = useCallback(() => {
     //TODO: (Abner) https://github.com/AbnerSantos25/TotemAtendimento/issues/130
     /* No frontend state needs to change when recalling since the current password remains the same.
       The SignalR event just acts as a hook if we wanted to trigger an audio alert again in the future.*/

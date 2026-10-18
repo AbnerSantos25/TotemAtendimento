@@ -9,6 +9,11 @@ type RequestOptions = {
     requiresAuth?: boolean;
 };
 
+// Compartilhado por todos os serviços (cada um é uma instância própria de BaseService):
+// requisições que recebem 401 ao mesmo tempo esperam o mesmo refresh, porque o backend
+// revoga o refresh token a cada uso (rotação) e um segundo refresh derrubaria a sessão.
+let refreshInFlight: Promise<boolean> | null = null;
+
 export class BaseService implements IBaseService {
 
     //#region Métodos Privados (Lógica interna)
@@ -45,10 +50,10 @@ export class BaseService implements IBaseService {
                 } else {
                     friendlyMessage = errorBodyText.length > 200 ? "Ocorreu um erro ao processar a requisição." : errorBodyText;
                 }
-            } catch (jsonError) {
+            } catch {
                 friendlyMessage = errorBodyText.length > 200 ? "Falha na comunicação com o servidor." : errorBodyText;
             }
-        } catch (e) {
+        } catch {
             errorBodyText = "Não foi possível ler o corpo do erro.";
             friendlyMessage = "Não foi possível ler o corpo do erro.";
         }
@@ -61,7 +66,12 @@ export class BaseService implements IBaseService {
         };
     }
 
-    private async tryRefreshTokenAsync(): Promise<boolean> {
+    private tryRefreshTokenAsync(): Promise<boolean> {
+        refreshInFlight ??= this.refreshTokenAsync().finally(() => { refreshInFlight = null; });
+        return refreshInFlight;
+    }
+
+    private async refreshTokenAsync(): Promise<boolean> {
         try {
             const response = await fetch(`${API_BASE_URL}/totem/RefreshToken/refresh`, {
                 method: 'POST',
@@ -85,21 +95,21 @@ export class BaseService implements IBaseService {
     private async _request<TResponse>(
         method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
         endpoint: string,
-        body: any = null,
+        body: unknown = null,
         options: RequestOptions = { requiresAuth: true }
     ): Promise<ServiceResult<TResponse>> {
 
         const url = `${API_BASE_URL}${endpoint}`;
         // FormData (upload) define o proprio Content-Type multipart com o boundary.
         const isFormData = body instanceof FormData;
-        const headers: HeadersInit = isFormData ? {} : {
+        const headers: Record<string, string> = isFormData ? {} : {
             "Content-Type": "application/json",
         };
 
         // Anti-CSRF: Adiciona o token XSRF no header se o cookie existir e não for método GET
         const xsrfToken = Cookies.get('XSRF-TOKEN');
         if (xsrfToken && method !== 'GET') {
-            (headers as any)["X-XSRF-TOKEN"] = xsrfToken;
+            headers["X-XSRF-TOKEN"] = xsrfToken;
         }
 
         const requestInit: RequestInit = {
@@ -166,7 +176,7 @@ export class BaseService implements IBaseService {
         return this._request<TResponse>('GET', endpoint, null, { requiresAuth });
     }
 
-    public async PostAsync<TResponse, TRequest>(endpoint: string, body: TRequest, requiresAuth: boolean = false): Promise<ServiceResult<TResponse>> {
+    public async PostAsync<TResponse, TRequest>(endpoint: string, body: TRequest, requiresAuth: boolean = true): Promise<ServiceResult<TResponse>> {
         return this._request<TResponse>('POST', endpoint, body, { requiresAuth });
     }
 

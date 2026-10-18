@@ -109,7 +109,7 @@ export function QueueConfiguration() {
                                 </button>
                             )}
                         </div>
-                        <Select value={filterStatus} onValueChange={(val: any) => setFilterStatus(val)}>
+                        <Select value={filterStatus} onValueChange={(val) => setFilterStatus(val as typeof filterStatus)}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder={GetLocalized(Labels.QueueStatus)} />
                             </SelectTrigger>

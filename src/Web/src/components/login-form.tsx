@@ -70,7 +70,7 @@ export function LoginForm({
           description: result.error?.message || GetLocalized(Errors.IncorrectUsernamePassword)
         });
       }
-    } catch (err) {
+    } catch {
       AGShowMessage.error({
         title: GetLocalized(Errors.ServerError),
         description: GetLocalized(Errors.UnexpectedConnectionError),
