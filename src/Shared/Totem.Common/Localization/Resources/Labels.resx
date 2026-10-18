@@ -729,4 +729,7 @@
   <data name="ReloadPage" xml:space="preserve">
     <value>Recarregar página</value>
   </data>
+  <data name="PageTitleSuffix" xml:space="preserve">
+    <value>Atendimento</value>
+  </data>
 </root>

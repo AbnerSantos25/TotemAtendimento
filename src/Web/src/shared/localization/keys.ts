@@ -293,6 +293,7 @@ export const Labels = {
   "Room": "labels:Room",
   "SelectQueuePlaceholder": "labels:SelectQueuePlaceholder",
   "ReloadPage": "labels:ReloadPage",
+  "PageTitleSuffix": "labels:PageTitleSuffix",
 } as const;
 
 export const Messages = {
@@ -390,5 +391,6 @@ export const Messages = {
   "NoWorkstationFound": "messages:NoWorkstationFound",
   "NoQueuePermission": "messages:NoQueuePermission",
   "AutoReloadNotice": "messages:AutoReloadNotice",
+  "PasswordCalledAnnouncement": "messages:PasswordCalledAnnouncement",
 } as const;
 

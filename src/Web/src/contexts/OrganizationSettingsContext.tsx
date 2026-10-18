@@ -4,6 +4,8 @@ import type { ServiceResult } from "@/models/baseServiceModels";
 import { organizationSettingsService } from "@/services/OrganizationSettingsService";
 import { useAuth } from "@/hooks/useAuth";
 import { OrganizationSettingsContext } from "./organizationSettingsContextDef";
+import { GetLocalized } from "@/shared/localization/i18n";
+import { Labels } from "@/shared/localization/keys";
 
 export function OrganizationSettingsProvider({ children }: { children: ReactNode }) {
     const [settings, setSettings] = useState<OrganizationSettingsView | null>(null);
@@ -43,6 +45,17 @@ export function OrganizationSettingsProvider({ children }: { children: ReactNode
             active = false;
         };
     }, [userId, applyResult]);
+
+    // Título da aba com o nome da organização; o cleanup volta ao título padrão do index.html
+    const organizationName = settings?.name;
+    useEffect(() => {
+        if (!organizationName) return;
+        const previous = document.title;
+        document.title = `${organizationName} · ${GetLocalized(Labels.PageTitleSuffix)}`;
+        return () => {
+            document.title = previous;
+        };
+    }, [organizationName]);
 
     const value = useMemo(() => ({ settings, loading, refresh, update }), [settings, loading, refresh, update]);
 

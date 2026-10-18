@@ -132,6 +132,14 @@ export function AttendanceDisplay() {
     return (
         <div className="fixed inset-0 bg-[#051A2C] text-white flex portrait:flex-col overflow-hidden font-sans">
 
+            {/* Anuncia a senha chamada para leitores de tela; só fala quando o conteúdo muda (chamada nova) */}
+            <div className="sr-only" aria-live="polite" aria-atomic="true">
+                {currentCall && GetLocalized(Messages.PasswordCalledAnnouncement, {
+                    code: currentCall.passwordCode,
+                    desk: currentCall.serviceLocationName.replace(/\D/g, '') || "1",
+                })}
+            </div>
+
             {/* Hover Menu Top Right */}
             <div className="absolute top-0 right-0 p-4 opacity-0 hover:opacity-100 transition-opacity duration-300 flex gap-2 z-50 items-center">
                 <div className={`px-3 py-1.5 rounded-md border text-sm font-medium flex items-center gap-2 ${isConnected

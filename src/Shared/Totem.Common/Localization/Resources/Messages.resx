@@ -399,4 +399,7 @@
   <data name="AutoReloadNotice" xml:space="preserve">
     <value>A tela será recarregada automaticamente em instantes.</value>
   </data>
+  <data name="PasswordCalledAnnouncement" xml:space="preserve">
+    <value>Senha {{code}}, guichê {{desk}}.</value>
+  </data>
 </root>
