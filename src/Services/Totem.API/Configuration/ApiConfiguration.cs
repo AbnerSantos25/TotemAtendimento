@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Antiforgery;
+using Totem.Common.API.Filters;
 using Totem.Common.Localization.Resources;
 
 namespace Totem.API.Configuration
@@ -7,7 +8,10 @@ namespace Totem.API.Configuration
     {
         public static IServiceCollection AddApiConfiguration(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            services.AddControllers();
+            // ModelState invalido (binding ou atributo) passa pelo ModelStateValidationFilter, que responde no formato
+            // padrao da API; a resposta automatica do [ApiController] (ValidationProblemDetails) fica desligada.
+            services.AddControllers(options => options.Filters.Add<ModelStateValidationFilter>())
+                .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
             services.AddAntiforgery(options =>
             {

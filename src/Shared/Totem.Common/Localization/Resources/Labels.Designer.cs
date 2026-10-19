@@ -77,5 +77,41 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("ServiceLocator", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Título.
+        /// </summary>
+        public static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ícone.
+        /// </summary>
+        public static string Icon {
+            get {
+                return ResourceManager.GetString("Icon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prefixo da Senha.
+        /// </summary>
+        public static string TicketPrefix {
+            get {
+                return ResourceManager.GetString("TicketPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fila Destino.
+        /// </summary>
+        public static string TargetQueueId {
+            get {
+                return ResourceManager.GetString("TargetQueueId", resourceCulture);
+            }
+        }
     }
 }

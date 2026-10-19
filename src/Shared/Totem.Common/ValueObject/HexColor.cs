@@ -12,6 +12,13 @@
 			Value = value;
 		}
 
+		/// <summary>
+		/// Regra para entrada nova (#RGB ou #RRGGBB). O construtor e mais tolerante de proposito:
+		/// o EF o usa ao ler o banco, e endurece-lo quebraria a leitura de cores ja gravadas.
+		/// </summary>
+		public static bool IsValid(string? value) =>
+			value is not null && System.Text.RegularExpressions.Regex.IsMatch(value, "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$");
+
 		public override string ToString()
 		{
 			return Value;

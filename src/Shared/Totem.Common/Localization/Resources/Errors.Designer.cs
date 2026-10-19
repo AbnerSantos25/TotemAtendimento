@@ -448,6 +448,15 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Cor inválida. Use o formato #RGB ou #RRGGBB..
+        /// </summary>
+        public static string InvalidColor {
+            get {
+                return ResourceManager.GetString("InvalidColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} é obrigatório..
         /// </summary>
         public static string RequiredField {
@@ -471,6 +480,24 @@ namespace Totem.Common.Localization.Resources {
         public static string LengthBetweenField {
             get {
                 return ResourceManager.GetString("LengthBetweenField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível criar o tipo de serviço..
+        /// </summary>
+        public static string UnableCreateServiceType {
+            get {
+                return ResourceManager.GetString("UnableCreateServiceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível atualizar o tipo de serviço..
+        /// </summary>
+        public static string UnableUpdateServiceType {
+            get {
+                return ResourceManager.GetString("UnableUpdateServiceType", resourceCulture);
             }
         }
     }

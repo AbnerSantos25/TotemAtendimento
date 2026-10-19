@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Totem.Common.Domain.Notification;
+﻿using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.ServiceTypeAggregate;
@@ -20,11 +19,11 @@ namespace Totem.Application.Services.ServiceTypeServices
 
 		public async Task<(Result result, Guid data)> CreateAsync(ServiceTypeRequest request)
 		{
-			ServiceTypeValidator validator = new();
-			var serviceType = new ServiceType(request.Title, request.Icon, request.Color, request.TicketPrefix, request.TargetQueueId);
+			var contract = ServiceTypeConstructorValidation.AllowedAdd(request.Title, request.Icon, request.Color, request.TicketPrefix, request.TargetQueueId);
+			if (!contract.IsValid)
+				return Unsuccessful<Guid>(contract);
 
-			if (!ExecuteValidation(validator, serviceType))
-				return Unsuccessful<Guid>();
+			var serviceType = new ServiceType(request.Title, request.Icon, request.Color, request.TicketPrefix, request.TargetQueueId);
 
 			_repository.Add(serviceType);
 
@@ -104,12 +103,10 @@ namespace Totem.Application.Services.ServiceTypeServices
 			if(serviceType is null)
 				return Unsuccessful(Errors.ServiceTypeNotFound);
 
+			if (!serviceType.Validations.AllowedUpdate(request.Title, request.Icon, request.Color, request.TicketPrefix, request.TargetQueueId))
+				return Unsuccessful(serviceType);
+
 			serviceType.Update(request.Title, request.Icon, request.Color, request.TargetQueueId, request.TicketPrefix);
-
-			ServiceTypeValidator validator = new();
-
-			if (!ExecuteValidation(validator, serviceType))
-				return Unsuccessful();
 
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase);

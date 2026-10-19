@@ -372,6 +372,9 @@
   <data name="FailedToSaveOrganizationSettings" xml:space="preserve">
     <value>Não foi possível salvar os dados da organização.</value>
   </data>
+  <data name="InvalidColor" xml:space="preserve">
+    <value>Cor inválida. Use o formato #RGB ou #RRGGBB.</value>
+  </data>
   <data name="RequiredField" xml:space="preserve">
     <value>{0} é obrigatório.</value>
   </data>
@@ -380,5 +383,11 @@
   </data>
   <data name="LengthBetweenField" xml:space="preserve">
     <value>{0} deve ter entre {1} e {2} caracteres.</value>
+  </data>
+  <data name="UnableCreateServiceType" xml:space="preserve">
+    <value>Não foi possível criar o tipo de serviço.</value>
+  </data>
+  <data name="UnableUpdateServiceType" xml:space="preserve">
+    <value>Não foi possível atualizar o tipo de serviço.</value>
   </data>
 </root>

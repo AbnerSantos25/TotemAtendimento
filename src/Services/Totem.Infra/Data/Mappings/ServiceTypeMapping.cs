@@ -13,13 +13,13 @@ namespace Totem.Infra.Data.Mappings
 
 			builder.Property(x => x.Title)
 					.IsRequired()
-					.HasMaxLength(100);
+					.HasMaxLength(ServiceType.TitleMaxLength);
 			builder.Property(x => x.Icon)
 					.IsRequired(false)
-					.HasMaxLength(50);
+					.HasMaxLength(ServiceType.IconMaxLength);
 			builder.Property(x => x.TicketPrefix)
 					.IsRequired(false)
-					.HasMaxLength(3);
+					.HasMaxLength(ServiceType.TicketPrefixMaxLength);
 
 			builder.HasIndex(s => s.TicketPrefix);
 			builder.HasIndex(x => x.Title);

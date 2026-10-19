@@ -86,9 +86,12 @@ export const Errors = {
   "InvalidLogoFormat": "errors:InvalidLogoFormat",
   "FailedToLoadOrganizationSettings": "errors:FailedToLoadOrganizationSettings",
   "FailedToSaveOrganizationSettings": "errors:FailedToSaveOrganizationSettings",
+  "InvalidColor": "errors:InvalidColor",
   "RequiredField": "errors:RequiredField",
   "MaxLengthField": "errors:MaxLengthField",
   "LengthBetweenField": "errors:LengthBetweenField",
+  "UnableCreateServiceType": "errors:UnableCreateServiceType",
+  "UnableUpdateServiceType": "errors:UnableUpdateServiceType",
 } as const;
 
 export const Labels = {
@@ -297,6 +300,9 @@ export const Labels = {
   "SelectQueuePlaceholder": "labels:SelectQueuePlaceholder",
   "ReloadPage": "labels:ReloadPage",
   "PageTitleSuffix": "labels:PageTitleSuffix",
+  "Title": "labels:Title",
+  "Icon": "labels:Icon",
+  "TargetQueueId": "labels:TargetQueueId",
 } as const;
 
 export const Messages = {

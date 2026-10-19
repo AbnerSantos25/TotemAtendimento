@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Localization\Resources\Labels.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -41,6 +37,15 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Errors.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- IdentityCustomMessages usa tipos do Identity; antes isso vinha de carona no FluentValidation.AspNetCore -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>
