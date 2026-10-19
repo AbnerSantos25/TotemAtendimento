@@ -10,8 +10,6 @@ namespace Totem.Application.Services.OrganizationSettingsServices
 {
 	public class OrganizationSettingsService : BaseService, IOrganizationSettingsService
 	{
-		public const int LogoMaxBytes = 1024 * 1024;
-
 		private readonly IOrganizationSettingsRepository _repository;
 		private readonly IOrganizationSettingsQueries _queries;
 
@@ -42,26 +40,21 @@ namespace Totem.Application.Services.OrganizationSettingsServices
 
 		public async Task<(Result result, OrganizationSettingsView data)> UpdateAsync(OrganizationSettingsRequest request, byte[]? logo)
 		{
-			if (!Cnpj.IsValid(request.Cnpj))
-				return Unsuccessful<OrganizationSettingsView>(Errors.InvalidCnpj);
-
-			string? logoContentType = null;
-
-			if (logo is not null)
-			{
-				if (logo.Length > LogoMaxBytes)
-					return Unsuccessful<OrganizationSettingsView>(Errors.LogoTooLarge);
-
-				logoContentType = DetectImageContentType(logo);
-
-				if (logoContentType is null)
-					return Unsuccessful<OrganizationSettingsView>(Errors.InvalidLogoFormat);
-			}
-
-			var cnpj = new Cnpj(request.Cnpj);
 			//TODO: (abner) Alterar para que toda string que entrar na api passar por uma sanitização, para evitar problemas de segurança e inconsistência de dados.
 			var name = request.Name.Trim();
 			var website = NormalizeWebsite(request.WebsiteUrl);
+			var logoContentType = logo is null ? null : DetectImageContentType(logo);
+
+			var contract = OrganizationSettingsConstructorValidation.AllowedSave(name, request.Cnpj, website);
+			if (logo is not null)
+				contract.Requires()
+					.IsValid(OrganizationSettingsConstructorValidation.AllowedSetLogo(logo, logoContentType))
+					.Apply();
+
+			if (!contract.IsValid)
+				return Unsuccessful<OrganizationSettingsView>(contract);
+
+			var cnpj = new Cnpj(request.Cnpj);
 
 			var settings = await _repository.GetAsync();
 			var isNew = settings is null;
@@ -75,9 +68,6 @@ namespace Totem.Application.Services.OrganizationSettingsServices
 				settings.SetLogo(logo, logoContentType!);
 			else if (request.RemoveLogo)
 				settings.RemoveLogo();
-
-			if (!ExecuteValidation(new OrganizationSettingsValidator(), settings))
-				return Unsuccessful<OrganizationSettingsView>();
 
 			if (isNew)
 				_repository.Add(settings);

@@ -83,7 +83,7 @@ public class OrganizationSettingsServiceTests
     [Fact(DisplayName = "UpdateAsync: logo acima de 1 MB é recusada")]
     public async Task UpdateAsync_WhenLogoTooLarge_ShouldFail()
     {
-        var logo = new byte[OrganizationSettingsService.LogoMaxBytes + 1];
+        var logo = new byte[OrganizationSettings.LogoMaxBytes + 1];
         Png.CopyTo(logo, 0);
 
         var (result, _) = await _sut.UpdateAsync(ValidRequest(), logo);

@@ -6,6 +6,7 @@ using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
 using Totem.Common.Enumerations;
 using Totem.Common.Localization.Resources;
+using Totem.Domain.Aggregates.OrganizationSettingsAggregate;
 using Totem.Domain.Models.OrganizationSettingsModels;
 
 namespace Totem.API.Controllers
@@ -43,7 +44,7 @@ namespace Totem.API.Controllers
             if (logo is not null)
             {
                 // Recusa antes de ler: o service tambem valida, mas assim nao carregamos o excesso na memoria.
-                if (logo.Length > OrganizationSettingsService.LogoMaxBytes)
+                if (logo.Length > OrganizationSettings.LogoMaxBytes)
                 {
                     NotifyError(Errors.LogoTooLarge);
                     return CustomResponse(ModelState);

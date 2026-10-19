@@ -9,7 +9,7 @@ namespace Totem.Infra.Data.Mappings
 	{
 		public void Configure(EntityTypeBuilder<OrganizationSettings> builder)
 		{
-			builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
+			builder.Property(x => x.Name).HasMaxLength(OrganizationSettings.NameMaxLength).IsRequired();
 
 			builder.Property(x => x.Cnpj)
 					.HasConversion(
@@ -19,7 +19,7 @@ namespace Totem.Infra.Data.Mappings
 					.HasColumnType("char(14)")
 					.IsRequired();
 
-			builder.Property(x => x.WebsiteUrl).HasMaxLength(255).HasColumnType("varchar(255)").IsRequired();
+			builder.Property(x => x.WebsiteUrl).HasMaxLength(OrganizationSettings.WebsiteMaxLength).HasColumnType("varchar(255)").IsRequired();
 			builder.Property(x => x.Logo).HasColumnType("varbinary(max)").IsRequired(false);
 			builder.Property(x => x.LogoContentType).HasMaxLength(50).HasColumnType("varchar(50)").IsRequired(false);
 		}

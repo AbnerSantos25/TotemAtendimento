@@ -581,5 +581,14 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("UnableServePassword", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível salvar os dados da organização..
+        /// </summary>
+        public static string FailedToSaveOrganizationSettings {
+            get {
+                return ResourceManager.GetString("FailedToSaveOrganizationSettings", resourceCulture);
+            }
+        }
     }
 }

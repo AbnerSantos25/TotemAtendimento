@@ -140,5 +140,14 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("Queue", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Site.
+        /// </summary>
+        public static string Website {
+            get {
+                return ResourceManager.GetString("Website", resourceCulture);
+            }
+        }
     }
 }
