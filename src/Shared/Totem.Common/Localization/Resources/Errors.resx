@@ -402,4 +402,19 @@
   <data name="UnableUpdateServiceLocation" xml:space="preserve">
     <value>Não foi possível atualizar o local de atendimento.</value>
   </data>
+  <data name="PasswordAlreadyServed" xml:space="preserve">
+    <value>Esta senha já foi atendida.</value>
+  </data>
+  <data name="UnableCreatePassword" xml:space="preserve">
+    <value>Não foi possível gerar a senha.</value>
+  </data>
+  <data name="UnableTransferPassword" xml:space="preserve">
+    <value>Não foi possível transferir a senha.</value>
+  </data>
+  <data name="UnableCallPassword" xml:space="preserve">
+    <value>Não foi possível chamar a senha.</value>
+  </data>
+  <data name="UnableServePassword" xml:space="preserve">
+    <value>Não foi possível finalizar o atendimento da senha.</value>
+  </data>
 </root>

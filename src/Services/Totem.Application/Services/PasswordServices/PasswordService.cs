@@ -30,16 +30,18 @@ namespace Totem.Application.Services.PasswordServices
 
 		public async Task<(Result result, Guid data)> AddPasswordAsync(PasswordRequest request)
 		{
+			var contract = PasswordConstructorValidation.AllowedAdd(request.QueueId);
+			if (!contract.IsValid)
+				return Unsuccessful<Guid>(contract);
+
 			var password = new Password(request.QueueId, request.Preferential);
-			if (!ExecuteValidation(new PasswordValidations(), password))
-				return Unsuccessful<Guid>();
 
 			password.IncrementCode(await _passwordRepository.GetNextPasswordCodeAsync());
 
 			_passwordRepository.Add(password);
 
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
-				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase.ToString());
+				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase);
 
 			await _mediator.Publish(new PasswordCreatedEvent(
 				password.Id,
@@ -55,12 +57,10 @@ namespace Totem.Application.Services.PasswordServices
 		{
 			var password = await _passwordRepository.GetByIdAsync(passwordId);
 			if (password == null)
-				return Unsuccessful(Errors.PasswordNotFound.ToString());
+				return Unsuccessful(Errors.PasswordNotFound);
 
-			if (!password.CanBeReassigned)
-			{
-				return Unsuccessful(Errors.PasswordCannotBeTransfered);
-			}
+			if (!password.Validations.AllowedTransfer(passwordTransfer.QueueId))
+				return Unsuccessful(password);
 
 			var oldQueueId = password.QueueId;
 			var oldQueueName = password.Queue.Name;
@@ -70,7 +70,7 @@ namespace Totem.Application.Services.PasswordServices
 			_passwordRepository.Update(password);
 
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
-				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
+				return Unsuccessful(Errors.ErrorSavingDatabase);
 
 			await _mediator.Publish(new PasswordCreatedEvent(
 				passwordId,
@@ -97,17 +97,15 @@ namespace Totem.Application.Services.PasswordServices
 			var oldServiceLocation = nextPassword.ServiceLocationId;
 			var oldDescription = nextPassword.ServiceLocation?.Name ?? Labels.NoServiceLocation;
 
-			if (!nextPassword.CanBeReassigned)
-			{
-				return Unsuccessful<IPasswordView>(Errors.PasswordCannotBeTransfered);
-			}
+			if (!nextPassword.Validations.AllowedAssignToServiceLocation(serviceLocationId))
+				return Unsuccessful<IPasswordView>(nextPassword);
 
 			nextPassword.AssignToServiceLocation(serviceLocationId);
 
 			_passwordRepository.Update(nextPassword);
 
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
-				return Unsuccessful<IPasswordView>(Errors.ErrorSavingDatabase.ToString());
+				return Unsuccessful<IPasswordView>(Errors.ErrorSavingDatabase);
 
 			await _mediator.Publish(new PasswordCalledEvent(
 				nextPassword.Id,
@@ -126,7 +124,7 @@ namespace Totem.Application.Services.PasswordServices
 		{
 			var password = await _passwordRepository.GetByIdAsync(id);
 			if (password == null)
-				return Unsuccessful<PasswordView>(Errors.PasswordNotFound.ToString());
+				return Unsuccessful<PasswordView>(Errors.PasswordNotFound);
 
 			return Successful(password);
 		}
@@ -141,12 +139,12 @@ namespace Totem.Application.Services.PasswordServices
 		{
 			var password = await _passwordRepository.GetByIdAsync(id);
 			if (password == null)
-				return Unsuccessful(Errors.PasswordNotFound.ToString());
+				return Unsuccessful(Errors.PasswordNotFound);
 
 			_passwordRepository.Delete(password);
 
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
-				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
+				return Unsuccessful(Errors.ErrorSavingDatabase);
 
 			return Successful();
 		}
@@ -155,10 +153,10 @@ namespace Totem.Application.Services.PasswordServices
 		{
 			var password = await _passwordRepository.GetByIdAsync(passwordId);
 			if (password == null)
-				return Unsuccessful(Errors.PasswordNotFound.ToString());
+				return Unsuccessful(Errors.PasswordNotFound);
 
-			if (password.ServiceLocation == null)
-				return Unsuccessful(Errors.PasswordCannotBeServed.ToString());
+			if (!password.Validations.AllowedMarkAsServed())
+				return Unsuccessful(password);
 
 			var serviceLocationId = password.ServiceLocationId;
 			var code = password.Code;
@@ -168,7 +166,7 @@ namespace Totem.Application.Services.PasswordServices
 			_passwordRepository.Update(password);
 
 			if (!await _passwordRepository.UnitOfWork.CommitAsync())
-				return Unsuccessful(Errors.ErrorSavingDatabase.ToString());
+				return Unsuccessful(Errors.ErrorSavingDatabase);
 
 			await _mediator.Publish(new PasswordServedEvent(
 				passwordId,

@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Totem.Common.Domain;
 using Totem.Common.Domain.Entity;
+using Totem.Common.Domain.Exceptions;
+using Totem.Common.Localization.Resources;
 using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.ServiceLocationAggregate;
 
@@ -22,11 +25,18 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 		public Guid QueueId { get; private set; }
 		public Queue Queue { get; private set; }
 
+		private PasswordValidation? _validations;
+		[NotMapped, JsonIgnore]
+		public PasswordValidation Validations => _validations ??= new(this);
+
 
 		protected Password() { }
 
 		public Password(Guid queueId, bool preferential)
 		{
+			if (!Validations.AllowedAdd(queueId))
+				throw new DomainException(Errors.UnableCreatePassword);
+
 			QueueId = queueId;
 			Preferential = preferential;
 			CreatedAt = DateTime.UtcNow;
@@ -35,7 +45,9 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 
 		public void AssignToServiceLocation(Guid serviceLocationId)
 		{
-			EnsureNotServed();
+			if (!IsValid || !Validations.AllowedAssignToServiceLocation(serviceLocationId))
+				throw new DomainException(Errors.UnableCallPassword);
+
 			this.ServiceLocationId = serviceLocationId;
 			this.AssignedAt = DateTime.UtcNow;
 
@@ -43,21 +55,20 @@ namespace Totem.Domain.Aggregates.PasswordAggregate
 
 		public void AssignToQueue(Guid queueId)
 		{
-			EnsureNotServed();
+			if (!IsValid || !Validations.AllowedTransfer(queueId))
+				throw new DomainException(Errors.UnableTransferPassword);
+
 			QueueId = queueId;
 			ServiceLocationId = null;
 			AssignedAt = DateTime.UtcNow;
 
 		}
-		private void EnsureNotServed()
-		{
-			if (!CanBeReassigned)
-				throw new InvalidOperationException("Não é possível transferir uma senha já atendida.");
-		}
 
 		public void MarkAsServed()
 		{
-			EnsureNotServed();
+			if (!IsValid || !Validations.AllowedMarkAsServed())
+				throw new DomainException(Errors.UnableServePassword);
+
 			Served = true;
 		}
 

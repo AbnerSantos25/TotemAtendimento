@@ -131,5 +131,14 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("LocationNameLabel", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fila.
+        /// </summary>
+        public static string Queue {
+            get {
+                return ResourceManager.GetString("Queue", resourceCulture);
+            }
+        }
     }
 }

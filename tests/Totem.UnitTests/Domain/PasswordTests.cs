@@ -1,4 +1,5 @@
-﻿using Totem.Domain.Aggregates.PasswordAggregate;
+﻿using Totem.Common.Domain.Exceptions;
+using Totem.Domain.Aggregates.PasswordAggregate;
 
 namespace Totem.UnitTests.Domain
 {
@@ -10,10 +11,11 @@ namespace Totem.UnitTests.Domain
 			//Arrange
 			var password = new Password(Guid.NewGuid(), preferential: true);
 			var oldQueueId = password.QueueId;
+			password.AssignToServiceLocation(Guid.NewGuid());
 			password.MarkAsServed();
 
 			//Act + Assert
-			Assert.Throws<InvalidOperationException>(() => password.AssignToQueue(Guid.NewGuid()));
+			Assert.Throws<DomainException>(() => password.AssignToQueue(Guid.NewGuid()));
 			Assert.Equal(oldQueueId, password.QueueId);
 		}
 	}

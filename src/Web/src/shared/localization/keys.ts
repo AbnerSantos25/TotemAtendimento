@@ -96,6 +96,11 @@ export const Errors = {
   "UnableUpdateQueue": "errors:UnableUpdateQueue",
   "UnableCreateServiceLocation": "errors:UnableCreateServiceLocation",
   "UnableUpdateServiceLocation": "errors:UnableUpdateServiceLocation",
+  "PasswordAlreadyServed": "errors:PasswordAlreadyServed",
+  "UnableCreatePassword": "errors:UnableCreatePassword",
+  "UnableTransferPassword": "errors:UnableTransferPassword",
+  "UnableCallPassword": "errors:UnableCallPassword",
+  "UnableServePassword": "errors:UnableServePassword",
 } as const;
 
 export const Labels = {

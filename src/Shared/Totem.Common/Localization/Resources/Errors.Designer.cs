@@ -536,5 +536,50 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("UnableUpdateServiceLocation", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Esta senha já foi atendida..
+        /// </summary>
+        public static string PasswordAlreadyServed {
+            get {
+                return ResourceManager.GetString("PasswordAlreadyServed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível gerar a senha..
+        /// </summary>
+        public static string UnableCreatePassword {
+            get {
+                return ResourceManager.GetString("UnableCreatePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível transferir a senha..
+        /// </summary>
+        public static string UnableTransferPassword {
+            get {
+                return ResourceManager.GetString("UnableTransferPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível chamar a senha..
+        /// </summary>
+        public static string UnableCallPassword {
+            get {
+                return ResourceManager.GetString("UnableCallPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível finalizar o atendimento da senha..
+        /// </summary>
+        public static string UnableServePassword {
+            get {
+                return ResourceManager.GetString("UnableServePassword", resourceCulture);
+            }
+        }
     }
 }

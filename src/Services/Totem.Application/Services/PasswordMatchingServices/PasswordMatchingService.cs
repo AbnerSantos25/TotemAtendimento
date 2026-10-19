@@ -53,7 +53,7 @@ namespace Totem.Application.Services.PasswordMatchingServices
 				return;
 
 			var password = await _passwordRepository.GetByIdAsync(notification.PasswordId);
-			if (password is null || !password.CanBeReassigned)
+			if (password is null || !password.Validations.AllowedAssignToServiceLocation(serviceLocationId))
 				return;
 
 			var serviceLocation = await _serviceLocationRepository.GetByIdAsync(serviceLocationId);
