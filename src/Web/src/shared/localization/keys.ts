@@ -94,6 +94,8 @@ export const Errors = {
   "UnableUpdateServiceType": "errors:UnableUpdateServiceType",
   "UnableCreateQueue": "errors:UnableCreateQueue",
   "UnableUpdateQueue": "errors:UnableUpdateQueue",
+  "UnableCreateServiceLocation": "errors:UnableCreateServiceLocation",
+  "UnableUpdateServiceLocation": "errors:UnableUpdateServiceLocation",
 } as const;
 
 export const Labels = {
@@ -316,7 +318,6 @@ export const Messages = {
   "HistoryTransferred": "messages:HistoryTransferred",
   "InactivatedUser": "messages:InactivatedUser",
   "NoPasswordsInQueue": "messages:NoPasswordsInQueue",
-  "UnableCreateServiceLocation": "messages:UnableCreateServiceLocation",
   "LoadingSystem": "messages:LoadingSystem",
   "Welcome": "messages:Welcome",
   "Logout": "messages:Logout",

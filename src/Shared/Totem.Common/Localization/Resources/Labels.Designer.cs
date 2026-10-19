@@ -122,5 +122,14 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("QueueName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nome do Local.
+        /// </summary>
+        public static string LocationNameLabel {
+            get {
+                return ResourceManager.GetString("LocationNameLabel", resourceCulture);
+            }
+        }
     }
 }

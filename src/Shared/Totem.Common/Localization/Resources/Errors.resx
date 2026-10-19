@@ -396,4 +396,10 @@
   <data name="UnableUpdateQueue" xml:space="preserve">
     <value>Não foi possível atualizar a fila.</value>
   </data>
+  <data name="UnableCreateServiceLocation" xml:space="preserve">
+    <value>Não foi possível criar o local de atendimento.</value>
+  </data>
+  <data name="UnableUpdateServiceLocation" xml:space="preserve">
+    <value>Não foi possível atualizar o local de atendimento.</value>
+  </data>
 </root>

@@ -141,9 +141,6 @@
   <data name="NoPasswordsInQueue" xml:space="preserve">
     <value>Não há senhas na fila. Aguarde.</value>
   </data>
-  <data name="UnableCreateServiceLocation" xml:space="preserve">
-    <value>Não foi possível criar o Local de Atendimento</value>
-  </data>
   <data name="LoadingSystem" xml:space="preserve">
     <value>Carregando sistema...</value>
   </data>

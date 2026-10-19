@@ -41,21 +41,21 @@ namespace Totem.Application.Services.ServiceLocationServices
 
 		public async Task<(Result result, Guid data)> AddAsync(ServiceLocationRequest request)
 		{
-			ServiceLocationValidator validator = new();
-			var ServiceLocation = new ServiceLocation(request.Name, request.Number);
-
-			if (!ExecuteValidation(validator, ServiceLocation))
-				return Unsuccessful<Guid>();
+			var contract = ServiceLocationConstructorValidation.AllowedAdd(request.Name, request.Number);
+			if (!contract.IsValid)
+				return Unsuccessful<Guid>(contract);
 
 			if (await _repository.ExistsAsync(request.Name, request.Number))
 				return Unsuccessful<Guid>(Errors.RegisterAlreadyExists);
 
-			_repository.Add(ServiceLocation);
+			var serviceLocation = new ServiceLocation(request.Name, request.Number);
+
+			_repository.Add(serviceLocation);
 
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful<Guid>(Errors.ErrorSavingDatabase);
 
-			return Successful(ServiceLocation.Id);
+			return Successful(serviceLocation.Id);
 		}
 
 		public async Task<Result> DeleteAsync(Guid Id)
@@ -78,21 +78,15 @@ namespace Totem.Application.Services.ServiceLocationServices
 
 		public async Task<Result> UpdateAsync(Guid Id, ServiceLocationRequest request)
 		{
-			ServiceLocationValidator validator = new();
-			var ServiceLocationValidator = new ServiceLocation(request.Name, request.Number);
-
-			if (await _repository.ExistsAsync(request.Name, request.Number))
-			{
-				Notify(Errors.RegisterAlreadyExists);
-				return Unsuccessful();
-			}
-
-			if (!ExecuteValidation(validator, ServiceLocationValidator))
-				return Unsuccessful();
-
 			var serviceLocation = await _repository.GetByIdAsync(Id);
 			if (serviceLocation is null)
-				return Unsuccessful();
+				return Unsuccessful(Errors.NotFound);
+
+			if (!serviceLocation.Validations.AllowedUpdate(request.Name, request.Number))
+				return Unsuccessful(serviceLocation);
+
+			if (await _repository.ExistsAsync(request.Name, request.Number))
+				return Unsuccessful(Errors.RegisterAlreadyExists);
 
 			serviceLocation.Update(request.Name, request.Number);
 

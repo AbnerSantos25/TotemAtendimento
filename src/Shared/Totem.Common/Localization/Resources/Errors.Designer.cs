@@ -518,5 +518,23 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("UnableUpdateQueue", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível criar o local de atendimento..
+        /// </summary>
+        public static string UnableCreateServiceLocation {
+            get {
+                return ResourceManager.GetString("UnableCreateServiceLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível atualizar o local de atendimento..
+        /// </summary>
+        public static string UnableUpdateServiceLocation {
+            get {
+                return ResourceManager.GetString("UnableUpdateServiceLocation", resourceCulture);
+            }
+        }
     }
 }
