@@ -11,7 +11,7 @@ public class Result
         _notifications.Add(notificacao);
     }
 
-	public void Handle(List<Notification> notificacoes)
+	public void Handle(IEnumerable<Notification> notificacoes)
 	{
 		_notifications.AddRange(notificacoes);
 	}

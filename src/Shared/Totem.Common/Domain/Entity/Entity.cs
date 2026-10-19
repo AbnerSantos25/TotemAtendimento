@@ -1,6 +1,8 @@
-﻿namespace Totem.Common.Domain.Entity
+﻿using Totem.Common.Validation;
+
+namespace Totem.Common.Domain.Entity
 {
-	public abstract class Entity
+	public abstract class Entity : Contract
 	{
 		public Guid Id { get; private set; }
 

@@ -372,4 +372,13 @@
   <data name="FailedToSaveOrganizationSettings" xml:space="preserve">
     <value>Não foi possível salvar os dados da organização.</value>
   </data>
+  <data name="RequiredField" xml:space="preserve">
+    <value>{0} é obrigatório.</value>
+  </data>
+  <data name="MaxLengthField" xml:space="preserve">
+    <value>{0} deve ter no máximo {1} caracteres.</value>
+  </data>
+  <data name="LengthBetweenField" xml:space="preserve">
+    <value>{0} deve ter entre {1} e {2} caracteres.</value>
+  </data>
 </root>

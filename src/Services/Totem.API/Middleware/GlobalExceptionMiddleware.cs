@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Totem.Common.Domain.Exceptions;
 
 namespace Totem.API.Middleware
 {
@@ -24,22 +25,28 @@ namespace Totem.API.Middleware
             {
                 await _next(context);
             }
+            catch (DomainException ex)
+            {
+                _logger.LogWarning(ex, "Operação recusada pela regra de domínio.");
+                await WriteErrorAsync(context, StatusCodes.Status409Conflict, ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Uma exceção não tratada ocorreu durante a solicitação.");
-                await HandleExceptionAsync(context, ex);
+                await WriteErrorAsync(context, StatusCodes.Status500InternalServerError,
+                    "Ocorreu um erro interno no servidor. Nossa equipe técnica já foi notificada.");
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static Task WriteErrorAsync(HttpContext context, int statusCode, string message)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.StatusCode = statusCode;
 
             var result = JsonSerializer.Serialize(new
             {
                 success = false,
-                errors = new[] { "Ocorreu um erro interno no servidor. Nossa equipe técnica já foi notificada." }
+                errors = new[] { message }
             });
 
             return context.Response.WriteAsync(result);

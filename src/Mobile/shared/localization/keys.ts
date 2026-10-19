@@ -86,6 +86,9 @@ export const Errors = {
   "InvalidLogoFormat": "errors:InvalidLogoFormat",
   "FailedToLoadOrganizationSettings": "errors:FailedToLoadOrganizationSettings",
   "FailedToSaveOrganizationSettings": "errors:FailedToSaveOrganizationSettings",
+  "RequiredField": "errors:RequiredField",
+  "MaxLengthField": "errors:MaxLengthField",
+  "LengthBetweenField": "errors:LengthBetweenField",
 } as const;
 
 export const Labels = {

@@ -446,5 +446,32 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("InvalidLogoFormat", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} é obrigatório..
+        /// </summary>
+        public static string RequiredField {
+            get {
+                return ResourceManager.GetString("RequiredField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} deve ter no máximo {1} caracteres..
+        /// </summary>
+        public static string MaxLengthField {
+            get {
+                return ResourceManager.GetString("MaxLengthField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} deve ter entre {1} e {2} caracteres..
+        /// </summary>
+        public static string LengthBetweenField {
+            get {
+                return ResourceManager.GetString("LengthBetweenField", resourceCulture);
+            }
+        }
     }
 }

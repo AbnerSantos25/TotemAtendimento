@@ -1,5 +1,10 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Net;
+using System.Text.Json;
+using Totem.API.Middleware;
+using Totem.Common.Domain.Exceptions;
 
 namespace Totem.IntegrationTests.Api;
 
@@ -41,5 +46,23 @@ public class GlobalExceptionMiddlewareTests : IClassFixture<WebApplicationFactor
 
         // Não deve retornar HTML (padrão do ASP.NET ao não-tratar exceções)
         Assert.DoesNotContain("<!DOCTYPE html>", body);
+    }
+
+    [Fact(DisplayName = "Middleware: DomainException responde 409 com a mensagem no formato padrão")]
+    public async Task OnDomainException_ShouldReturn409WithMessage()
+    {
+        var context = new DefaultHttpContext();
+        context.Response.Body = new MemoryStream();
+        var middleware = new GlobalExceptionMiddleware(
+            _ => throw new DomainException("Não foi possível criar o tipo de serviço."),
+            NullLogger<GlobalExceptionMiddleware>.Instance);
+
+        await middleware.InvokeAsync(context);
+
+        Assert.Equal(StatusCodes.Status409Conflict, context.Response.StatusCode);
+        context.Response.Body.Position = 0;
+        using var json = await JsonDocument.ParseAsync(context.Response.Body);
+        Assert.False(json.RootElement.GetProperty("success").GetBoolean());
+        Assert.Equal("Não foi possível criar o tipo de serviço.", json.RootElement.GetProperty("errors")[0].GetString());
     }
 }
