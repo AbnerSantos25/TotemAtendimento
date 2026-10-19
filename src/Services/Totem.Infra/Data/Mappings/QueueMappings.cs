@@ -8,7 +8,7 @@ namespace Totem.Infra.Data.Mappings
 	{
 		public void Configure(EntityTypeBuilder<Queue> builder)
 		{
-			builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
+			builder.Property(x => x.Name).HasMaxLength(Queue.NameMaxLength).IsRequired();
 
 			builder.Property(x => x.IsActive)
 				.HasDefaultValue(true).IsRequired();

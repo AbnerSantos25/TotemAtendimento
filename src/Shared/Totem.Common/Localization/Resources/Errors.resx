@@ -390,4 +390,10 @@
   <data name="UnableUpdateServiceType" xml:space="preserve">
     <value>Não foi possível atualizar o tipo de serviço.</value>
   </data>
+  <data name="UnableCreateQueue" xml:space="preserve">
+    <value>Não foi possível criar a fila.</value>
+  </data>
+  <data name="UnableUpdateQueue" xml:space="preserve">
+    <value>Não foi possível atualizar a fila.</value>
+  </data>
 </root>

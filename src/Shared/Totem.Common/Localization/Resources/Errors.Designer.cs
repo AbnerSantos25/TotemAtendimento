@@ -500,5 +500,23 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("UnableUpdateServiceType", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível criar a fila..
+        /// </summary>
+        public static string UnableCreateQueue {
+            get {
+                return ResourceManager.GetString("UnableCreateQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não foi possível atualizar a fila..
+        /// </summary>
+        public static string UnableUpdateQueue {
+            get {
+                return ResourceManager.GetString("UnableUpdateQueue", resourceCulture);
+            }
+        }
     }
 }

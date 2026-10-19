@@ -113,5 +113,14 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("TargetQueueId", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nome da Fila.
+        /// </summary>
+        public static string QueueName {
+            get {
+                return ResourceManager.GetString("QueueName", resourceCulture);
+            }
+        }
     }
 }

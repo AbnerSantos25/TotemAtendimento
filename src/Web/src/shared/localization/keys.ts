@@ -92,6 +92,8 @@ export const Errors = {
   "LengthBetweenField": "errors:LengthBetweenField",
   "UnableCreateServiceType": "errors:UnableCreateServiceType",
   "UnableUpdateServiceType": "errors:UnableUpdateServiceType",
+  "UnableCreateQueue": "errors:UnableCreateQueue",
+  "UnableUpdateQueue": "errors:UnableUpdateQueue",
 } as const;
 
 export const Labels = {

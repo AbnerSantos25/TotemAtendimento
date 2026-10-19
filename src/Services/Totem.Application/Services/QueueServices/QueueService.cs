@@ -2,7 +2,6 @@ using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.QueueAggregate;
-using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Aggregates.UserAggregate;
 using Totem.Domain.Models.QueueModels;
 using Totem.Application.Services.PasswordMatchingServices;
@@ -28,13 +27,14 @@ namespace Totem.Application.Services.QueueServices
 			if (request == null)
 				return Unsuccessful<Guid>();
 
+			var contract = QueueConstructorValidation.AllowedAdd(request.Name);
+			if (!contract.IsValid)
+				return Unsuccessful<Guid>(contract);
+
 			if (await _repository.ExistsAsync(request.Name))
 				return Unsuccessful<Guid>(Errors.RegisterAlreadyExists);
 
 			var queue = new Queue(request.Name, request.IsActive);
-
-			if (!ExecuteValidation(new QueueValidator(), queue))
-				return Unsuccessful<Guid>();
 
 			_repository.Add(queue);
 
@@ -46,15 +46,13 @@ namespace Totem.Application.Services.QueueServices
 
 		public async Task<Result> UpdateAsync(Guid Id, QueueRequest request)
 		{
-			var queueValidator = new QueueValidator();
-
-			if (!ExecuteValidation(queueValidator, new Queue(request.Name)))
-				return Unsuccessful();
-
 			var queue = await _repository.GetByIdAsync(Id);
 
 			if (queue == null)
 				return Unsuccessful(Errors.NotFound);
+
+			if (!queue.Validations.AllowedUpdate(request.Name))
+				return Unsuccessful(queue);
 
 			if (await _repository.ExistsAsync(request.Name))
 				return Unsuccessful(Errors.RegisterAlreadyExists);
