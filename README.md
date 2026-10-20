@@ -62,7 +62,7 @@ O **TotemAtendimento** é uma plataforma completa para gerenciamento inteligente
 | **JWT Bearer** | 9.0.3 | Tokens de autenticação |
 | **SignalR** | 9.0 | Comunicação em tempo real |
 | **MediatR** | 12.5.0 | Padrão Mediator / Domain Events |
-| **FluentValidation** | 11.3.0 | Validação de domínio |
+| **Validação** | própria | Contract/Validations em `Totem.Common/Validation` (ver [docs/validacao.md](docs/validacao.md)) |
 | **Swagger / OpenAPI** | 8.1.1 | Documentação interativa da API |
 | **Microsoft.AspNetCore.RateLimiting** | nativo | Proteção contra força bruta e DDoS |
 

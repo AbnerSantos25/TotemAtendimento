@@ -40,11 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="12.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- IdentityCustomMessages usa tipos do Identity; antes isso vinha de carona no FluentValidation.AspNetCore -->
+    <!-- IdentityCustomMessages usa tipos do Identity (Microsoft.AspNetCore.Identity) -->
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

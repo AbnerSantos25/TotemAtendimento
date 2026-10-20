@@ -7,11 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation" Version="12.2.0" />
-
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\..\Shared\Totem.Common\Totem.Common.csproj" />
 	  <ProjectReference Include="..\Totem.SharedKernel\Totem.SharedKernel.csproj" />
 	</ItemGroup>

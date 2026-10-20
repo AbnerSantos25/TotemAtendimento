@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-using Totem.Common.Domain.Entity;
-using Totem.Common.Domain.Notification;
+﻿using Totem.Common.Domain.Notification;
 using Totem.Common.Validation;
 
 namespace Totem.Common.Services
@@ -16,25 +13,9 @@ namespace Totem.Common.Services
 			_notificator = notificator;
 		}
 
-		protected void Notify(ValidationResult validationResult)
-		{
-			foreach (var error in validationResult.Errors)
-			{
-				Notify(error.ErrorMessage);
-			}
-		}
-
 		protected void Notify(string mensagem)
 		{
 			_notificator.Handle(new Notification(mensagem));
-		}
-
-		protected bool ExecuteValidation<TV, TE>(TV validation, TE entity) where TV : AbstractValidator<TE> where TE : Entity
-		{
-			var validator = validation.Validate(entity);
-			if (validator.IsValid) return true;
-			Notify(validator);
-			return false;
 		}
 
 		protected Result Successful()
