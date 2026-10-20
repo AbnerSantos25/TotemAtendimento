@@ -29,6 +29,9 @@ namespace Totem.Application.Services.IdentityServices
 
 		public async Task<Result> SetPermissionsAsync(Guid userId, SetUserQueuePermissionsRequest request)
 		{
+			var contract = IdentityRequestValidation.AllowedSetQueuePermissions(request.QueueIds);
+			if (!contract.IsValid)
+				return Unsuccessful(contract);
 
 			foreach (var queueId in request.QueueIds)
 			{

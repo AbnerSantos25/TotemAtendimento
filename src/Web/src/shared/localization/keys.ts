@@ -101,6 +101,7 @@ export const Errors = {
   "UnableTransferPassword": "errors:UnableTransferPassword",
   "UnableCallPassword": "errors:UnableCallPassword",
   "UnableServePassword": "errors:UnableServePassword",
+  "InvalidRole": "errors:InvalidRole",
 } as const;
 
 export const Labels = {

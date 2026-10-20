@@ -417,4 +417,7 @@
   <data name="UnableServePassword" xml:space="preserve">
     <value>Não foi possível finalizar o atendimento da senha.</value>
   </data>
+  <data name="InvalidRole" xml:space="preserve">
+    <value>Função inválida.</value>
+  </data>
 </root>

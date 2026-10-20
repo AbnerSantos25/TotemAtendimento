@@ -590,5 +590,14 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("FailedToSaveOrganizationSettings", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Função inválida..
+        /// </summary>
+        public static string InvalidRole {
+            get {
+                return ResourceManager.GetString("InvalidRole", resourceCulture);
+            }
+        }
     }
 }

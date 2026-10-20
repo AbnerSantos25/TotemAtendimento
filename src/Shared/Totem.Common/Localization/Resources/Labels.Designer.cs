@@ -149,5 +149,14 @@ namespace Totem.Common.Localization.Resources {
                 return ResourceManager.GetString("Website", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filas.
+        /// </summary>
+        public static string Queues {
+            get {
+                return ResourceManager.GetString("Queues", resourceCulture);
+            }
+        }
     }
 }

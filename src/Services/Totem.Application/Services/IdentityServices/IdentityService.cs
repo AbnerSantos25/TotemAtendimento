@@ -266,6 +266,10 @@ namespace Totem.Application.Services.IdentityServices
 
 		public async Task<Result> UpdateUserRolesAsync(AssignRolesRequest request)
 		{
+			var contract = IdentityRequestValidation.AllowedAssignRoles(request.Roles);
+			if (!contract.IsValid)
+				return Unsuccessful(contract);
+
 			var user = await _userManager.FindByIdAsync(request.UserId.ToString());
 
 			if (user == null)
@@ -277,7 +281,7 @@ namespace Totem.Application.Services.IdentityServices
 			var rolesToRemove = currentRoles.Except(requestedRoles).ToList();
 
 			if (!rolesToAdd.Any() && !rolesToRemove.Any())
-				return Unsuccessful(Errors.PermissionListCannotBeEmpty);
+				return Successful();
 
 			if (rolesToRemove.Any())
 			{
