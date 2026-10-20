@@ -249,6 +249,8 @@ namespace Totem.Application.Services.IdentityServices
             if (!passwordValid)
                 return Unsuccessful(Errors.IncorrectUsernamePassword);
 
+            // O login procura pelo UserName, que nasce igual ao e-mail; o UpdateAsync barra UserName repetido.
+            user.UserName = request.NewEmail;
             user.Email = request.NewEmail;
 
             var result = await _userManager.UpdateAsync(user);
