@@ -102,6 +102,10 @@ namespace Totem.Application.Services.IdentityServices
 
         public async Task<(Result Result, AuthResult Data)> LoginUserAsync(LoginUserView loginUserView)
         {
+            var contract = IdentityRequestValidation.AllowedLogin(loginUserView.Email, loginUserView.Password);
+            if (!contract.IsValid)
+                return Unsuccessful<AuthResult>(contract);
+
             var result = await _signInManager.PasswordSignInAsync(loginUserView.Email, loginUserView.Password, false, true);
             if (result.Succeeded)
             {
@@ -132,6 +136,11 @@ namespace Totem.Application.Services.IdentityServices
 
 		public async Task<(Result Result, AuthResult Data)> RegisterUserAsync(RegisterUserView registerUserView)
 		{
+            var contract = IdentityRequestValidation.AllowedRegister(
+                registerUserView.FullName, registerUserView.Email, registerUserView.Password, registerUserView.ConfirmPassword);
+            if (!contract.IsValid)
+                return Unsuccessful<AuthResult>(contract);
+
             var user = new User(registerUserView.FullName, registerUserView.Email);
 
             var result = await _userManager.CreateAsync(user, registerUserView.Password);
@@ -218,13 +227,14 @@ namespace Totem.Application.Services.IdentityServices
 
         public async Task<Result> ChangePasswordAsync(Guid userId, ChangePasswordRequest request)
         {
+            var contract = IdentityRequestValidation.AllowedChangePassword(request.OldPassword, request.NewPassword, request.ConfirmNewPassword);
+            if (!contract.IsValid)
+                return Unsuccessful(contract);
+
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user == null)
                 return Unsuccessful(Errors.UserNotFound);
-
-            if (request.OldPassword.Equals(request.NewPassword))
-                return Unsuccessful(Errors.PasswordCannotBeEqual);
 
             var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
 
@@ -241,6 +251,10 @@ namespace Totem.Application.Services.IdentityServices
 
         public async Task<Result> UpdateEmailAsync(Guid userId, UpdateEmailRequest request)
         {
+            var contract = IdentityRequestValidation.AllowedUpdateEmail(request.NewEmail, request.ConfirmEmail, request.Password);
+            if (!contract.IsValid)
+                return Unsuccessful(contract);
+
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 return Unsuccessful(Errors.UserNotFound);

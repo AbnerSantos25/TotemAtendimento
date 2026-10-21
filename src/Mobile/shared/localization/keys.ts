@@ -313,6 +313,8 @@ export const Labels = {
   "Title": "labels:Title",
   "Icon": "labels:Icon",
   "TargetQueueId": "labels:TargetQueueId",
+  "CurrentPassword": "labels:CurrentPassword",
+  "NewPassword": "labels:NewPassword",
 } as const;
 
 export const Messages = {
