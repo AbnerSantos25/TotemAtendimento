@@ -376,7 +376,7 @@
     <value>Cor inválida. Use o formato #RGB ou #RRGGBB.</value>
   </data>
   <data name="RequiredField" xml:space="preserve">
-    <value>{0} é obrigatório.</value>
+    <value>O campo {0} é obrigatório.</value>
   </data>
   <data name="MaxLengthField" xml:space="preserve">
     <value>{0} deve ter no máximo {1} caracteres.</value>

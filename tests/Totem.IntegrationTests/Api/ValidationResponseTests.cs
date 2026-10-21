@@ -94,7 +94,7 @@ public class ValidationResponseTests : IClassFixture<WebApplicationFactory<Progr
             Json(new { title = "Exames", targetQueueId = Guid.Empty }));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Contains("Fila Destino é obrigatório.", await ReadErrorsAsync(response));
+        Assert.Contains("O campo Fila Destino é obrigatório.", await ReadErrorsAsync(response));
     }
 
     [Fact(DisplayName = "Título vazio continua barrado pelo atributo do DTO (400 pelo filtro)")]

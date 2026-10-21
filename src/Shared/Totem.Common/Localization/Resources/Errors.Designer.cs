@@ -457,7 +457,7 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} é obrigatório..
+        ///   Looks up a localized string similar to O campo {0} é obrigatório..
         /// </summary>
         public static string RequiredField {
             get {
