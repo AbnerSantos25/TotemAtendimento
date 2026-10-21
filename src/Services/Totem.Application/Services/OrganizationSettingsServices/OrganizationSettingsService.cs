@@ -41,8 +41,8 @@ namespace Totem.Application.Services.OrganizationSettingsServices
 		public async Task<(Result result, OrganizationSettingsView data)> UpdateAsync(OrganizationSettingsRequest request, byte[]? logo)
 		{
 			//TODO: (abner) Alterar para que toda string que entrar na api passar por uma sanitização, para evitar problemas de segurança e inconsistência de dados.
-			var name = request.Name.Trim();
-			var website = NormalizeWebsite(request.WebsiteUrl);
+			var name = request.Name?.Trim() ?? string.Empty;
+			var website = NormalizeWebsite(request.WebsiteUrl ?? string.Empty);
 			var logoContentType = logo is null ? null : DetectImageContentType(logo);
 
 			var contract = OrganizationSettingsConstructorValidation.AllowedSave(name, request.Cnpj, website);

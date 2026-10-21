@@ -124,24 +124,6 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a O {0} deve ter entre {2} e {1} caracteres..
-        /// </summary>
-        public static string GenericFieldMustBeRange {
-            get {
-                return ResourceManager.GetString("GenericFieldMustBeRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a O valor de &apos;{0}&apos; não pode ser igual ao de &apos;{1}&apos;..
-        /// </summary>
-        public static string GenericValueCannotBeEqual {
-            get {
-                return ResourceManager.GetString("GenericValueCannotBeEqual", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário ou senha incorretos..
         /// </summary>
         public static string IncorrectUsernamePassword {
@@ -169,29 +151,11 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a O Campo Nome deve ter entre {2} e {1} caracteres..
-        /// </summary>
-        public static string NameFieldLengthRange {
-            get {
-                return ResourceManager.GetString("NameFieldLengthRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a O campo Nome é obrigatório.
         /// </summary>
         public static string NameFieldRequired {
             get {
                 return ResourceManager.GetString("NameFieldRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a O Nome deve ter entre {2} e {1} caracteres..
-        /// </summary>
-        public static string NameLengthRange {
-            get {
-                return ResourceManager.GetString("NameLengthRange", resourceCulture);
             }
         }
         
@@ -241,15 +205,6 @@ namespace Totem.Common.Localization.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a A senha deve ter entre {2} e {1} caracteres..
-        /// </summary>
-        public static string PasswordLengthRange {
-            get {
-                return ResourceManager.GetString("PasswordLengthRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Senha não encontrada..
         /// </summary>
         public static string PasswordNotFound {
@@ -282,15 +237,6 @@ namespace Totem.Common.Localization.Resources {
         public static string PermissionListCannotBeEmpty {
             get {
                 return ResourceManager.GetString("PermissionListCannotBeEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Propriedade &apos;{0}&apos; não encontrada..
-        /// </summary>
-        public static string PropertyNotFound {
-            get {
-                return ResourceManager.GetString("PropertyNotFound", resourceCulture);
             }
         }
         

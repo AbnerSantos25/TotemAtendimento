@@ -23,9 +23,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> NotifyAvailable([FromRoute] Guid serviceLocationId, [FromBody] ServiceLocationReadyRequest request)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             var password = await _serviceLocationService.ServiceLocationReadyAsync(serviceLocationId, request);
 
             return CustomResponse(password);
@@ -34,18 +31,12 @@ namespace Totem.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _serviceLocationService.GetByIdAsync(id));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetListAsync()
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             var response = await _serviceLocationService.GetListAsync();
             return CustomResponse(response);
         }
@@ -55,9 +46,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddAsync([FromBody] ServiceLocationRequest request)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _serviceLocationService.AddAsync(request));
         }
 
@@ -66,9 +54,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] ServiceLocationRequest request)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _serviceLocationService.UpdateAsync(id, request));
         }
 
@@ -77,9 +62,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _serviceLocationService.DeleteAsync(id));
         }
 
@@ -87,9 +69,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> RecallCurrentPassword([FromRoute] Guid serviceLocationId)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _serviceLocationService.RecallCurrentPasswordAsync(serviceLocationId));
         }
     }

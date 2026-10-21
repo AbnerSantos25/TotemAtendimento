@@ -8,9 +8,15 @@ namespace Totem.API.Configuration
     {
         public static IServiceCollection AddApiConfiguration(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            // ModelState invalido (binding ou atributo) passa pelo ModelStateValidationFilter, que responde no formato
-            // padrao da API; a resposta automatica do [ApiController] (ValidationProblemDetails) fica desligada.
-            services.AddControllers(options => options.Filters.Add<ModelStateValidationFilter>())
+            // As regras de entrada ficam nos Contracts dos services (docs/validacao.md). Erro de binding (JSON malformado,
+            // tipo errado) passa pelo ModelStateValidationFilter, no formato padrao da API; a resposta automatica do
+            // [ApiController] fica desligada. Sem o Suppress, o MVC trata string nao anulavel como [Required] e
+            // responde "The X field is required." em ingles antes de o Contract rodar.
+            services.AddControllers(options =>
+                {
+                    options.Filters.Add<ModelStateValidationFilter>();
+                    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+                })
                 .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
             services.AddAntiforgery(options =>

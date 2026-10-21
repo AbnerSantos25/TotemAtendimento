@@ -97,13 +97,38 @@ public class ValidationResponseTests : IClassFixture<WebApplicationFactory<Progr
         Assert.Contains("O campo Fila Destino é obrigatório.", await ReadErrorsAsync(response));
     }
 
-    [Fact(DisplayName = "Título vazio continua barrado pelo atributo do DTO (400 pelo filtro)")]
+    [Fact(DisplayName = "Título vazio responde 400 com a mensagem do Contract")]
     public async Task CreateServiceType_WithEmptyTitle_ShouldReturn400()
     {
         var response = await CreateAdminClient("10.0.0.205").PostAsync("/api/totem/ServiceType",
             Json(new { title = "", targetQueueId = Guid.NewGuid() }));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.NotEmpty(await ReadErrorsAsync(response));
+        Assert.Equal(new[] { "O campo Título é obrigatório." }, await ReadErrorsAsync(response));
+    }
+
+    [Fact(DisplayName = "Todos os erros de entrada voltam na mesma resposta (antes a cor só aparecia no segundo envio)")]
+    public async Task CreateServiceType_WithSeveralErrors_ShouldReturnAllAtOnce()
+    {
+        var response = await CreateAdminClient("10.0.0.206").PostAsync("/api/totem/ServiceType",
+            Json(new { title = "", color = "#GGG", targetQueueId = Guid.NewGuid() }));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(
+            new[] { "O campo Título é obrigatório.", "Cor inválida. Use o formato #RGB ou #RRGGBB." },
+            await ReadErrorsAsync(response));
+    }
+
+    [Fact(DisplayName = "Login vazio responde só em pt-BR, sem o \"field is required\" implícito do MVC")]
+    public async Task Login_WithEmptyBody_ShouldReturnOnlyPortugueseMessages()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Add(TestClientIpStartupFilter.HeaderName, "10.0.0.207");
+        client.DefaultRequestHeaders.Add("X-Client-Type", "mobile");
+
+        var response = await client.PostAsync("/api/totem/identity/login", Json(new { }));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(new[] { "O campo E-mail é obrigatório.", "O campo Senha é obrigatório." }, await ReadErrorsAsync(response));
     }
 }

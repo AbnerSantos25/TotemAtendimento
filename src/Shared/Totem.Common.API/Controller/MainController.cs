@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.RateLimiting;
 using Totem.Common.API.Filters;
 using Totem.Common.Domain.Notification;
@@ -59,26 +58,13 @@ namespace Totem.Common.API.Controller
         }
 
 
-        protected ActionResult CustomResponse(ModelStateDictionary modelState)
+        /// <summary>Responde com as notificacoes registradas por <see cref="NotifyError"/>.</summary>
+        protected ActionResult CustomResponse()
         {
-            if (!modelState.IsValid) NotificarErroModelInvalida(modelState);
-
-            // Delega para a sobrecarga de Result carregando as notificacoes recem
-            // registradas. Rechamar esta mesma sobrecarga era recursao infinita.
             var result = new Result();
             result.Handle(_notificador.GetNotifications());
 
             return CustomResponse(result);
-        }
-
-        protected void NotificarErroModelInvalida(ModelStateDictionary modelState)
-        {
-            var erros = modelState.Values.SelectMany(e => e.Errors);
-            foreach (var erro in erros)
-            {
-                var errorMsg = erro.Exception == null ? erro.ErrorMessage : erro.Exception.Message;
-                NotifyError(errorMsg);
-            }
         }
 
         protected void NotifyError(string message)

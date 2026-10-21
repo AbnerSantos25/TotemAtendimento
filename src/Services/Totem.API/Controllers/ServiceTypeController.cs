@@ -42,8 +42,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Create([FromBody] ServiceTypeRequest request)
 		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-
 			return CustomResponse(await _serviceTypeService.CreateAsync(request));
 		}
 
@@ -52,8 +50,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] ServiceTypeRequest request)
 		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-
 			return CustomResponse(await _serviceTypeService.UpdateAsync(id, request));
 		}
 
@@ -62,8 +58,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Delete([FromRoute] Guid id)
 		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-
 			return CustomResponse(await _serviceTypeService.DeleteAsync(id));
 		}
 
@@ -72,8 +66,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> ToggleStatus([FromRoute] Guid id)
 		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-
 			return CustomResponse(await _serviceTypeService.ToggleStatusAsync(id));
 		}
 
@@ -82,8 +74,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> Disable([FromRoute] Guid id)
 		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-
 			return CustomResponse(await _serviceTypeService.DisableAsync(id));
 		}
 	}

@@ -31,8 +31,6 @@ namespace Totem.API.Controllers
 		[EnableRateLimiting("Auth")]
 		public async Task<ActionResult> Register(RegisterUserView registerUser)
 		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-
 			var result = await _identityService.RegisterUserAsync(registerUser);
 			if (!result.Result.Success) return CustomResponse(result.Result);
 
@@ -44,8 +42,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Auth")]
         public async Task<ActionResult> Login(LoginUserView loginUser)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             var result = await _identityService.LoginUserAsync(loginUser);
             if (!result.Result.Success) return CustomResponse(result.Result);
 
@@ -70,7 +66,6 @@ namespace Totem.API.Controllers
         [HttpGet("users")]
         public async Task<ActionResult> GetListUser()
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _identityService.GetListUserAsync());
 		}
 
@@ -78,8 +73,6 @@ namespace Totem.API.Controllers
 		[HttpPut("user/update-email")]
         public async Task<ActionResult> UpdateEmail([FromBody] UpdateEmailRequest request)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
                               ?? User.FindFirstValue("sub");
 
@@ -93,8 +86,6 @@ namespace Totem.API.Controllers
 		[HttpPatch("user/{userId}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid userId)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             return CustomResponse(await _identityService.InactiveUser(userId, User.IsInRole(nameof(Role.Admin))));
 		}
 
@@ -102,8 +93,6 @@ namespace Totem.API.Controllers
 		[HttpPatch("user/{userId}/active")]
         public async Task<ActionResult> ActiveUser([FromRoute] Guid userId)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             return CustomResponse(await _identityService.ActiveUser(userId, User.IsInRole(nameof(Role.Admin))));
         }
 
@@ -111,8 +100,6 @@ namespace Totem.API.Controllers
         [HttpPost("assign-roles")]
         public async Task<ActionResult> UpdateUserRolesAsync([FromBody] AssignRolesRequest request)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             var result = await _identityService.UpdateUserRolesAsync(request);
 
             return CustomResponse(result);
@@ -133,8 +120,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
 		public async Task<ActionResult> ChangePassword([FromRoute] Guid userId, [FromBody] ChangePasswordRequest request)
 		{
-			if (!ModelState.IsValid) return CustomResponse(ModelState);
-
 			return CustomResponse(await _identityService.ChangePasswordAsync(userId, request));
 		}
 
@@ -149,7 +134,6 @@ namespace Totem.API.Controllers
 		[HttpPut("user/{userId}/queue-permissions")]
         public async Task<ActionResult> SetUserQueuePermissions([FromRoute] Guid userId, [FromBody] SetUserQueuePermissionsRequest request, [FromServices] IUserQueuePermissionService permissionService)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await permissionService.SetPermissionsAsync(userId, request));
         }
 

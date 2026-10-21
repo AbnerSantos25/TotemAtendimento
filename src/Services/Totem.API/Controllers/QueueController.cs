@@ -22,9 +22,6 @@ namespace Totem.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQueueById(Guid id)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _queueServices.GetByIdAsync(id));
         }
 
@@ -32,9 +29,6 @@ namespace Totem.API.Controllers
 		[Authorize(Roles = $"{nameof(Role.Manager)}, {nameof(Role.System)}, {nameof(Role.User)}")]
 		public async Task<IActionResult> GetListAsync()
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
 
             if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
@@ -50,9 +44,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddAsync([FromBody] QueueRequest request)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _queueServices.AddAsync(request));
         }
 
@@ -61,9 +52,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] QueueRequest request)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _queueServices.UpdateAsync(id, request));
         }
 
@@ -72,9 +60,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _queueServices.DeleteAsync(id));
         }
 
@@ -83,9 +68,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> ToggleStatusQueue([FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             return CustomResponse(await _queueServices.ToggleStatusQueue(id));
 
         }

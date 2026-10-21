@@ -5,9 +5,10 @@ namespace Totem.Common.API.Filters
 {
     /// <summary>
     /// Responde 400 no formato padrao da API ({ success = false, errors = [...] }), igual ao MainController.CustomResponse,
-    /// quando o ModelState chega invalido: erro de binding (JSON malformado, tipo errado) ou atributo de validacao do DTO.
+    /// quando o ModelState chega invalido por erro de binding (JSON malformado, tipo errado). Os DTOs nao tem atributos
+    /// de validacao: as regras de entrada ficam nos Contracts chamados pelos services (Totem.Common.Validation).
     /// Substitui a validacao automatica do [ApiController], desligada em ApiConfiguration
-    /// para a API ter um unico formato de erro. As regras de negocio ficam nos Contracts (Totem.Common.Validation).
+    /// para a API ter um unico formato de erro.
     /// </summary>
     public class ModelStateValidationFilter : IActionFilter
     {

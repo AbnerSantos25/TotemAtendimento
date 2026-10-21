@@ -37,9 +37,6 @@ namespace Totem.API.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = MaxRequestBytes)]
         public async Task<IActionResult> UpdateAsync([FromForm] OrganizationSettingsRequest request, IFormFile? logo)
         {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
-
             byte[]? logoBytes = null;
             if (logo is not null)
             {
@@ -47,7 +44,7 @@ namespace Totem.API.Controllers
                 if (logo.Length > OrganizationSettings.LogoMaxBytes)
                 {
                     NotifyError(Errors.LogoTooLarge);
-                    return CustomResponse(ModelState);
+                    return CustomResponse();
                 }
 
                 using var stream = new MemoryStream();

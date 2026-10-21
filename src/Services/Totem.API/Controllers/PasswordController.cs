@@ -21,17 +21,12 @@ namespace Totem.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPasswordById(Guid id)
         {
-
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             return CustomResponse(await _passwordService.GetByIdPasswordAsync(id));
         }
 
         [HttpGet]
 		public async Task<IActionResult> GetPasswords([FromQuery] Guid queueId)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             return CustomResponse(await _passwordService.GetListPasswordAsync(queueId));
         }
 
@@ -39,7 +34,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> AddPassword([FromBody] PasswordRequest request)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
             var response = await _passwordService.AddPasswordAsync(request);
             return CustomResponse(response);
         }
@@ -48,8 +42,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> Transfer([FromRoute] Guid passwordId, [FromBody] PasswordTransferRequest request)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             return CustomResponse(await _passwordService.TransferPasswordAsync(passwordId, request));
         }
 
@@ -57,7 +49,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> MarkAsServedAsync([FromRoute] Guid passwordId)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _passwordService.MarkAsServed(passwordId));
         }
 
@@ -66,7 +57,6 @@ namespace Totem.API.Controllers
         [EnableRateLimiting("Mutation")]
         public async Task<IActionResult> RemovePassword(Guid id)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
             return CustomResponse(await _passwordService.RemovePasswordAsync(id));
         }
 
