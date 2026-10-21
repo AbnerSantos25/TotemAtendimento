@@ -11,12 +11,14 @@ Exemplo completo: [`ServiceTypeValidation.cs`](../src/Services/Totem.Domain/Aggr
 | Formato, tamanho, obrigatório (dados de criação) | `XConstructorValidation` (estática, devolve `Contract`) |
 | Depende do estado da entidade (já atendida, pode transferir...) | `XValidation.AllowedX`, acessado por `entidade.Validations` |
 | Depende do banco (duplicidade, registro existe) | no service, antes de criar ou alterar |
-| Entrada sem entidade (papéis, permissões) | Contract estático no service, ex.: `IdentityRequestValidation` |
-| JSON malformado e atributos dos DTOs | `ModelStateValidationFilter` |
+| Entrada sem entidade (login, cadastro, papéis, permissões) | Contract estático no service, ex.: `IdentityRequestValidation` |
+| JSON malformado e tipo errado (binding) | `ModelStateValidationFilter` |
+
+**DTO não tem atributo de validação** (`[Required]`, `[StringLength]`...). A regra vai para o Contract, que devolve todas as mensagens juntas e em pt-BR. O MVC está configurado com `SuppressImplicitRequiredAttributeForNonNullableReferenceTypes`, senão `string` não anulável vira `[Required]` implícito e responde em inglês antes de o Contract rodar. Como o DTO não garante nada, o service trata campo nulo (`request.Name?.Trim() ?? string.Empty`).
 
 ## O que cada status HTTP significa
 
-- **400:** entrada inválida. Vem do filtro (binding e atributos) ou de um Contract no service, no formato `{ success: false, errors: [...] }`.
+- **400:** entrada inválida. Vem de um Contract no service ou, para JSON malformado e tipo errado, do filtro. Formato `{ success: false, errors: [...] }`.
 - **409:** `DomainException`. Uma guarda da entidade barrou algo que o service deixou passar. É **bug no service**: a regra deveria ter sido checada antes e devolvida como 400.
 - **500:** qualquer outra falha. Erro de validação nunca deve chegar aqui.
 
@@ -73,7 +75,7 @@ Modificadores, aplicados à regra anterior:
 
 ## Mensagens
 
-- Use as chaves genéricas com o rótulo do campo: `Errors.RequiredField` ("{0} é obrigatório."), `Errors.MaxLengthField`, `Errors.LengthBetweenField`, com `AddLabelArgument(Labels.X)`.
+- Use as chaves genéricas com o rótulo do campo: `Errors.RequiredField` ("O campo {0} é obrigatório."), `Errors.MaxLengthField`, `Errors.LengthBetweenField`, com `AddLabelArgument(Labels.X)`.
 - Chave nova vai no `.resx` e, à mão, como propriedade no `Designer.cs` correspondente: o `Designer.cs` não é gerado no build. Chave que já existe no `.resx` pode faltar no `Designer.cs`; nesse caso basta expor a propriedade.
 - Depois, rode `node ../Shared/Frontend/Localization/generate-locales.cjs` a partir de `src/Web` para atualizar os `keys.ts` do Web e do Mobile.
 - Só existe `pt-BR`.
