@@ -4,6 +4,7 @@ using Totem.Common.Domain.Notification;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.PasswordAggregate;
+using Totem.Domain.Aggregates.QueueAggregate;
 using Totem.Domain.Models.PasswordModels;
 using Totem.SharedKernel.Models;
 using Totem.SharedKernel.Services;
@@ -14,17 +15,20 @@ namespace Totem.Application.Services.PasswordServices
 	{
 		private readonly IPasswordRepository _passwordRepository;
 		private readonly IPasswordQueries _passwordQueries;
+		private readonly IQueueRepository _queueRepository;
 		private readonly IMediator _mediator;
 
 		public PasswordService(
 			INotificator notificador,
 			IPasswordRepository passwordRepository,
 			IPasswordQueries passwordQueries,
+			IQueueRepository queueRepository,
 			IMediator mediator
 		) : base(notificador)
 		{
 			_passwordRepository = passwordRepository;
 			_passwordQueries = passwordQueries;
+			_queueRepository = queueRepository;
 			_mediator = mediator;
 		}
 
@@ -62,6 +66,10 @@ namespace Totem.Application.Services.PasswordServices
 			if (!password.Validations.AllowedTransfer(passwordTransfer.QueueId))
 				return Unsuccessful(password);
 
+			var newQueue = await _queueRepository.GetByIdAsync(passwordTransfer.QueueId);
+			if (newQueue == null)
+				return Unsuccessful(Errors.QueueNotFound);
+
 			var oldQueueId = password.QueueId;
 			var oldQueueName = password.Queue.Name;
 
@@ -79,7 +87,7 @@ namespace Totem.Application.Services.PasswordServices
 				password.CreatedAt,
 				password.Preferential));
 
-			await _mediator.Publish(new PasswordQueueChangedEvent(password.Id, oldQueueId, passwordTransfer.QueueId, password.Code, oldQueueName, passwordTransfer.Name));
+			await _mediator.Publish(new PasswordQueueChangedEvent(password.Id, oldQueueId, passwordTransfer.QueueId, password.Code, oldQueueName, newQueue.Name));
 
 			return Successful();
 		}

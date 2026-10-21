@@ -119,7 +119,7 @@ namespace Totem.Application.Services.ServiceLocationServices
 			if (serviceLocation == null)
 				return Unsuccessful<IPasswordView>(Errors.NotFound);
 
-			var response = await _passwordIntegrationService.ServiceLocationWaitingPasswordAsync(request.QueueId, serviceLocationId, request.Name);
+			var response = await _passwordIntegrationService.ServiceLocationWaitingPasswordAsync(request.QueueId, serviceLocationId, serviceLocation.Name);
 			if(!response.result.Success)
 				return Unsuccessful<IPasswordView>(response.result.GetNotifications());
 

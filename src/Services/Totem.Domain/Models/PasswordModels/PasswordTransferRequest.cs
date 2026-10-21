@@ -3,6 +3,5 @@
 	public class PasswordTransferRequest
 	{
 		public Guid QueueId { get; set; }
-		public string Name { get; set; }
 	}
 }
