@@ -174,13 +174,13 @@ namespace Totem.Application.Services.IdentityServices
             return Unsuccessful<AuthResult>();
         }
 
-        public async Task<Result> InactiveUser(Guid userId, bool callerIsAdmin)
+        public async Task<Result> InactiveUser(Guid userId, ClaimsPrincipal caller)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 return Unsuccessful(Errors.UserNotFound);
 
-            if (!callerIsAdmin && await _userManager.IsInRoleAsync(user, nameof(Role.Admin)))
+            if (!caller.IsInRole(nameof(Role.Admin)) && await _userManager.IsInRoleAsync(user, nameof(Role.Admin)))
                 return Unsuccessful(Errors.CannotModifyAdminUser);
 
             user.InactiveUser();
@@ -199,13 +199,13 @@ namespace Totem.Application.Services.IdentityServices
             return Successful();
         }
 
-        public async Task<Result> ActiveUser(Guid userId, bool callerIsAdmin)
+        public async Task<Result> ActiveUser(Guid userId, ClaimsPrincipal caller)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 return Unsuccessful(Errors.UserNotFound);
 
-            if (!callerIsAdmin && await _userManager.IsInRoleAsync(user, nameof(Role.Admin)))
+            if (!caller.IsInRole(nameof(Role.Admin)) && await _userManager.IsInRoleAsync(user, nameof(Role.Admin)))
                 return Unsuccessful(Errors.CannotModifyAdminUser);
 
             user.ActiveUser();

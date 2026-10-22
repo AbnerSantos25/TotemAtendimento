@@ -79,14 +79,14 @@ namespace Totem.API.Controllers
 		[HttpPatch("user/{userId}/inactivate")]
         public async Task<ActionResult> InactivateUser([FromRoute] Guid userId)
         {
-            return CustomResponse(await _identityService.InactiveUser(userId, User.IsInRole(nameof(Role.Admin))));
+            return CustomResponse(await _identityService.InactiveUser(userId, User));
 		}
 
 		[Authorize(Roles = nameof(Role.Manager))]
 		[HttpPatch("user/{userId}/active")]
         public async Task<ActionResult> ActiveUser([FromRoute] Guid userId)
         {
-            return CustomResponse(await _identityService.ActiveUser(userId, User.IsInRole(nameof(Role.Admin))));
+            return CustomResponse(await _identityService.ActiveUser(userId, User));
         }
 
         [Authorize(Roles = $"{nameof(Role.Manager)}")]
