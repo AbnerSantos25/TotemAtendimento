@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Totem.Common.Extension;
-using System.Security.Claims;
 using Totem.Application.Services.IdentityServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -53,10 +52,7 @@ namespace Totem.API.Controllers
         [Authorize]
         public async Task<ActionResult> GetMe()
         {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                              ?? User.FindFirstValue("sub");
-
-            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+            if (User.GetUserId() is not Guid userId)
                 return Unauthorized();
 
             return CustomResponse(await _identityService.GetMeAsync(userId));
@@ -73,10 +69,7 @@ namespace Totem.API.Controllers
 		[HttpPut("user/update-email")]
         public async Task<ActionResult> UpdateEmail([FromBody] UpdateEmailRequest request)
         {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                              ?? User.FindFirstValue("sub");
-
-            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+            if (User.GetUserId() is not Guid userId)
                 return Unauthorized();
 
             return CustomResponse(await _identityService.UpdateEmailAsync(userId, request));
