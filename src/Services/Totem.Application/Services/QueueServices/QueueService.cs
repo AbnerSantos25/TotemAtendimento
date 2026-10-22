@@ -1,4 +1,7 @@
+using System.Security.Claims;
 using Totem.Common.Domain.Notification;
+using Totem.Common.Enumerations;
+using Totem.Common.Extension;
 using Totem.Common.Localization.Resources;
 using Totem.Common.Services;
 using Totem.Domain.Aggregates.QueueAggregate;
@@ -80,7 +83,6 @@ namespace Totem.Application.Services.QueueServices
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase);
 
-			// Fila excluida nao pode manter guiches esperando senha que nunca vai chegar.
 			_waitingLocations.ClearQueue(id);
 
 			return Successful();
@@ -102,20 +104,32 @@ namespace Totem.Application.Services.QueueServices
 			return Successful(await _queries.GetListAsync());
 		}
 
-		public async Task<(Result result, List<QueueSummary> data)> GetListByPermissionAsync(Guid userId, bool hasFullAccess)
+		public async Task<(Result result, List<QueueSummary> data)> GetListByPermissionAsync(ClaimsPrincipal caller)
 		{
-			if (hasFullAccess)
+			if (SeesAllQueues(caller))
 				return await GetListAsync();
-			
+
+			// Sem id valido nao ha permissao a consultar: nega por padrao.
+			if (caller.GetUserId() is not Guid userId)
+				return Successful(new List<QueueSummary>());
+
 			var allowedQueueIds = await _permissionRepository.GetAllowedQueueIdsAsync(userId);
 			
 			if (allowedQueueIds.Count == 0)
 				return Successful(new List<QueueSummary>());
 			
-
 			var queues = await _queries.GetListByIdsAsync(allowedQueueIds);
+
 			return Successful(queues);
 		}
+
+		public async Task<bool> CanAccessQueueAsync(ClaimsPrincipal caller, Guid queueId) =>
+			SeesAllQueues(caller)
+			|| (caller.GetUserId() is Guid userId && await _permissionRepository.HasPermissionAsync(userId, queueId));
+
+		// Admin, Manager e System veem todas as filas; os demais, so as liberadas em UserQueuePermission.
+		private static bool SeesAllQueues(ClaimsPrincipal caller) =>
+			caller.IsInRole(nameof(Role.Admin)) || caller.IsInRole(nameof(Role.Manager)) || caller.IsInRole(nameof(Role.System));
 
 		public async Task<Result> ToggleStatusQueue(Guid id)
 		{

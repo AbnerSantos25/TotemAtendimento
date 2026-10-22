@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Security.Claims;
 using Totem.Application.Services.QueueServices;
 using Totem.Common.API.Controller;
 using Totem.Common.Domain.Notification;
@@ -29,14 +28,7 @@ namespace Totem.API.Controllers
 		[Authorize(Roles = $"{nameof(Role.Manager)}, {nameof(Role.System)}, {nameof(Role.User)}")]
 		public async Task<IActionResult> GetListAsync()
         {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
-
-            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
-                return Unauthorized();
-
-            var hasFullAccess = User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.Manager)) || User.IsInRole(nameof(Role.System));
-
-            return CustomResponse(await _queueServices.GetListByPermissionAsync(userId, hasFullAccess));
+            return CustomResponse(await _queueServices.GetListByPermissionAsync(User));
         }
 
         [Authorize(Roles = $"{nameof(Role.Manager)}")]
