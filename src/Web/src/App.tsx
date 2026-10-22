@@ -15,7 +15,6 @@ import { GetLocalized } from "@/shared/localization/i18n";
 import { Labels } from "@/shared/localization/keys";
 
 // Login fica no bundle inicial; as demais páginas são baixadas sob demanda
-const Reports = lazyNamed(() => import("./pages/dashboard/Reports"), "Reports");
 const Configuration = lazyNamed(() => import("./pages/configuration/configuration"), "Configuration");
 const QueueConfiguration = lazyNamed(() => import("./pages/configuration/QueueConfiguration"), "QueueConfiguration");
 const ServiceLocationConfiguration = lazyNamed(() => import("@/pages/configuration/ServiceLocationConfiguration"), "ServiceLocationConfiguration");
@@ -48,7 +47,6 @@ export function App() {
           <Route element={<PrivateRoute />}>
             <Route element={<Layout><Suspense fallback={<PageLoader />}><Outlet /></Suspense></Layout>}>
               <Route path="/home" element={<DashboardTemporario />} />
-              <Route path="/relatorios" element={<Reports />} />
               <Route path="/minha-conta" element={<MyAccount />} />
               <Route path="/meu-guiche" element={<MeuGuiche />} />
 

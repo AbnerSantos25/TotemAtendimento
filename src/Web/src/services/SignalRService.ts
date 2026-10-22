@@ -16,6 +16,7 @@ class SignalRService implements ISignalRService {
   private currentServiceLocationId: string | null = null;
   private currentQueueId: string | null = null;
   private currentQueueIds: string[] = [];
+  private stateListeners = new Set<(connected: boolean) => void>();
 
   async startAsync(serviceLocationId: string): Promise<void> {
     if (
@@ -35,9 +36,14 @@ class SignalRService implements ISignalRService {
       .configureLogging(signalR.LogLevel.Information)
       .build();
 
-    this.connection.onreconnected(async () => {
+    const connection = this.connection;
+    connection.onreconnecting(() => this.notifyState(connection, false));
+    connection.onreconnected(async () => {
       await this.rejoinGroupsAsync();
+      this.notifyState(connection, true);
     });
+    // Disparado também quando a reconexão automática desiste após as tentativas
+    connection.onclose(() => this.notifyState(connection, false));
 
     try {
       await this.connection.start();
@@ -164,6 +170,19 @@ class SignalRService implements ISignalRService {
 
   isConnected(): boolean {
     return this.connection?.state === signalR.HubConnectionState.Connected;
+  }
+
+  onConnectionStateChange(listener: (connected: boolean) => void): () => void {
+    this.stateListeners.add(listener);
+    return () => {
+      this.stateListeners.delete(listener);
+    };
+  }
+
+  // Ignora eventos de uma conexão antiga (ex.: o onclose atrasado de um guichê anterior)
+  private notifyState(connection: signalR.HubConnection, connected: boolean): void {
+    if (connection !== this.connection) return;
+    this.stateListeners.forEach((listener) => listener(connected));
   }
 
   private async rejoinGroupsAsync(): Promise<void> {

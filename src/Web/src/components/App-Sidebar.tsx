@@ -1,5 +1,5 @@
 import * as React from "react"
-import { GalleryVerticalEnd, PieChart, Home, Settings, Megaphone } from "lucide-react"
+import { GalleryVerticalEnd, Home, Settings, Megaphone } from "lucide-react"
 import { useLocation } from "react-router-dom"
 
 import {
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/sidebar"
 import { TeamSwitcher } from "./Team-switcher"
 import { NavMain } from "./NavMain"
-import { NavProjects } from "./NavProjects"
 import { NavUser } from "./nav-user"
 import { useAuth } from "@/hooks/useAuth"
 
@@ -64,15 +63,6 @@ const data = {
       }
     ]
   },
-  get projects() {
-    return [
-      {
-        name: GetLocalized(Labels.NavigationReports),
-        url: "/relatorios",
-        icon: PieChart,
-      },
-    ]
-  }
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -84,11 +74,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     isActive: location.pathname.startsWith(item.url) || item.isActive,
   }))
 
-  const projectsWithActive = data.projects.map((item) => ({
-    ...item,
-    isActive: location.pathname.startsWith(item.url),
-  }))
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -96,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMainWithActive} />
-        <NavProjects projects={projectsWithActive} />
+        {/* Relatórios: oculto até existir backend de relatórios (era o template do shadcn com dados falsos) */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={{

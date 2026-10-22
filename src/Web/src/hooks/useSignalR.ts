@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { signalRService } from "@/services/SignalRService";
 import type {
   NewPasswordAssignedPayload,
@@ -29,42 +29,30 @@ export const useSignalR = (options: UseSignalROptions): UseSignalRResult => {
   const [isConnected, setIsConnected] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
 
+  // Atualizado após cada render aplicado (e antes dos useEffect); escrever no ref durante o render é inseguro
   const optionsRef = useRef(options);
-  optionsRef.current = options;
+  useLayoutEffect(() => {
+    optionsRef.current = options;
+  });
 
+  // O SignalR guarda a função recebida: entregamos wrappers fixos que chamam o handler mais recente do ref,
+  // então o handler nunca lê estado antigo. offAll antes torna o registro idempotente (sem handlers duplicados).
   const registerHandlers = useCallback(() => {
-    if (optionsRef.current.onPasswordCalled) {
-      signalRService.onPasswordCalled(optionsRef.current.onPasswordCalled);
-    }
-    if (optionsRef.current.onPasswordRecalled) {
-      signalRService.onPasswordRecalled(optionsRef.current.onPasswordRecalled);
-    }
-    if (optionsRef.current.onPasswordServed) {
-      signalRService.onPasswordServed(optionsRef.current.onPasswordServed);
-    }
-    if (optionsRef.current.onNewPasswordAssigned) {
-      signalRService.onNewPasswordAssigned(optionsRef.current.onNewPasswordAssigned);
-    }
-    if (optionsRef.current.onPasswordCreated) {
-      signalRService.onPasswordCreated(optionsRef.current.onPasswordCreated);
-    }
-    if (optionsRef.current.onQueuePasswordUpdated) {
-        signalRService.onQueuePasswordUpdated(optionsRef.current.onQueuePasswordUpdated);
-    }
-
+    signalRService.offAll();
+    signalRService.onPasswordCalled((data) => optionsRef.current.onPasswordCalled?.(data));
+    signalRService.onPasswordRecalled((data) => optionsRef.current.onPasswordRecalled?.(data));
+    signalRService.onPasswordServed((data) => optionsRef.current.onPasswordServed?.(data));
+    signalRService.onNewPasswordAssigned((data) => optionsRef.current.onNewPasswordAssigned?.(data));
+    signalRService.onPasswordCreated((data) => optionsRef.current.onPasswordCreated?.(data));
+    signalRService.onQueuePasswordUpdated((data) => optionsRef.current.onQueuePasswordUpdated?.(data));
   }, []);
 
   const connect = useCallback(
-    async (serviceLocationId: string, queueId: string | null) => {
+    async (serviceLocationId: string) => {
       try {
         setConnectionError(null);
         await signalRService.startAsync(serviceLocationId);
         registerHandlers();
-
-        if (queueId) {
-          await signalRService.joinQueueAsync(queueId);
-        }
-
         setIsConnected(true);
       } catch (error) {
         setIsConnected(false);
@@ -74,21 +62,23 @@ export const useSignalR = (options: UseSignalROptions): UseSignalRResult => {
     [registerHandlers]
   );
 
+  // Quedas, reconexões automáticas e fechamento depois de conectado (sem isso a tela seguia "Conectado")
+  useEffect(() => signalRService.onConnectionStateChange(setIsConnected), []);
+
+  // A conexão depende só do guichê; trocar de fila não reconecta (ver efeito abaixo)
   useEffect(() => {
     if (!options.serviceLocationId) return;
 
-    connect(options.serviceLocationId, options.queueId);
+    connect(options.serviceLocationId);
 
     return () => {
-      if (options.queueId) {
-        void signalRService.leaveQueueAsync(options.queueId);
-      }
       signalRService.offAll();
-      void signalRService.stopAsync();
+      void signalRService.stopAsync(); // também sai da fila atual
       setIsConnected(false);
     };
-  }, [options.serviceLocationId, options.queueId, connect]);
+  }, [options.serviceLocationId, connect]);
 
+  // Entra na fila ao conectar e ao trocar de fila; joinQueueAsync sai da fila anterior antes
   useEffect(() => {
     if (!isConnected || !options.queueId) return;
 
@@ -97,10 +87,9 @@ export const useSignalR = (options: UseSignalROptions): UseSignalRResult => {
 
   const reconnect = useCallback(async () => {
     if (optionsRef.current.serviceLocationId) {
-      await connect(optionsRef.current.serviceLocationId, optionsRef.current.queueId);
+      await connect(optionsRef.current.serviceLocationId);
     }
   }, [connect]);
 
   return { isConnected, connectionError, reconnect };
 };
-

@@ -50,4 +50,6 @@ export interface ISignalRService {
 
   offAll(): void;
   isConnected(): boolean;
+  /** Avisa quando a conexão cai, reconecta ou fecha. Retorna a função para cancelar a inscrição. */
+  onConnectionStateChange(listener: (connected: boolean) => void): () => void;
 }

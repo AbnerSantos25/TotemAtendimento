@@ -282,6 +282,7 @@ namespace Totem.Application.Services.IdentityServices
 
 		public async Task<Result> UpdateUserRolesAsync(AssignRolesRequest request)
 		{
+            //TODO: Garantir que a role Admin e System não sejam atribuidas apenas por admins, manager não pode se atribuir ou atribuir a outras pessoas essas duas roles.
 			var contract = IdentityRequestValidation.AllowedAssignRoles(request.Roles);
 			if (!contract.IsValid)
 				return Unsuccessful(contract);

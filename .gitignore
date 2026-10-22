@@ -306,3 +306,9 @@ auditoria_seguranca_premium.html
 /src/Mobile/locales/pt-BR/labels.json
 /src/Mobile/locales/pt-BR/messages.json
 /src/Services/Totem.API/logs
+
+# Documentos de referência locais (não versionar)
+/docs/validacao-de-entidades.md
+
+# Scripts locais de apoio (não versionar)
+/tools/addkey.py

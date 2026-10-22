@@ -109,7 +109,6 @@ namespace Totem.Application.Services.QueueServices
 			if (SeesAllQueues(caller))
 				return await GetListAsync();
 
-			// Sem id valido nao ha permissao a consultar: nega por padrao.
 			if (caller.GetUserId() is not Guid userId)
 				return Successful(new List<QueueSummary>());
 
@@ -127,7 +126,6 @@ namespace Totem.Application.Services.QueueServices
 			SeesAllQueues(caller)
 			|| (caller.GetUserId() is Guid userId && await _permissionRepository.HasPermissionAsync(userId, queueId));
 
-		// Admin, Manager e System veem todas as filas; os demais, so as liberadas em UserQueuePermission.
 		private static bool SeesAllQueues(ClaimsPrincipal caller) =>
 			caller.IsInRole(nameof(Role.Admin)) || caller.IsInRole(nameof(Role.Manager)) || caller.IsInRole(nameof(Role.System));
 
@@ -145,13 +143,10 @@ namespace Totem.Application.Services.QueueServices
 			if (!await _repository.UnitOfWork.CommitAsync())
 				return Unsuccessful(Errors.ErrorSavingDatabase);
 
-			// Fila desativada nao pode manter guiches esperando senha que nao sera mais gerada.
 			if (!queue.IsActive)
 				_waitingLocations.ClearQueue(id);
 
 			return Successful();
-
-
 		}
 	}
 }
